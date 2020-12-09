@@ -82,13 +82,17 @@ export const generatorDynamicRouter = (token) => {
   return new Promise((resolve, reject) => {
     loginService.getCurrentUserNav(token).then(res => {
       console.log('res', res)
-      const { result } = res
+      // const { result } = res
       const menuNav = []
-      const childrenNav = []
-      //      后端数据, 根级树数组,  根级 PID
-      listToTree(result, childrenNav, 0)
+      const childrenNav = res.data
+      console.log('111111111111111111111111111111111111111')
+      console.log(res.data)
+      // 后端数据, 根级树数组,  根级 PID
+      // listToTree(result, childrenNav, 0)
       rootRouter.children = childrenNav
       menuNav.push(rootRouter)
+      console.log('使用默认路由')
+      console.log(rootRouter)
       console.log('menuNav', menuNav)
       const routers = generator(menuNav)
       routers.push(notFoundRouter)
@@ -108,13 +112,18 @@ export const generatorDynamicRouter = (token) => {
  * @returns {*}
  */
 export const generator = (routerMap, parent) => {
+  // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
+  // routerMap.push(rootRouter)
   return routerMap.map(item => {
     const { title, show, hideChildren, hiddenHeaderContent, target, icon } = item.meta || {}
+    // console.log('遍历测试')
+    // console.log(item)
     const currentRouter = {
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
       path: item.path || `${parent && parent.path || ''}/${item.key}`,
       // 路由名称，建议唯一
-      name: item.name || item.key || '',
+      // name: item.name || item.key || '',
+      name: item.menuName,
       // 该路由对应页面的 组件 :方案1
       // component: constantRouterComponents[item.component || item.key],
       // 该路由对应页面的 组件 :方案2 (动态加载)
@@ -158,23 +167,23 @@ export const generator = (routerMap, parent) => {
  * @param tree 树
  * @param parentId 父ID
  */
-const listToTree = (list, tree, parentId) => {
-  list.forEach(item => {
-    // 判断是否为父级菜单
-    if (item.parentId === parentId) {
-      const child = {
-        ...item,
-        key: item.key || item.name,
-        children: []
-      }
-      // 迭代 list， 找到当前菜单相符合的所有子菜单
-      listToTree(list, child.children, item.id)
-      // 删掉不存在 children 值的属性
-      if (child.children.length <= 0) {
-        delete child.children
-      }
-      // 加入到树中
-      tree.push(child)
-    }
-  })
-}
+// const listToTree = (list, tree, parentId) => {
+//   list.forEach(item => {
+//     // 判断是否为父级菜单
+//     if (item.parentId === parentId) {
+//       const child = {
+//         ...item,
+//         key: item.key || item.name,
+//         children: []
+//       }
+//       // 迭代 list， 找到当前菜单相符合的所有子菜单
+//       listToTree(list, child.children, item.id)
+//       // 删掉不存在 children 值的属性
+//       if (child.children.length <= 0) {
+//         delete child.children
+//       }
+//       // 加入到树中
+//       tree.push(child)
+//     }
+//   })
+// }

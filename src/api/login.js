@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-
 const userApi = {
   Login: '/auth/login',
   Logout: '/auth/logout',
@@ -9,8 +8,10 @@ const userApi = {
   SendSms: '/account/sms',
   SendSmsErr: '/account/sms_err',
   // get my info
-  UserInfo: '/user/info',
-  UserMenu: '/user/nav'
+  // UserInfo: '/user/info',
+  UserInfo: '/system/user/getInfo',
+  // UserMenu: '/user/nav'
+  UserMenu: '/system/menu/getRouters'
 }
 
 /**

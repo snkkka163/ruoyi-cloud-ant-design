@@ -65,7 +65,7 @@
 <script>
 import pick from 'lodash.pick'
 import { getRoleList, getPermissions } from '@/api/manage'
-import { actionToObject } from '@/utils/permissions'
+// import { actionToObject } from '@/utils/permissions'
 import { baseMixin } from '@/store/app-mixin'
 
 export default {
@@ -146,16 +146,17 @@ export default {
       getPermissions().then(res => {
         const result = res.result
         this.permissions = result.map(permission => {
-          const options = actionToObject(permission.actionData)
+          // const options = actionToObject(permission.actionData)
           permission.checkedAll = false
           permission.selected = []
           permission.indeterminate = false
-          permission.actionsOptions = options.map(option => {
-            return {
-              label: option.describe,
-              value: option.action
-            }
-          })
+          console.log(permission)
+          // permission.actionsOptions = options.map(option => {
+          //   return {
+          //     label: option.describe,
+          //     value: option.action
+          //   }
+          // })
           return permission
         })
       })

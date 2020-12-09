@@ -127,7 +127,6 @@ export const asyncRouterMap = [
           }
         ]
       },
-
       // profile
       {
         path: '/profile',
