@@ -65,7 +65,9 @@ const user = {
             } else {
               commit('SET_ROLES', ['ROLE_DEFAULT'])
             }
-            commit('SET_NAME', user.userName)
+            console.log('在这里给name赋值')
+            console.log(user)
+            commit('SET_NAME', user.nickName)
             commit('SET_AVATAR', avatar)
             resolve(response)
           }

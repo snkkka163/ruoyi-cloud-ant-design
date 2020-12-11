@@ -107,9 +107,9 @@ export const generatorDynamicRouter = (token) => {
       }]
       // 后端数据, 根级树数组,  根级 PID
       // listToTree(resList, childrenNav, 0)
-      console.log('反转结束')
-      console.log(childrenNav)
-      console.log(resList)
+      // console.log('反转结束')
+      // console.log(childrenNav)
+      // console.log(resList)
       rootRouter.children = childrenNav.concat(resList)
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
@@ -130,10 +130,8 @@ export const generatorDynamicRouter = (token) => {
  */
 export const generator = (routerMap, parent) => {
   // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
-  // routerMap.push(rootRouter)
   return routerMap.map(item => {
     const { title, show, hideChildren, hiddenHeaderContent, target, icon } = item.meta || {}
-    // item.redirect = item.path || `${parent && parent.path || ''}/${item.key}`
     const currentRouter = {
 
       // 如果路由设置了 path，则作为默认 path，否则 路由地址 动态拼接生成如 /dashboard/workplace
@@ -141,7 +139,6 @@ export const generator = (routerMap, parent) => {
       // 路由名称，建议唯一
       name: item.name || item.key || '',
       // 该路由对应页面的 组件 :方案1
-      // component: constantRouterComponents[item.component || item.key],
       // 该路由对应页面的 组件 :方案2 (动态加载)
       component: (constantRouterComponents[item.component || item.key]) || (() => import(`@/views/${item.component}`)),
 
