@@ -61,7 +61,7 @@ export function getCurrentUserNav () {
 export function logout () {
   return request({
     url: userApi.Logout,
-    method: 'post',
+    method: 'delete',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     }

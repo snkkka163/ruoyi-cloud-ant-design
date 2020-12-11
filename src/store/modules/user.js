@@ -37,8 +37,6 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          console.log('收到请求')
-          console.log(response)
           const result = response.data
           console.log(result.access_token)
           storage.set(ACCESS_TOKEN, result.access_token, 7 * 24 * 60 * 60 * 1000)
@@ -54,16 +52,12 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          console.log('获取用户信息')
-          console.log(response)
           // const result = response.result
           const result = response
 
           if (result.roles && result.permissions.length > 0) {
             const user = result.user
             const avatar = user.avatar
-            console.log('测试权限')
-            console.log(result.permissions)
             if (result.roles && result.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               commit('SET_ROLES', result.roles)
               // 权限暂时不设置
