@@ -2,6 +2,7 @@
 import * as loginService from '@/api/login'
 // eslint-disable-next-line
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
+import { DEFAULT_ROUTE_PATH } from '@/store/mutation-types'
 
 // 前端路由表
 const constantRouterComponents = {
@@ -60,13 +61,25 @@ const notFoundRouter = {
   path: '*', redirect: '/404', hidden: true
 }
 
+// // 根级菜单
+// const rootRouter = {
+//   key: '',
+//   name: 'index',
+//   path: '',
+//   component: 'BasicLayout',
+//   redirect: '/dashboard',
+//   meta: {
+//     title: '首页'
+//   },
+//   children: []
+// }
 // 根级菜单
 const rootRouter = {
   key: '',
   name: 'index',
-  path: '',
+  path: '/',
   component: 'BasicLayout',
-  redirect: '/dashboard',
+  redirect: DEFAULT_ROUTE_PATH,
   meta: {
     title: '首页'
   },
@@ -83,10 +96,21 @@ export const generatorDynamicRouter = (token) => {
     loginService.getCurrentUserNav(token).then(res => {
       // const { result } = res
       const menuNav = []
-      const childrenNav = res.data
+      // const childrenNav = res.data
+      const resList = res.data
+      // 设置默认页
+      const childrenNav = [{
+        path: DEFAULT_ROUTE_PATH,
+        name: 'WorkPlace',
+        component: 'dashboard/Workplace',
+        meta: { title: '工作台', keepAlive: true, icon: 'dashboard' }
+      }]
       // 后端数据, 根级树数组,  根级 PID
-      // listToTree(result, childrenNav, 0)
-      rootRouter.children = childrenNav
+      listToTree(resList, childrenNav, 0)
+      console.log('反转结束')
+      console.log(childrenNav)
+      console.log(resList)
+      rootRouter.children = childrenNav.concat(resList)
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
       routers.push(notFoundRouter)
@@ -160,23 +184,25 @@ export const generator = (routerMap, parent) => {
  * @param tree 树
  * @param parentId 父ID
  */
-// const listToTree = (list, tree, parentId) => {
-//   list.forEach(item => {
-//     // 判断是否为父级菜单
-//     if (item.parentId === parentId) {
-//       const child = {
-//         ...item,
-//         key: item.key || item.name,
-//         children: []
-//       }
-//       // 迭代 list， 找到当前菜单相符合的所有子菜单
-//       listToTree(list, child.children, item.id)
-//       // 删掉不存在 children 值的属性
-//       if (child.children.length <= 0) {
-//         delete child.children
-//       }
-//       // 加入到树中
-//       tree.push(child)
-//     }
-//   })
-// }
+const listToTree = (list, tree, parentId) => {
+  console.log('生成树形结构')
+  console.log(list)
+  list.forEach(item => {
+    // 判断是否为父级菜单
+    if (item.parentId === parentId) {
+      const child = {
+        ...item,
+        key: item.key || item.name,
+        children: []
+      }
+      // 迭代 list， 找到当前菜单相符合的所有子菜单
+      listToTree(list, child.children, item.id)
+      // 删掉不存在 children 值的属性
+      if (child.children.length <= 0) {
+        delete child.children
+      }
+      // 加入到树中
+      tree.push(child)
+    }
+  })
+}

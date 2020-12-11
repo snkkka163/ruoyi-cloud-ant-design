@@ -8,9 +8,10 @@ Router.prototype.push = function push (location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
   return originalPush.call(this, location).catch(err => err)
 }
-
 Vue.use(Router)
+console.log('测试路由')
 export default new Router({
   mode: 'history',
-  routes: asyncRouterMap.concat(constantRouterMap)
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap.concat(asyncRouterMap)
 })

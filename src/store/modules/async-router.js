@@ -21,6 +21,8 @@ const permission = {
         const { token } = data
         generatorDynamicRouter(token).then(routers => {
           commit('SET_ROUTERS', routers)
+           console.log('走到这一步了')
+           console.log(routers)
           resolve()
         })
       })
