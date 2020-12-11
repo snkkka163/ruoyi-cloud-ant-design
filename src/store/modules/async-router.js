@@ -17,12 +17,12 @@ const permission = {
   },
   actions: {
     GenerateRoutes ({ commit }, data) {
+      console.log('最终测试生成')
+      console.log(data)
       return new Promise(resolve => {
         const { token } = data
         generatorDynamicRouter(token).then(routers => {
           commit('SET_ROUTERS', routers)
-           console.log('走到这一步了')
-           console.log(routers)
           resolve()
         })
       })
