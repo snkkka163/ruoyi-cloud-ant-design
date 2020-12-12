@@ -1,7 +1,7 @@
 import storage from 'store'
 import { login, getInfo, logout } from '@/api/login'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-// import { welcome } from '@/utils/util'
+import { welcome } from '@/utils/util'
 
 const user = {
   state: {
@@ -65,7 +65,8 @@ const user = {
             } else {
               commit('SET_ROLES', ['ROLE_DEFAULT'])
             }
-            commit('SET_NAME', user.nickName)
+            // commit('SET_NAME', user.nickName)
+            commit('SET_NAME', { name: user.nickName, welcome: welcome() })
             commit('SET_AVATAR', avatar)
             resolve(response)
           }

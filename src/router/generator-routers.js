@@ -114,6 +114,8 @@ export const generatorDynamicRouter = (token) => {
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
       routers.push(notFoundRouter)
+      console.log('路由结果')
+      console.log(routers)
       resolve(routers)
     }).catch(err => {
       reject(err)
@@ -171,9 +173,6 @@ export const generator = (routerMap, parent) => {
       // Recursion
       currentRouter.children = generator(item.children, currentRouter)
     }
-    console.log('生成的路由:')
-    console.log(parent)
-    console.log(currentRouter)
     return currentRouter
   })
 }

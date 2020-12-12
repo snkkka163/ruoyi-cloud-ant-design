@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ user.name }}<span class="welcome-text">，{{ welcome }}</span>
+            {{ timeFix }}，{{ name }}<span class="welcome-text">，{{ welcome }}</span>
           </div>
           <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
         </div>
@@ -27,99 +27,41 @@
       </div>
     </template>
 
-    <div>
-      <a-row :gutter="24">
-        <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card
-            class="project-list"
-            :loading="loading"
-            style="margin-bottom: 24px;"
-            :bordered="false"
-            title="进行中的项目"
-            :body-style="{ padding: 0 }">
-            <a slot="extra">全部项目</a>
-            <div>
-              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">
-                <a-card :bordered="false" :body-style="{ padding: 0 }">
-                  <a-card-meta>
-                    <div slot="title" class="card-title">
-                      <a-avatar size="small" :src="item.cover"/>
-                      <a>{{ item.title }}</a>
-                    </div>
-                    <div slot="description" class="card-description">
-                      {{ item.description }}
-                    </div>
-                  </a-card-meta>
-                  <div class="project-item">
-                    <a href="/#/">科学搬砖组</a>
-                    <span class="datetime">9小时前</span>
-                  </div>
-                </a-card>
-              </a-card-grid>
+    <a-card :loading="loading" :bordered="false" :body-style="{padding: '0'}">
+      <div class="salesCard">
+        <a-tabs default-active-key="1" size="large" :tab-bar-style="{marginBottom: '24px', paddingLeft: '16px'}">
+          <div class="extra-wrapper" slot="tabBarExtraContent">
+            <div class="extra-item">
+              <a>今日</a>
+              <a>本周</a>
+              <a>本月</a>
+              <a>本年</a>
             </div>
-          </a-card>
-
-          <a-card :loading="loading" title="动态" :bordered="false">
-            <a-list>
-              <a-list-item :key="index" v-for="(item, index) in activities">
-                <a-list-item-meta>
-                  <a-avatar slot="avatar" :src="item.user.avatar"/>
-                  <div slot="title">
-                    <span>{{ item.user.nickname }}</span>&nbsp;
-                    在&nbsp;<a href="#">{{ item.project.name }}</a>&nbsp;
-                    <span>{{ item.project.action }}</span>&nbsp;
-                    <a href="#">{{ item.project.event }}</a>
-                  </div>
-                  <div slot="description">{{ item.time }}</div>
-                </a-list-item-meta>
-              </a-list-item>
-            </a-list>
-          </a-card>
-        </a-col>
-        <a-col
-          style="padding: 0 12px"
-          :xl="8"
-          :lg="24"
-          :md="24"
-          :sm="24"
-          :xs="24">
-          <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
-            </div>
-          </a-card>
-          <a-card
-            title="XX 指数"
-            style="margin-bottom: 24px"
-            :loading="radarLoading"
-            :bordered="false"
-            :body-style="{ padding: 0 }">
-            <div style="min-height: 400px;">
-              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData"/>
-            </div>
-          </a-card>
-          <a-card :loading="loading" title="团队" :bordered="false">
-            <div class="members">
-              <a-row>
-                <a-col :span="12" v-for="(item, index) in teams" :key="index">
-                  <a>
-                    <a-avatar size="small" :src="item.avatar"/>
-                    <span class="member">{{ item.name }}</span>
-                  </a>
-                </a-col>
-              </a-row>
-            </div>
-          </a-card>
-        </a-col>
-      </a-row>
-    </div>
+            <a-range-picker :style="{width: '256px'}" />
+          </div>
+          <a-tab-pane loading="true" tab="销售额" key="1">
+            <a-row>
+              <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :data="barData" title="销售额排行" />
+              </a-col>
+              <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+                <rank-list title="门店销售排行榜" :list="this.rankList"/>
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+          <a-tab-pane tab="访问量" key="2">
+            <a-row>
+              <a-col :xl="16" :lg="12" :md="12" :sm="24" :xs="24">
+                <bar :data="barData2" title="销售额趋势" />
+              </a-col>
+              <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
+                <rank-list title="门店销售排行榜" :list="this.rankList"/>
+              </a-col>
+            </a-row>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+    </a-card>
   </page-header-wrapper>
 </template>
 
@@ -127,7 +69,7 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { Radar } from '@/components'
+import { Radar, Bar, RankList } from '@/components'
 
 import { getRoleList, getServiceList } from '@/api/manage'
 
@@ -137,20 +79,25 @@ export default {
   name: 'Workplace',
   components: {
     PageHeaderWrapper,
-    Radar
+    Radar,
+    Bar,
+    RankList
   },
   data () {
     return {
       timeFix: timeFix(),
       avatar: '',
       user: {},
-
+      rankList: [],
       projects: [],
       loading: true,
       radarLoading: true,
       activities: [],
       teams: [],
 
+      // mock
+      barData: [],
+      barData2: [],
       // data
       axis1Opts: {
         dataKey: 'item',
@@ -192,13 +139,13 @@ export default {
   },
   computed: {
     ...mapState({
-      nickname: (state) => state.user.nickname,
+      name: (state) => state.user.name,
       welcome: (state) => state.user.welcome
     }),
     currentUser () {
       return {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
+        name: '繁叶云网络科技工作室',
+        avatar: 'https://snkkkait.oss-cn-beijing.aliyuncs.com/halo/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20191009235418_1586664256422.jpg'
       }
     },
     userInfo () {
@@ -208,6 +155,8 @@ export default {
   created () {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
+    console.log('用户信息:')
+    console.log(this.userInfo)
     getRoleList().then(res => {
       // console.log('workplace -> call getRoleList()', res)
     })
@@ -215,14 +164,38 @@ export default {
     getServiceList().then(res => {
       // console.log('workplace -> call getServiceList()', res)
     })
+
+    for (let i = 0; i < 12; i += 1) {
+      this.barData.push({
+        x: `${i + 1}月`,
+        y: Math.floor(Math.random() * 1000) + 200
+      })
+      this.barData2.push({
+        x: `${i + 1}月`,
+        y: Math.floor(Math.random() * 1000) + 200
+      })
+    }
+
+    for (let i = 0; i < 7; i++) {
+      this.rankList.push({
+        name: '若依 ' + (i + 1) + ' 号店',
+        total: 1234.56 - i * 100
+      })
+    }
+    setTimeout(() => {
+      this.loading = !this.loading
+    }, 1000)
   },
   mounted () {
-    this.getProjects()
-    this.getActivity()
-    this.getTeams()
-    this.initRadar()
+    // this.getProjects()
+    // this.getActivity()
+    // this.getTeams()
+    // this.initRadar()
   },
   methods: {
+    onPanelChange (value, mode) {
+      console.log(value, mode)
+    },
     getProjects () {
       this.$http.get('/list/search/projects')
         .then(res => {

@@ -1,11 +1,11 @@
 // eslint-disable-next-line
-import { UserLayout, BasicLayout, BlankLayout } from '@/layouts'
+import { UserLayout, BasicLayout, BlankLayout, RouteView } from '@/layouts'
 // import { bxAnaalyse } from '@/core/icons'
 
-const RouteView = {
-  name: 'RouteView',
-  render: (h) => h('router-view')
-}
+// const RouteView = {
+//   name: 'RouteView',
+//   render: (h) => h('router-view')
+// }
 
 export const asyncRouterMap = [
   {
@@ -22,14 +22,14 @@ export const asyncRouterMap = [
     }, {
       path: '/system',
       name: 'system',
-      redirect: '/system',
+      redirect: '/system/user',
       component: RouteView,
       meta: { title: '系统管理', keepAlive: true, icon: 'control' },
       children: [
         {
           path: '/system/user',
           name: 'User',
-          component: () => import('@/views/system/User'),
+          component: () => import('@/views/system/user'),
           meta: { title: '用户管理', keepAlive: false }
         }
         // {

@@ -5,10 +5,11 @@ const info = (options) => {
   console.log('options', options)
   const userInfo = {
     'id': '4291d7da9005377ec9aec4a71ea837f',
-    'name': '天野远子',
+    'name': '繁叶云网络科技工作室',
     'username': 'admin',
     'password': '',
-    'avatar': '/avatar2.jpg',
+    'avatar': 'https://snkkkait.oss-cn-beijing.aliyuncs.com/halo/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20191009235418_1586664256422.jpg',
+    // 'avatar': '/avatar2.jpg',
     'status': 1,
     'telephone': '',
     'lastLoginIp': '27.154.74.117',

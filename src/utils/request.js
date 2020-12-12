@@ -27,13 +27,11 @@ const errorHandler = (error) => {
       })
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-      console.log('token过期了')
       notification.error({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
       })
       if (token) {
-        console.log('token过期了准备跳转logout')
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
             window.location.reload()
@@ -59,9 +57,6 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
-  // if (response.data.code === 500) {
-  //   storage.clearAll()
-  // }
   return response.data
 }, errorHandler)
 

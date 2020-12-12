@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
               router.addRoutes(store.getters.addRouters)
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
-              console.log(1)
+              next({ ...to, replace: true })
               if (to.path === redirect) {
                 // set the replace: true so the navigation will not leave a history record
                 next({ ...to, replace: true })
