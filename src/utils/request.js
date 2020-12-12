@@ -19,6 +19,7 @@ const errorHandler = (error) => {
     const data = error.response.data
     // 从 localstorage 获取 token
     const token = storage.get(ACCESS_TOKEN)
+    console.log(error.response.status)
     if (error.response.status === 403) {
       notification.error({
         message: 'Forbidden',
@@ -26,11 +27,13 @@ const errorHandler = (error) => {
       })
     }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
+      console.log('token过期了')
       notification.error({
         message: 'Unauthorized',
         description: 'Authorization verification failed'
       })
       if (token) {
+        console.log('token过期了准备跳转logout')
         store.dispatch('Logout').then(() => {
           setTimeout(() => {
             window.location.reload()
@@ -45,7 +48,6 @@ const errorHandler = (error) => {
 // request interceptor
 request.interceptors.request.use(config => {
   const token = storage.get(ACCESS_TOKEN)
-
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   if (token) {
@@ -57,6 +59,9 @@ request.interceptors.request.use(config => {
 
 // response interceptor
 request.interceptors.response.use((response) => {
+  // if (response.data.code === 500) {
+  //   storage.clearAll()
+  // }
   return response.data
 }, errorHandler)
 

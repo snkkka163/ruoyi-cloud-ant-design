@@ -52,9 +52,9 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
+          console.log(response)
           // const result = response.result
           const result = response
-
           if (result.roles && result.permissions.length > 0) {
             const user = result.user
             const avatar = user.avatar
@@ -65,13 +65,17 @@ const user = {
             } else {
               commit('SET_ROLES', ['ROLE_DEFAULT'])
             }
-            console.log('在这里给name赋值')
-            console.log(user)
             commit('SET_NAME', user.nickName)
             commit('SET_AVATAR', avatar)
             resolve(response)
           }
+          // GetInfo一旦失败就说明这个token不是过期就是丢失了,直接走catch并让调用方跳转路由
+          if (result.code === 500) {
+            reject(result)
+          }
         }).catch(error => {
+          console.log(error)
+          console.log('失败了')
           reject(error)
         })
       })
