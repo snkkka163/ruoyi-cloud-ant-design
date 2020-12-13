@@ -17,7 +17,19 @@
           <a-input v-decorator="['nickName']" />
         </a-form-item>
         <a-form-item label="部门">
-          <a-input v-decorator="['dept']" />
+          <a-tree-select
+            v-decorator="['dept']"
+            v-model="value"
+            style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :tree-data="treeData"
+            placeholder="Please select"
+            tree-default-expand-all
+          >
+          <!-- <span v-if="key === '0-0-1'" slot="title" slot-scope="{ key, value }" style="color: #08c">
+            Child Node1 {{ value }}
+          </span> -->
+          </a-tree-select>
         </a-form-item>
         <a-form-item label="手机号码">
           <a-input v-decorator="['phonenumber']" />
@@ -32,7 +44,34 @@
 
 <script>
 import pick from 'lodash.pick'
-
+import { getTreeSelect } from '@/api/system/dept'
+// const treeData = [
+//   {
+//     title: 'Node1',
+//     value: '0-0',
+//     key: '0-0',
+//     children: [
+//       {
+//         value: '0-0-1',
+//         key: '0-0-1',
+//         scopedSlots: {
+//           // custom title
+//           title: 'title'
+//         }
+//       },
+//       {
+//         title: 'Child Node2',
+//         value: '0-0-2',
+//         key: '0-0-2'
+//       }
+//     ]
+//   },
+//   {
+//     title: 'Node2',
+//     value: '0-1',
+//     key: '0-1'
+//   }
+// ]
 // 表单字段
 const fields = ['userName', 'nickName']
 
@@ -63,7 +102,9 @@ export default {
       }
     }
     return {
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      treeData: [],
+      value: undefined
     }
   },
   created () {
@@ -76,6 +117,28 @@ export default {
     this.$watch('model', () => {
       this.model && this.form.setFieldsValue(pick(this.model, fields))
     })
+
+    // 初始化树菜单
+    getTreeSelect()
+    .then(res => {
+      console.log('树')
+      console.log(res)
+      // 层级遍历赋值给treeData
+      this.treeData = res.data
+      this.getTreeSelectChildren(this.treeData)
+      console.log(this.treeData)
+    })
+  },
+  methods: {
+    getTreeSelectChildren (treeData) {
+      treeData.forEach(element => {
+        element.value = element.id
+        element.key = element.label
+        if (element.hasOwnProperty('children') === true) {
+          this.getTreeSelectChildren(element.children)
+        }
+      })
+    }
   }
 }
 </script>
