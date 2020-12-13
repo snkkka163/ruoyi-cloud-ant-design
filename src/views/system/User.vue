@@ -32,7 +32,7 @@
           </div>
         </a-card>
       </div>
-      <div class="table-page-operator-wrapper">
+      <!-- <div class="table-page-operator-wrapper">
         <a-button @click="$refs.editPanel.show()" type="primary" v-hasPermission="'sys:user:save'" ghost>新增</a-button>
         <a-button v-hasPermission="'sys:user:delete'" @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
         <a-dropdown v-hasPermission="'sys:user:export'">
@@ -43,17 +43,17 @@
             更多操作 <a-icon type="down" />
           </a-button>
         </a-dropdown>
-      </div>
+      </div> -->
 
       <s-table
         ref="table"
         :columns="columns"
         :data="loadData"
         :row-selection="rowSelection"
-        row-key="id"
+        row-key="userId"
       >
 
-        <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+        <!-- <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
           <role-panel @add-action="$refs.editPanel.show(record)" :role-ids="record.roleIds || []" action-name="sys:user:update"/>
           <a-divider type="horizontal" :dashed="true" style="margin-bottom: 6px; margin-top: 6px;"/>
           <resource-panel @add-action="$refs.editPanel.show(record)" :resourceIds="record.resourceIds || []" action-name="sys:user:update"/>
@@ -91,9 +91,9 @@
               </a-menu-item>
             </a-menu>
           </a-dropdown>
-        </span>
+        </span> -->
       </s-table>
-      <user-edit-panel ref="editPanel" @handle-success="formHandleSuccess"/>
+      <!-- <user-edit-panel ref="editPanel" @handle-success="formHandleSuccess"/> -->
     </template>
   </page-header-wrapper>
 </template>
@@ -188,6 +188,8 @@ export default {
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const params = Object.assign({}, this.queryParam)
+        console.log('加载数据的方法')
+        console.log(params)
         if (params.status === '-1') {
           delete params.status
         }
@@ -205,17 +207,16 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       rowSelection: {
-        onChange: (selectedRowKeys, selectedRows) => {
-          this.selectedRowKeys = selectedRowKeys
-          this.selectedRows = selectedRows
-        },
+        // onChange: (selectedRowKeys, selectedRows) => {
+        //   this.selectedRowKeys = selectedRowKeys
+        //   this.selectedRows = selectedRows
+        // },
         onSelect: (record, selected, selectedRows) => {},
         onSelectAll: (selected, selectedRows, changeRows) => {}
       }
     }
   },
   created () {
-    console.log(1)
     setTimeout(() => {
       this.loading = !this.loading
     }, 1000)
@@ -230,72 +231,75 @@ export default {
       }
       this.$refs.table.refresh(true)
     },
-    updateStatus (record, status) {
-      this.$http.put('/user/updateStatus', {
-        id: record.id,
-        status: status
-      }).then(res => {
-        console.log(res)
-        if (res.data) {
-          this.$refs.table.refresh()
-        }
-      })
-    },
-    deleteRecord (record) {
-      const that = this
-      this.$confirm({
-        title: '警告',
-        content: `真的要删除 ${record.nickname} 吗?`,
-        okText: '删除',
-        okType: 'danger',
-        cancelText: '取消',
-        onOk () {
-          that.handleDelete([record.id], {
-            success () {},
-            done () {}
-          })
-        }
-      })
-    },
-    batchDelete (ids) {
-      const that = this
-      this.$confirm({
-        title: '警告',
-        content: `真的要删除这 ${ids.length} 位用户吗?`,
-        okText: '删除',
-        okType: 'danger',
-        cancelText: '取消',
-        onOk () {
-          that.handleDelete(ids, {
-            success () {},
-            done () {}
-          })
-        }
-      })
-    },
-    handleDelete (ids, callback) {
-      if (ids.length > 0) {
-        this.$http.delete('user/' + ids.join(',')).then(res => {
-          this.$message.success('已成功删除')
-          this.$refs.table.refresh()
-          if (callback) {
-            (typeof callback.done === 'function') && callback.done.call(this)
-            if (typeof callback.success === 'function') { callback.success.call(this, res) }
-          }
-        }).catch(e => {
-          if (callback) {
-            (typeof callback.done === 'function') && callback.done.call(this)
+    // updateStatus (record, status) {
+    //   console.log('更新操作')
+    //   console.log(record)
+    //   this.$http.put('/user/updateStatus', {
+    //     id: record.id,
+    //     status: status
+    //   }).then(res => {
+    //     console.log(res)
+    //     if (res.data) {
+    //       this.$refs.table.refresh()
+    //     }
+    //   })
+    // },
+    // deleteRecord (record) {
+    //   const that = this
+    //   this.$confirm({
+    //     title: '警告',
+    //     content: `真的要删除 ${record.nickname} 吗?`,
+    //     okText: '删除',
+    //     okType: 'danger',
+    //     cancelText: '取消',
+    //     onOk () {
+    //       that.handleDelete([record.id], {
+    //         success () {},
+    //         done () {}
+    //       })
+    //     }
+    //   })
+    // },
+    // batchDelete (ids) {
+    //   const that = this
+    //   this.$confirm({
+    //     title: '警告',
+    //     content: `真的要删除这 ${ids.length} 位用户吗?`,
+    //     okText: '删除',
+    //     okType: 'danger',
+    //     cancelText: '取消',
+    //     onOk () {
+    //       that.handleDelete(ids, {
+    //         success () {},
+    //         done () {}
+    //       })
+    //     }
+    //   })
+    // },
+    // handleDelete (ids, callback) {
+    //   if (ids.length > 0) {
+    //     this.$http.delete('user/' + ids.join(',')).then(res => {
+    //       this.$message.success('已成功删除')
+    //       this.$refs.table.refresh()
+    //       if (callback) {
+    //         (typeof callback.done === 'function') && callback.done.call(this)
+    //         if (typeof callback.success === 'function') { callback.success.call(this, res) }
+    //       }
+    //     }).catch(e => {
+    //       if (callback) {
+    //         (typeof callback.done === 'function') && callback.done.call(this)
 
-            if (typeof callback.fail === 'function') { callback.fail.call(this, e) }
-          }
-        })
-      }
-    },
+    //         if (typeof callback.fail === 'function') { callback.fail.call(this, e) }
+    //       }
+    //     })
+    //   }
+    // },
     exprotExcel () {},
     toggleAdvanced () {
       this.advanced = !this.advanced
     },
     formHandleSuccess () {
+      console.log('1')
       this.$refs.table.refresh()
     }
   }
