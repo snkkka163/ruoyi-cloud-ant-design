@@ -26,7 +26,8 @@ import StandardFormRow from '@/components/StandardFormRow'
 import ArticleListContent from '@/components/ArticleListContent'
 
 import Dialog from '@/components/Dialog'
-
+// 新增的组件:
+import StandardDrawer from '@/components/StandardDrawer'
 export {
   AvatarList,
   Bar,
@@ -52,5 +53,7 @@ export {
   StandardFormRow,
   ArticleListContent,
 
-  Dialog
+  Dialog,
+
+  StandardDrawer
 }
