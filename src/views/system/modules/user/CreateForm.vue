@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="新建规则"
+    title="新增/更新用户"
     :width="640"
     :visible="visible"
     :confirmLoading="loading"
@@ -66,7 +66,14 @@
           </a-col>
           <a-col :span="12">
             <a-form-item label="状态">
-              <a-input v-decorator="['email']" />
+              <a-radio-group v-decorator="['email']">
+                <a-radio :value="1">
+                  正常
+                </a-radio>
+                <a-radio :value="2">
+                  停用
+                </a-radio>
+              </a-radio-group>
             </a-form-item>
           </a-col>
         </a-row>
@@ -107,7 +114,7 @@
         <a-row :gutter="24">
           <a-col :span="24">
             <a-form-item label="备注">
-                <a-textarea placeholder="Basic usage" :rows="4" />
+              <a-textarea placeholder="Basic usage" :rows="4" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -168,8 +175,6 @@ export default {
     // 初始化树菜单
     getTreeSelect()
     .then(res => {
-      console.log('树')
-      console.log(res)
       // 层级遍历赋值给treeData
       this.treeData = res.data
       this.getTreeSelectChildren(this.treeData)
