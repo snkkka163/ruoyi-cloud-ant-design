@@ -10,33 +10,107 @@
     <a-spin :spinning="loading">
       <a-form :form="form" v-bind="formLayout">
         <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-form-item label="用户名">
-          <a-input v-decorator="['userName']" />
-        </a-form-item>
-        <a-form-item label="用户名称">
-          <a-input v-decorator="['nickName']" />
-        </a-form-item>
-        <a-form-item label="部门">
-          <a-tree-select
-            v-decorator="['dept']"
-            v-model="value"
-            style="width: 100%"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            :tree-data="treeData"
-            placeholder="Please select"
-            tree-default-expand-all
-          >
-          <!-- <span v-if="key === '0-0-1'" slot="title" slot-scope="{ key, value }" style="color: #08c">
-            Child Node1 {{ value }}
-          </span> -->
-          </a-tree-select>
-        </a-form-item>
-        <a-form-item label="手机号码">
-          <a-input v-decorator="['phonenumber']" />
-        </a-form-item>
-        <a-form-item label="状态">
-          <a-input v-decorator="['status']"  />
-        </a-form-item>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item label="用户名称">
+              <a-input v-decorator="['nickName']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="归属部门">
+              <a-tree-select
+                v-decorator="['dept']"
+                v-model="value"
+                style="width: 100%"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :tree-data="treeData"
+                placeholder="Please select"
+                tree-default-expand-all
+              >
+              <!-- <span v-if="key === '0-0-1'" slot="title" slot-scope="{ key, value }" style="color: #08c">
+                Child Node1 {{ value }}
+              </span> -->
+              </a-tree-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item label="手机号码">
+              <a-input v-decorator="['phonenumber']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="邮箱">
+              <a-input v-decorator="['email']" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item label="用户名称">
+              <a-input v-decorator="['phonenumber']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="用户密码">
+              <a-input v-decorator="['email',{ rules: [{ required: true, message: '请输入用户密码' }] }]" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item label="用户性别">
+              <a-input v-decorator="['phonenumber']" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="状态">
+              <a-input v-decorator="['email']" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="12">
+            <a-form-item label="岗位">
+              <a-select
+                mode="tags"
+                :size="size"
+                placeholder="Please select"
+                :default-value="['a1', 'b2']"
+                style="width: 200px"
+                @change="handleChange"
+              >
+                <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
+                  {{ (i + 9).toString(36) + i }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="角色">
+              <a-select
+                mode="tags"
+                :size="size"
+                placeholder="Please select"
+                :default-value="['a1', 'b2']"
+                style="width: 200px"
+                @change="handleChange"
+              >
+                <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
+                  {{ (i + 9).toString(36) + i }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="24">
+          <a-col :span="24">
+            <a-form-item label="备注">
+                <a-textarea placeholder="Basic usage" :rows="4" />
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-spin>
   </a-modal>
@@ -45,33 +119,6 @@
 <script>
 import pick from 'lodash.pick'
 import { getTreeSelect } from '@/api/system/dept'
-// const treeData = [
-//   {
-//     title: 'Node1',
-//     value: '0-0',
-//     key: '0-0',
-//     children: [
-//       {
-//         value: '0-0-1',
-//         key: '0-0-1',
-//         scopedSlots: {
-//           // custom title
-//           title: 'title'
-//         }
-//       },
-//       {
-//         title: 'Child Node2',
-//         value: '0-0-2',
-//         key: '0-0-2'
-//       }
-//     ]
-//   },
-//   {
-//     title: 'Node2',
-//     value: '0-1',
-//     key: '0-1'
-//   }
-// ]
 // 表单字段
 const fields = ['userName', 'nickName']
 
