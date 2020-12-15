@@ -45,6 +45,12 @@ export const asyncRouterMap = [
         //   meta: { title: '资源管理', keepAlive: false }
         // }
       ]
+    },
+    {
+      path: '/account/center',
+      name: 'center',
+      component: () => import('@/views/account/center'),
+      meta: { title: '个人中心', keepAlive: false, icon: 'dashboard' }
     }]
   },
   {

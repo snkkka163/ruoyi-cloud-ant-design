@@ -144,7 +144,7 @@ export default {
     }),
     currentUser () {
       return {
-        name: '繁叶云网络科技工作室'
+        name: '若依'
       }
     },
     userInfo () {
@@ -153,8 +153,6 @@ export default {
   },
   created () {
     this.user = this.userInfo
-    console.log('用户信息:')
-    console.log(this.userInfo)
     getRoleList().then(res => {
       // console.log('workplace -> call getRoleList()', res)
     })
