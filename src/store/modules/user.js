@@ -22,6 +22,8 @@ const user = {
       state.welcome = welcome
     },
     SET_AVATAR: (state, avatar) => {
+      console.log('提交的头像')
+      console.log(avatar)
       state.avatar = avatar
     },
     SET_ROLES: (state, roles) => {
@@ -67,7 +69,11 @@ const user = {
             }
             // commit('SET_NAME', user.nickName)
             commit('SET_NAME', { name: user.nickName, welcome: welcome() })
+            console.log('拿到用户信息了')
+            console.log(user)
+            console.log('=========================')
             commit('SET_AVATAR', avatar)
+            console.log('存入的url:' + avatar)
             resolve(response)
           }
           // GetInfo一旦失败就说明这个token不是过期就是丢失了,直接走catch并让调用方跳转路由

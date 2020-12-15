@@ -3,7 +3,7 @@
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar"/>
+          <a-avatar size="large" v-bind:src="avatar"/>
         </div>
         <div class="content">
           <div class="content-title">
@@ -86,7 +86,6 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      avatar: '',
       user: {},
       rankList: [],
       projects: [],
@@ -140,12 +139,12 @@ export default {
   computed: {
     ...mapState({
       name: (state) => state.user.name,
-      welcome: (state) => state.user.welcome
+      welcome: (state) => state.user.welcome,
+      avatar: (state) => state.user.avatar
     }),
     currentUser () {
       return {
-        name: '繁叶云网络科技工作室',
-        avatar: 'https://snkkkait.oss-cn-beijing.aliyuncs.com/halo/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20191009235418_1586664256422.jpg'
+        name: '繁叶云网络科技工作室'
       }
     },
     userInfo () {
@@ -154,7 +153,6 @@ export default {
   },
   created () {
     this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
     console.log('用户信息:')
     console.log(this.userInfo)
     getRoleList().then(res => {
