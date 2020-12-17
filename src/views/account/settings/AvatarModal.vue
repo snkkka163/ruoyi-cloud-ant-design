@@ -12,7 +12,8 @@
       <a-col :xs="24" :md="12" :style="{height: '350px'}">
         <vue-cropper
           ref="cropper"
-          :img="options.img"
+
+          v-bind:img="avatar"
           :info="true"
           :autoCrop="options.autoCrop"
           :autoCropWidth="options.autoCropWidth"
@@ -55,6 +56,7 @@
 
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -160,6 +162,11 @@ export default {
     realTime (data) {
       this.previews = data
     }
+  },
+  computed: {
+    ...mapState({
+      avatar: (state) => state.user.avatar
+    })
   }
 }
 </script>

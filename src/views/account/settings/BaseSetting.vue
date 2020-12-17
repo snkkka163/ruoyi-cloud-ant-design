@@ -7,45 +7,39 @@
           <a-form-item
             label="昵称"
           >
-            <a-input placeholder="给自己起个名字" />
-          </a-form-item>
-          <a-form-item
-            label="Bio"
-          >
-            <a-textarea rows="4" placeholder="You are not alone."/>
+            <a-input v-bind:value="name" v-model="userObj.nickName" />
           </a-form-item>
 
           <a-form-item
-            label="电子邮件"
+            label="手机号码"
             :required="false"
           >
-            <a-input placeholder="exp@admin.com"/>
+            <a-input v-bind:value="phonenumber" v-model="userObj.phonenumber" />
           </a-form-item>
+
           <a-form-item
-            label="加密方式"
+            label="邮箱"
             :required="false"
           >
-            <a-select defaultValue="aes-256-cfb">
-              <a-select-option value="aes-256-cfb">aes-256-cfb</a-select-option>
-              <a-select-option value="aes-128-cfb">aes-128-cfb</a-select-option>
-              <a-select-option value="chacha20">chacha20</a-select-option>
-            </a-select>
+            <a-input v-bind:value="email" v-model="userObj.email" />
           </a-form-item>
+
           <a-form-item
-            label="连接密码"
+            label="性别"
             :required="false"
           >
-            <a-input placeholder="h3gSbecd"/>
-          </a-form-item>
-          <a-form-item
-            label="登录密码"
-            :required="false"
-          >
-            <a-input placeholder="密码"/>
+            <a-radio-group v-model="userObj.sex">
+              <a-radio :value="'1'" >
+                男
+              </a-radio>
+              <a-radio :value="'2'" >
+                女
+              </a-radio>
+            </a-radio-group>
           </a-form-item>
 
           <a-form-item>
-            <a-button type="primary">提交</a-button>
+            <a-button type="primary" @click="updateUser">提交</a-button>
             <a-button style="margin-left: 8px">保存</a-button>
           </a-form-item>
         </a-form>
@@ -57,7 +51,7 @@
           <div class="mask">
             <a-icon type="plus" />
           </div>
-          <img :src="option.img"/>
+          <img v-bind:src="avatar" />
         </div>
       </a-col>
 
@@ -70,7 +64,9 @@
 
 <script>
 import AvatarModal from './AvatarModal'
-
+import { mapState } from 'vuex'
+import { profile } from '@/api/system/user'
+import store from '@/store'
 export default {
   components: {
     AvatarModal
@@ -92,14 +88,50 @@ export default {
         fixedBox: true,
         // 开启宽度和高度比例
         fixed: true,
-        fixedNumber: [1, 1]
+        fixedNumber: [1, 1],
+        sex: 1
+      },
+      userObj: {
+        userId: 0,
+        nickName: '',
+        sex: '',
+        phonenumber: '',
+        email: ''
       }
     }
   },
   methods: {
     setavatar (url) {
       this.option.img = url
+    },
+    updateUser () {
+      console.log('提交数据')
+      profile(this.userObj).then(res => {
+        // 在此处需要重置state以保证页面数据准确性
+        console.log(res)
+        store
+          // 重置state
+          .dispatch('GetInfo')
+        this.$message.success('操作成功！')
+      })
     }
+  },
+  computed: {
+    ...mapState({
+      name: (state) => state.user.name,
+      avatar: (state) => state.user.avatar,
+      sex: (state) => state.user.sex,
+      email: (state) => state.user.email,
+      phonenumber: (state) => state.user.phonenumber,
+      userId: (state) => state.user.userId
+    })
+  },
+  created () {
+    this.userObj.nickName = this.name
+    this.userObj.sex = this.sex
+    this.userObj.email = this.email
+    this.userObj.phonenumber = this.phonenumber
+    this.userObj.userId = this.userId
   }
 }
 </script>

@@ -5,12 +5,16 @@ import { welcome } from '@/utils/util'
 
 const user = {
   state: {
+    userId: 0,
     token: '',
     name: '',
     welcome: '',
     avatar: '',
     roles: [],
-    info: {}
+    info: {},
+    email: '',
+    phonenumber: '',
+    sex: 0
   },
 
   mutations: {
@@ -22,8 +26,6 @@ const user = {
       state.welcome = welcome
     },
     SET_AVATAR: (state, avatar) => {
-      console.log('提交的头像')
-      console.log(avatar)
       state.avatar = avatar
     },
     SET_ROLES: (state, roles) => {
@@ -31,6 +33,18 @@ const user = {
     },
     SET_INFO: (state, info) => {
       state.info = info
+    },
+    SET_SEX: (state, sex) => {
+      state.sex = sex
+    },
+    SET_EMAIL: (state, email) => {
+      state.email = email
+    },
+    SET_PHONE: (state, phonenumber) => {
+      state.phonenumber = phonenumber
+    },
+    SET_USER_ID: (state, userId) => {
+      state.userId = userId
     }
   },
 
@@ -69,10 +83,14 @@ const user = {
             }
             // commit('SET_NAME', user.nickName)
             commit('SET_NAME', { name: user.nickName, welcome: welcome() })
-            console.log('拿到用户信息了')
-            console.log(user)
-            console.log('=========================')
+            // console.log('拿到用户信息了')
+            // console.log(user)
+            // console.log('=========================')
             commit('SET_AVATAR', avatar)
+            commit('SET_SEX', user.sex)
+            commit('SET_EMAIL', user.email)
+            commit('SET_PHONE', user.phonenumber)
+            commit('SET_USER_ID', user.userId)
             console.log('存入的url:' + avatar)
             resolve(response)
           }

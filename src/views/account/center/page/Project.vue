@@ -11,7 +11,7 @@
           </a-card-meta>
           <div class="cardItemContent">
             <span>{{ item.updatedAt | fromNow }}</span>
-            <div class="avatarList">
+            <!-- <div class="avatarList">
               <avatar-list size="mini">
                 <avatar-list-item
                   v-for="(member, i) in item.members"
@@ -20,7 +20,7 @@
                   :tips="member.name"
                 />
               </avatar-list>
-            </div>
+            </div> -->
           </div>
         </a-card>
       </a-list-item>
@@ -31,6 +31,7 @@
 <script>
 import moment from 'moment'
 import { TagSelect, StandardFormRow, Ellipsis, AvatarList } from '@/components'
+import { article } from '@/mock/services/article'
 const TagSelectOption = TagSelect.Option
 const AvatarListItem = AvatarList.AvatarItem
 
@@ -64,11 +65,11 @@ export default {
       console.log(`selected ${value}`)
     },
     getList () {
-      this.$http.get('/list/article', { params: { count: 8 } }).then(res => {
-        console.log('res', res)
-        this.data = res.result
-        this.loading = false
-      })
+      console.log('开始调用')
+      this.data = article({
+        url: '?'
+      }).result
+      this.loading = false
     }
   }
 }

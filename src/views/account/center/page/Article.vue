@@ -33,7 +33,7 @@
 <script>
 import { ArticleListContent } from '@/components'
 import IconText from '@/views/list/search/components/IconText'
-
+import { article } from '@/mock/services/article'
 export default {
   name: 'Article',
   components: {
@@ -52,19 +52,19 @@ export default {
   },
   methods: {
     getList () {
-      this.$http.get('/list/article').then(res => {
-        console.log('res', res)
-        this.data = res.result
-        this.loading = false
-      })
+      const json = {
+        'url': '?'
+      }
+      this.data = article(json).result
+      this.loading = false
     },
     loadMore () {
       this.loadingMore = true
-      this.$http.get('/list/article').then(res => {
-        this.data = this.data.concat(res.result)
-      }).finally(() => {
-        this.loadingMore = false
-      })
+      const json = {
+        'url': '?'
+      }
+      this.data = this.data.concat(article(json).result)
+      this.loadingMore = false
     }
   }
 }

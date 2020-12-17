@@ -1,5 +1,5 @@
 import Mock from 'mockjs2'
-import { builder, getQueryParameters } from '../util'
+import { newBuilder, getQueryParameters } from '../util'
 
 const titles = [
   'Alipay',
@@ -38,13 +38,15 @@ const content = '段落示意：蚂蚁金服设计平台 ant.design，用最小�
 const description = '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。'
 const href = 'https://ant.design'
 
-const article = (options) => {
+export const article = (options) => {
   const queryParameters = getQueryParameters(options)
+  console.log('走到第二步')
   console.log('queryParameters', queryParameters)
   if (queryParameters && !queryParameters.count) {
     queryParameters.count = 5
   }
   const data = []
+  console.log('开始跑data')
   for (let i = 0; i < queryParameters.count; i++) {
     const tmpKey = i + 1
     const num = parseInt(Math.random() * (4 + 1), 10)
@@ -83,7 +85,9 @@ const article = (options) => {
       cover: parseInt(i / 4, 10) % 2 === 0 ? covers[i % 4] : covers[3 - (i % 4)]
     })
   }
-  return builder(data)
-}
+  console.log('最后返回data的时刻')
+  console.log(newBuilder(data))
 
+  return newBuilder(data)
+}
 Mock.mock(/\/list\/article/, 'get', article)
