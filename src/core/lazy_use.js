@@ -45,7 +45,8 @@ import {
   Descriptions,
   message,
   notification,
-  TreeSelect
+  TreeSelect,
+  Pagination
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -116,4 +117,5 @@ Vue.use(VueCropper)
 
 // my
 Vue.use(TreeSelect)
+Vue.use(Pagination)
 process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')

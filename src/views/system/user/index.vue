@@ -60,12 +60,14 @@
         </a-dropdown>
       </div>
 
-      <s-table
+      <a-table
         ref="table"
         :columns="columns"
-        :data="loadData"
+        :loading="tableLoading"
+        :data-source="data"
         :row-selection="rowSelection"
         row-key="userId"
+        :pagination="false"
       >
         <span slot="status" slot-scope="text">
           <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
@@ -84,7 +86,7 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a href="javascript:;">详情</a>
+                <a href="javascript:;" @click="userDetailHandleShow()">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a href="javascript:;" @click="deleteRecord(record)">删除</a>
@@ -92,7 +94,21 @@
             </a-menu>
           </a-dropdown>
         </span>
-      </s-table>
+      </a-table>
+      <a-pagination
+          class="ant-table-pagination"
+          v-model="current"
+          :page-size-options="pageSizeOptions"
+          :total="total"
+          show-size-changer
+          :page-size="pageSize"
+          @showSizeChange="onShowSizeChange"
+        >
+        <template slot="buildOptionText" slot-scope="props">
+          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+          <span v-if="props.value === '50'">全部</span>
+        </template>
+      </a-pagination>
       <create-form
         ref="createModal"
         :visible="visible"
@@ -101,6 +117,13 @@
         :model="mdl"
         @cancel="handleCancel"
         @ok="handleOk"
+      />
+
+      <user-detail
+        :visible="userDetailVisible"
+        :loading="userDetailConfirmLoading"
+        :model="userDetailmdl"
+        @cancel="userDetailHandleCancel"
       />
       <!-- <user-edit-panel ref="editPanel" @handle-success="formHandleSuccess"/> -->
     </template>
@@ -112,6 +135,7 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { getUserList } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
+import UserDetail from './modules/UserDetail'
 const statusMap = {
   0: {
     status: 'success',
@@ -129,7 +153,8 @@ export default {
     PageHeaderWrapper,
     STable,
     DescriptionList,
-    CreateForm
+    CreateForm,
+    UserDetail
     // ResourcePanel
   },
   data () {
@@ -138,6 +163,10 @@ export default {
       visible: false,
       confirmLoading: false,
       mdl: null,
+      // userDetail model
+      userDetailVisible: false,
+      userDetailConfirmLoading: false,
+      userDetailmdl: null,
       user: {},
       routes: [
         {
@@ -153,7 +182,15 @@ export default {
           breadcrumbName: 'Third-level Menu'
         }
       ],
-      // 表单
+      // table/搜索框
+      tableLoading: false,
+      // 分页数据(默认第一页):
+      pageSizeOptions: ['10', '20', '30', '40', '50'],
+      current: 1,
+      pageSize: 10,
+      total: 50,
+      // 表格数据
+      data: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -173,7 +210,8 @@ export default {
       columns: [
         {
           title: '用户编号',
-          dataIndex: 'userId'
+          dataIndex: 'userId',
+          scopedSlots: { customRender: 'userId' }
         },
         {
           title: '用户名',
@@ -209,23 +247,23 @@ export default {
         }
       ],
       // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        const params = Object.assign({}, this.queryParam)
-        console.log('加载数据的方法')
-        console.log(params)
-        if (params.status === '-1') {
-          delete params.status
-        }
-        return getUserList(Object.assign(parameter, params))
-          .then(res => {
-            return {
-              data: res.rows,
-              pageSize: 20,
-              pageNo: res.rows.size / 20,
-              totalCount: res.total
-            }
-          })
-      },
+      // loadData: parameter => {
+      //   const params = Object.assign({}, this.queryParam)
+      //   console.log('加载数据的方法')
+      //   console.log(params)
+      //   if (params.status === '-1') {
+      //     delete params.status
+      //   }
+      //   return getUserList(Object.assign(parameter, params))
+      //     .then(res => {
+      //       return {
+      //         data: res.rows,
+      //         pageSize: 20,
+      //         pageNo: res.rows.size / 20,
+      //         totalCount: res.total
+      //       }
+      //     })
+      // },
 
       selectedRowKeys: [],
       selectedRows: [],
@@ -239,6 +277,7 @@ export default {
       }
     }
   },
+  // 状态过滤
   filters: {
     statusFilter (type) {
       return statusMap[type].text
@@ -251,18 +290,45 @@ export default {
     setTimeout(() => {
       this.loading = !this.loading
     }, 1000)
+    this.getList()
   },
   methods: {
+    onShowSizeChange (current, pageSize) {
+      this.pageSize = pageSize
+      this.current = current
+      this.getList()
+    },
+    /** 查询用户列表 */
+    getList () {
+      this.tableLoading = true
+      const params = Object.assign({}, this.queryParam)
+      console.log('加载数据的方法')
+      console.log(params)
+      // 与分页绑定
+      params.pageNum = this.current
+      params.pageSize = this.pageSize
+      if (params.status === '-1') {
+        delete params.status
+      }
+      getUserList(Object.assign(params))
+            .then(res => {
+              this.data = res.rows
+              this.total = res.total
+              this.tableLoading = false
+            })
+    },
+    /** 搜索行为 */
     search () {
-      this.$refs.table.refresh(true)
+      this.getList()
     },
     // 刷新搜索框
     reset () {
       this.queryParam = {
         status: '0'
       }
-      this.$refs.table.refresh(true)
+      this.getList()
     },
+    // 更新
     updateStatus (record, status) {
       console.log('更新操作')
       console.log(record)
@@ -272,10 +338,11 @@ export default {
       }).then(res => {
         console.log(res)
         if (res.data) {
-          this.$refs.table.refresh()
+          this.getList()
         }
       })
     },
+    // 删除
     deleteRecord (record) {
       const that = this
       this.$confirm({
@@ -292,6 +359,7 @@ export default {
         }
       })
     },
+    // 批量删除
     batchDelete (ids) {
       const that = this
       this.$confirm({
@@ -326,6 +394,7 @@ export default {
     //     })
     //   }
     // },
+    // excel导出
     exprotExcel () {
        console.log('导出excel')
     },
@@ -345,6 +414,7 @@ export default {
       this.visible = true
       this.mdl = { ...record }
     },
+    // 新增/修改框事件
     handleOk () {
       const form = this.$refs.createModal.form
       this.confirmLoading = true
@@ -399,6 +469,15 @@ export default {
     rangePicker (date, dateString) {
       this.queryParam.beginTime = dateString[0]
       this.queryParam.endTime = dateString[1]
+    },
+    userDetailHandleCancel () {
+      this.userDetailHandleCancel = false
+    },
+    // 动态操作(打开模态框)
+    userDetailHandleShow () {
+      console.log('尝试打开详情界面')
+      this.userDetailmdl = null
+      this.userDetailVisible = true
     }
   }
 }
