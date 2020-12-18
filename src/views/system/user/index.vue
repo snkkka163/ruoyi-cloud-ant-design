@@ -11,20 +11,35 @@
                     <a-input placeholder="请输入" v-model="queryParam.userName"/>
                   </a-form-item>
                 </a-col>
-                <a-col :md="8" :sm="24">
-                  <a-form-item label="状态">
-                    <a-select placeholder="请选择" v-model="queryParam.status">
-                      <a-select-option value="-1">全部</a-select-option>
-                      <a-select-option value="0">禁用</a-select-option>
-                      <a-select-option value="1">正常</a-select-option>
-                      <a-select-option value="2">锁定</a-select-option>
-                    </a-select>
+               <a-col :md="8" :sm="24">
+                  <a-form-item label="手机号码">
+                    <a-input placeholder="请输入" v-model="queryParam.phonenumber"/>
                   </a-form-item>
                 </a-col>
+                <template v-if="advanced">
+                  <a-col :md="8" :sm="24">
+                    <a-form-item label="状态">
+                      <a-select placeholder="请选择" v-model="queryParam.status">
+                        <a-select-option value="0">正常</a-select-option>
+                        <a-select-option value="1">禁用</a-select-option>
+                      </a-select>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24">
+                    <a-form-item label="创建时间">
+                      <!--  @change="onChange" -->
+                         <a-range-picker @change="rangePicker" />
+                    </a-form-item>
+                  </a-col>
+                </template>
                 <a-col :md="8" :sm="24">
                   <span class="table-page-search-submitButtons">
                     <a-button @click="search" type="primary">查询</a-button>
                     <a-button @click="reset" style="margin-left: 8px">重置</a-button>
+                    <a @click="toggleAdvanced" style="margin-left: 8px">
+                      {{ advanced ? '收起' : '展开' }}
+                      <a-icon :type="advanced ? 'up' : 'down'"/>
+                    </a>
                   </span>
                 </a-col>
               </a-row>
@@ -152,7 +167,7 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
-        status: '-1'
+        status: '0'
       },
       // 表头
       columns: [
@@ -241,9 +256,10 @@ export default {
     search () {
       this.$refs.table.refresh(true)
     },
+    // 刷新搜索框
     reset () {
       this.queryParam = {
-        status: '-1'
+        status: '0'
       }
       this.$refs.table.refresh(true)
     },
@@ -378,6 +394,11 @@ export default {
 
       const form = this.$refs.createModal.form
       form.resetFields() // 清理表单数据（可不做）
+    },
+    // 搜索框中的日期选择
+    rangePicker (date, dateString) {
+      this.queryParam.beginTime = dateString[0]
+      this.queryParam.endTime = dateString[1]
     }
   }
 }
