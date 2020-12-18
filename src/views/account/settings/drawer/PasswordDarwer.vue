@@ -3,13 +3,40 @@
     <!-- <a-button type="primary" @click="showDrawer">
       Open
     </a-button> -->
-    <a-drawer
-      title="Multi-level drawer"
+    <!-- <a-drawer
+      title="安全设置-修改密码"
       width="520"
       :closable="false"
       :visible="visible"
-      @close="() => { $emit('onClose') }"
+      @close="() => { $emit('close') }"
+      @ok="() => { $emit('ok') }"
+    > -->
+    <a-drawer
+      title="安全设置-修改密码"
+      :width="640"
+      :visible="visible"
+      :confirmLoading="loading"
+      @ok="() => { $emit('ok') }"
+      @cancel="() => { $emit('cancel') }"
     >
+    <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+      <a-form-item label="旧密码">
+        <a-input
+          v-decorator="['oldPassword', { rules: [{ required: true, message: '旧密码不能为空!' }] }]"
+        />
+      </a-form-item>
+      <a-form-item label="新密码">
+        <a-input
+          v-decorator="['newPassword', { rules: [{ required: true, message: '新密码不能为空!' }] }]"
+        />
+      </a-form-item>
+      <a-form-item label="确认密码">
+        <a-input
+          v-decorator="['newPassword2', { rules: [{ required: true, message: '确认密码不能为空!' }] }]"
+        />
+      </a-form-item>
+    </a-form>
+
       <div
         :style="{
           position: 'absolute',
@@ -23,10 +50,10 @@
           borderRadius: '0 0 4px 4px',
         }"
       >
-        <a-button style="marginRight: 8px" @click="() => { $emit('onClose') }">
+        <a-button style="marginRight: 8px" @click="() => { $emit('cancel') }">
           取消
         </a-button>
-        <a-button type="primary" @click="() => { $emit('onClose') }">
+        <a-button type="primary" @click="() => { $emit('ok') }">
           确认修改
         </a-button>
       </div>
@@ -38,8 +65,7 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      required: true,
-      default: () => false
+      required: true
     },
     loading: {
       type: Boolean,
@@ -53,7 +79,25 @@ export default {
   data () {
     return {
       // visible: false,
-      childrenDrawer: false
+      childrenDrawer: false,
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this, { name: 'coordinated' })
+    }
+  },
+  methods: {
+    handleSubmit (e) {
+      e.preventDefault()
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values)
+        }
+      })
+    },
+    handleSelectChange (value) {
+      console.log(value)
+      this.form.setFieldsValue({
+        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`
+      })
     }
   }
 }

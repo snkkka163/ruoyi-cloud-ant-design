@@ -2,7 +2,8 @@ import request from '@/utils/request'
 
 const api = {
   list: '/system/user/list',
-  profile: '/system/user/profile'
+  profile: '/system/user/profile',
+  updatePwd: '/system/user/profile/updatePwd'
 }
 
 export default api
@@ -20,5 +21,13 @@ export function profile (parameter) {
     url: api.profile,
     method: 'put',
     data: parameter
+  })
+}
+
+export function updatePwd (parameter) {
+  return request({
+    url: api.updatePwd,
+    method: 'put',
+    params: parameter
   })
 }

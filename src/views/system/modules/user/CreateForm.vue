@@ -111,13 +111,9 @@
             </a-form-item>
           </a-col>
         </a-row>
-        <a-row :gutter="24">
-          <a-col :span="24">
-            <a-form-item label="备注">
-              <a-textarea placeholder="Basic usage" :rows="4" />
+            <a-form-item label="备注" width="100%">
+              <a-textarea width="100%" placeholder="Basic usage" :rows="4" />
             </a-form-item>
-          </a-col>
-        </a-row>
       </a-form>
     </a-spin>
   </a-modal>

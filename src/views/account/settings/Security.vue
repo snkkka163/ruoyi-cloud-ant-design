@@ -16,12 +16,20 @@
         <a slot="actions" @click="item.actions.callback">{{ item.actions.title }}</a>
       </template>
     </a-list-item>
-    <password-darwer @onClose="onClose" v-bind:visible="visible" />
+    <password-darwer
+      ref="passwordModal"
+      :visible="visible"
+      :loading="confirmLoading"
+      :model="mdl"
+      @cancel="handleCancel"
+      @ok="handleOk"
+      />
   </a-list>
 </template>
 
 <script>
 import PasswordDarwer from './drawer/PasswordDarwer'
+import { updatePwd } from '@/api/system/user'
 export default {
   components: {
     PasswordDarwer
@@ -36,12 +44,76 @@ export default {
         { title: '备用邮箱', description: '已绑定邮箱', value: 'ant***sign.com', actions: { title: '修改', callback: () => { this.$message.warning('This is message of warning') } } },
         { title: 'MFA 设备', description: '未绑定 MFA 设备，绑定后，可以进行二次确认', value: '', actions: { title: '绑定', callback: () => { this.$message.info('This is a normal message') } } }
       ],
-      visible: false
+      // password model
+      visible: false,
+      confirmLoading: false,
+      mdl: null
     }
   },
   methods: {
-    onClose () {
+    // passwordModal
+    handleOk () {
+      const form = this.$refs.passwordModal.form
+      this.confirmLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+          console.log('values', values)
+          if (values.id > 0) {
+            // 修改 e.g.
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve()
+              }, 1000)
+            }).then(res => {
+              this.visible = false
+              this.confirmLoading = false
+              // 重置表单数据
+              form.resetFields()
+              // 刷新表格
+              this.$refs.table.refresh()
+
+              this.$message.info('修改成功')
+            })
+          } else {
+            // 新增
+            // 必须保证新密码和确认密码输入内容相同
+            if (values.newPassword !== values.newPassword2) {
+              this.$message.error('两次输入密码不一致!')
+              return
+            }
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve()
+              }, 1000)
+            }).then(res => {
+              // // 刷新表格
+              // this.$refs.table.refresh()
+              updatePwd(Object.assign({
+                oldPassword: values.oldPassword,
+                newPassword: values.newPassword
+              })).then(res => {
+                if (res.code !== 500) {
+                  this.$message.success('新增成功')
+                  this.visible = false
+                  this.confirmLoading = false
+                  // 重置表单数据
+                  form.resetFields()
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
+            })
+          }
+        } else {
+          this.confirmLoading = false
+        }
+      })
+    },
+    handleCancel () {
       this.visible = false
+
+      const form = this.$refs.passwordModal.form
+      form.resetFields() // 清理表单数据（可不做）
     }
   }
 }
