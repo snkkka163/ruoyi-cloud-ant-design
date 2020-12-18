@@ -31,18 +31,18 @@ export const asyncRouterMap = [
           name: 'User',
           component: () => import('@/views/system/user'),
           meta: { title: '用户管理', keepAlive: false }
+        },
+        {
+          path: '/system/role',
+          name: 'Role',
+          component: () => import('@/views/system/role'),
+          meta: { title: '角色管理', keepAlive: false }
         }
         // {
-        //   path: '/system/role',
-        //   name: 'Role',
-        //   component: () => import('@/views/permission/RoleList'),
-        //   meta: { title: '角色管理', keepAlive: false }
-        // },
-        // {
-        //   path: '/system/resource',
-        //   name: 'Resource',
-        //   component: () => import('@/views/permission/ResourceList'),
-        //   meta: { title: '资源管理', keepAlive: false }
+        //   path: '/system/menu',
+        //   name: 'Menu',
+        //   component: () => import('@/views/system/menu'),
+        //   meta: { title: '菜单管理', keepAlive: false }
         // }
       ]
     },

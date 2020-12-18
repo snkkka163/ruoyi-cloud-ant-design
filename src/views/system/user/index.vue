@@ -86,11 +86,11 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a href="javascript:;" @click="userDetailHandleShow()">详情</a>
+                <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
               </a-menu-item>
-              <a-menu-item>
+              <!-- <a-menu-item>
                 <a href="javascript:;" @click="deleteRecord(record)">删除</a>
-              </a-menu-item>
+              </a-menu-item> -->
             </a-menu>
           </a-dropdown>
         </span>
@@ -119,11 +119,13 @@
         @ok="handleOk"
       />
 
-      <user-detail
-        :visible="userDetailVisible"
-        :loading="userDetailConfirmLoading"
-        :model="userDetailmdl"
-        @cancel="userDetailHandleCancel"
+      <reset-password
+        ref="resetPassword"
+        :visible="resetPasswordVisible"
+        :loading="resetPasswordConfirmLoading"
+        :model="resetPasswordmdl"
+        @cancel="resetPasswordHandleCancel"
+        @ok="resetPasswordHandleOk"
       />
       <!-- <user-edit-panel ref="editPanel" @handle-success="formHandleSuccess"/> -->
     </template>
@@ -132,10 +134,10 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { getUserList } from '@/api/system/user'
+import { getUserList, resetPwd } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
-import UserDetail from './modules/UserDetail'
+import ResetPassword from './modules/ResetPassword'
 const statusMap = {
   0: {
     status: 'success',
@@ -154,7 +156,7 @@ export default {
     STable,
     DescriptionList,
     CreateForm,
-    UserDetail
+    ResetPassword
     // ResourcePanel
   },
   data () {
@@ -163,10 +165,11 @@ export default {
       visible: false,
       confirmLoading: false,
       mdl: null,
-      // userDetail model
-      userDetailVisible: false,
-      userDetailConfirmLoading: false,
-      userDetailmdl: null,
+      // resetPassword model
+      resetPasswordVisible: false,
+      resetPasswordConfirmLoading: false,
+      resetPasswordmdl: null,
+      resetPassswordUserId: 0,
       user: {},
       routes: [
         {
@@ -470,14 +473,47 @@ export default {
       this.queryParam.beginTime = dateString[0]
       this.queryParam.endTime = dateString[1]
     },
-    userDetailHandleCancel () {
-      this.userDetailHandleCancel = false
+    resetPasswordHandleCancel () {
+      this.resetPasswordVisible = false
     },
-    // 动态操作(打开模态框)
-    userDetailHandleShow () {
-      console.log('尝试打开详情界面')
-      this.userDetailmdl = null
-      this.userDetailVisible = true
+    // 动态操作(打开重置密码)
+    resetPwd (id) {
+      this.resetPassswordUserId = id
+      this.resetPasswordmdl = null
+      this.resetPasswordVisible = true
+    },
+    // 重置密码提交事件
+    resetPasswordHandleOk () {
+      const form = this.$refs.resetPassword.form
+      this.confirmLoading = true
+      form.validateFields((errors, values) => {
+        if (!errors) {
+            console.log('values', values)
+            // 新增
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve()
+              }, 1000)
+            }).then(res => {
+              resetPwd(Object.assign({
+                'userId': this.resetPassswordUserId,
+                'password': values.password
+              })).then(res => {
+                if (res.code === 200) {
+                  this.$message.success(res.msg)
+                  // 重置表单数据
+                  form.resetFields()
+                  this.resetPasswordVisible = false
+                  this.resetPasswordConfirmLoading = false
+                } else {
+                  this.$message.error(res.msg)
+                }
+              })
+            })
+        } else {
+          this.confirmLoading = false
+        }
+      })
     }
   }
 }
