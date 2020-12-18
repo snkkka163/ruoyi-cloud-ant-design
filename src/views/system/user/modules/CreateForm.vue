@@ -82,12 +82,12 @@
             <a-form-item label="岗位">
               <a-select
                 mode="tags"
-                :size="size"
                 placeholder="Please select"
                 :default-value="['a1', 'b2']"
                 style="width: 200px"
-                @change="handleChange"
               >
+              <!--:size="size" -->
+              <!--@change="handleChange"-->
                 <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
                   {{ (i + 9).toString(36) + i }}
                 </a-select-option>
@@ -98,12 +98,12 @@
             <a-form-item label="角色">
               <a-select
                 mode="tags"
-                :size="size"
                 placeholder="Please select"
                 :default-value="['a1', 'b2']"
                 style="width: 200px"
-                @change="handleChange"
               >
+              <!--:size="size" -->
+              <!--@change="handleChange"-->
                 <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
                   {{ (i + 9).toString(36) + i }}
                 </a-select-option>

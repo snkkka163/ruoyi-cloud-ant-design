@@ -52,46 +52,31 @@
         :row-selection="rowSelection"
         row-key="userId"
       >
-
+        <span slot="status" slot-scope="text">
+          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+        </span>
         <!-- <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
           <role-panel @add-action="$refs.editPanel.show(record)" :role-ids="record.roleIds || []" action-name="sys:user:update"/>
           <a-divider type="horizontal" :dashed="true" style="margin-bottom: 6px; margin-top: 6px;"/>
           <resource-panel @add-action="$refs.editPanel.show(record)" :resourceIds="record.resourceIds || []" action-name="sys:user:update"/>
-        </div>
-        <template slot="status" slot-scope="text">
-          <a-tag color="red" v-if="text === 2">{{ text|getLabel('sys_user_state') }}</a-tag>
-          <a-tag color="green" v-else-if="text === 1">{{ text|getLabel('sys_user_state') }}</a-tag>
-          <a-tag v-else>{{ text|getLabel('sys_user_state') }}</a-tag>
-        </template>
+        </div> -->
         <span slot="action" slot-scope="text, record">
-          <a @click="$refs.editPanel.show(record)" v-hasPermission="'sys:user:update'">编辑</a>
-          <a-divider type="vertical" v-hasPermission="'sys:user:update'"/>
+          <a >编辑</a><!-- @click="$refs.editPanel.show(record)" -->
+          <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">
               更多 <a-icon type="down" />
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a href="javascript:;" @click="$refs.editPanel.show(record, true)">详情</a>
+                <a href="javascript:;">详情</a>
               </a-menu-item>
-              <a-menu-item v-if="record.status === 0" v-hasPermission="'sys:user:useable'">
-                <a href="javascript:;" @click="updateStatus(record, 1)">启用</a>
-              </a-menu-item>
-              <a-menu-item v-if="record.status === 1" v-hasPermission="'sys:user:disabled'">
-                <a href="javascript:;" @click="updateStatus(record, 0)">禁用</a>
-              </a-menu-item>
-              <a-menu-item v-if="record.status === 1" v-hasPermission="'sys:user:locked'">
-                <a href="javascript:;" @click="updateStatus(record, 2)">锁定</a>
-              </a-menu-item>
-              <a-menu-item v-if="record.status === 2" v-hasPermission="'sys:user:unlock'">
-                <a href="javascript:;" @click="updateStatus(record, 1)">解锁</a>
-              </a-menu-item>
-              <a-menu-item v-hasPermission="'sys:role:delete'">
+              <a-menu-item>
                 <a href="javascript:;" @click="deleteRecord(record)">删除</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
-        </span> -->
+        </span>
       </s-table>
       <create-form
         ref="createModal"
@@ -112,7 +97,17 @@ import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { getUserList } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
-// import ResourcePanel from '@/views/common/ResourcePanel'
+const statusMap = {
+  0: {
+    status: 'success',
+    text: '正常'
+  },
+  1: {
+    status: 'error',
+    text: '停用'
+  }
+}
+
 export default {
   name: 'User',
   components: {
@@ -175,7 +170,7 @@ export default {
         },
         {
           title: '部门',
-          dataIndex: 'dept'
+          dataIndex: 'dept.deptName'
         },
         {
           title: '手机号码',
@@ -229,6 +224,14 @@ export default {
       }
     }
   },
+  filters: {
+    statusFilter (type) {
+      return statusMap[type].text
+    },
+    statusTypeFilter (type) {
+      return statusMap[type].status
+    }
+  },
   created () {
     setTimeout(() => {
       this.loading = !this.loading
@@ -244,35 +247,35 @@ export default {
       }
       this.$refs.table.refresh(true)
     },
-    // updateStatus (record, status) {
-    //   console.log('更新操作')
-    //   console.log(record)
-    //   this.$http.put('/user/updateStatus', {
-    //     id: record.id,
-    //     status: status
-    //   }).then(res => {
-    //     console.log(res)
-    //     if (res.data) {
-    //       this.$refs.table.refresh()
-    //     }
-    //   })
-    // },
-    // deleteRecord (record) {
-    //   const that = this
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `真的要删除 ${record.nickname} 吗?`,
-    //     okText: '删除',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk () {
-    //       that.handleDelete([record.id], {
-    //         success () {},
-    //         done () {}
-    //       })
-    //     }
-    //   })
-    // },
+    updateStatus (record, status) {
+      console.log('更新操作')
+      console.log(record)
+      this.$http.put('/user/updateStatus', {
+        id: record.id,
+        status: status
+      }).then(res => {
+        console.log(res)
+        if (res.data) {
+          this.$refs.table.refresh()
+        }
+      })
+    },
+    deleteRecord (record) {
+      const that = this
+      this.$confirm({
+        title: '警告',
+        content: `真的要删除 ${record.nickname} 吗?`,
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          that.handleDelete([record.id], {
+            success () {},
+            done () {}
+          })
+        }
+      })
+    },
     batchDelete (ids) {
       const that = this
       this.$confirm({
