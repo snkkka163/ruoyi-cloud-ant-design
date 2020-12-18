@@ -22,14 +22,14 @@ export const asyncRouterMap = [
     }, {
       path: '/system',
       name: 'system',
-      redirect: '/system/user',
+      redirect: '/system',
       component: RouteView,
       meta: { title: '系统管理', keepAlive: true, icon: 'control' },
       children: [
         {
           path: '/system/user',
           name: 'User',
-          component: () => import('@/views/system/User'),
+          component: () => import('@/views/system/user'),
           meta: { title: '用户管理', keepAlive: false }
         }
         // {

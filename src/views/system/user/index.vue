@@ -111,7 +111,7 @@
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { getUserList } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
-import CreateForm from './modules/user/CreateForm'
+import CreateForm from './modules/CreateForm'
 // import ResourcePanel from '@/views/common/ResourcePanel'
 export default {
   name: 'User',

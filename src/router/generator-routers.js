@@ -114,8 +114,8 @@ export const generatorDynamicRouter = (token) => {
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
       routers.push(notFoundRouter)
-      console.log('路由结果')
-      console.log(routers)
+      // console.log('路由结果')
+      // console.log(routers)
       resolve(routers)
     }).catch(err => {
       reject(err)
