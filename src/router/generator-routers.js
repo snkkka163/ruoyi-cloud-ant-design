@@ -107,7 +107,12 @@ export const generatorDynamicRouter = (token) => {
       }]
       rootRouter.children = childrenNav.concat(resList)
       menuNav.push(rootRouter)
+      console.log('qiguai')
       const routers = generator(menuNav)
+      console.log(JSON.stringify(routers))
+      // 问题还是出在 routers中的component 是报错的，所以这些路由没法跳转页面
+      console.log('最终路由')
+      console.log(routers)
       routers.push(notFoundRouter)
       resolve(routers)
     }).catch(err => {
@@ -124,9 +129,22 @@ export const generatorDynamicRouter = (token) => {
  * @returns {*}
  */
 export const generator = (routerMap, parent) => {
+  console.log('hola hola', routerMap)
   // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
   return routerMap.map(item => {
     const { title, show, hideChildren, hiddenHeaderContent, target, icon } = item.meta || {}
+    if (item.component) {
+      // Layout ParentView 组件特殊处理
+      if (item.component === 'Layout') {
+        item.component = 'RouteView'
+      } else if (item.component === 'ParentView') {
+        item.component = 'RouteView'
+      }
+    }
+    if (item.isFrame === 0) {
+      item.target = '_blank'
+    }
+    console.log(item)
 
     const currentRouter = {
 
@@ -134,12 +152,12 @@ export const generator = (routerMap, parent) => {
       path: item.path || `${parent && parent.path || ''}/${item.key}`,
       // 路由名称，建议唯一
       // name: item.name || item.key || '',
-      name: item.name || item.key || item.path || item.id || '',
+      name: item.name || item.key || '',
       // 该路由对应页面的 组件 :方案1
       // 该路由对应页面的 组件 :方案2 (动态加载)
       component: (constantRouterComponents[item.component || item.key]) || (() => import(`@/views/${item.component}`)),
-
-      redirect: '/' + item.path || `${parent && parent.path || ''}/${item.key}`,
+      hidden: item.hidden,
+      // redirect: '/' + item.path || `${parent && parent.path || ''}/${item.key}`,
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
       meta: {
         title: title,

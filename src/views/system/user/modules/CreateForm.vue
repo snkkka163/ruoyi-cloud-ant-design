@@ -1,5 +1,6 @@
 <template>
   <a-modal
+    ref="aModal"
     title="新增/更新用户"
     :width="640"
     :visible="visible"
@@ -111,9 +112,13 @@
             </a-form-item>
           </a-col>
         </a-row>
+        <a-row>
+          <a-col :span="24" :style="{ textAlign: 'left' }">
             <a-form-item label="备注" width="100%">
               <a-textarea width="100%" placeholder="Basic usage" :rows="4" />
             </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-spin>
   </a-modal>
@@ -186,6 +191,15 @@ export default {
           this.getTreeSelectChildren(element.children)
         }
       })
+    },
+    // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
+    show (data, readOnly) {
+      console.log('调用成功')
+      if (data) this.form = Object.assign({}, data) || {}
+      this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
+      this.defaultExpandedKeys = this.form.resourceIds
+      this.$refs.aModal.show()
+      // this.visible = true
     }
   }
 }

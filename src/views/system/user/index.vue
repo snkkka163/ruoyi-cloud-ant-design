@@ -48,7 +48,7 @@
         </a-card>
       </div>
       <div class="table-page-operator-wrapper">
-        <a-button @click="handleAdd" type="primary" ghost>新增</a-button>
+        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
         <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
@@ -409,14 +409,14 @@ export default {
       this.$refs.table.refresh()
     },
     // 动态操作(打开模态框)
-    handleAdd () {
-      this.mdl = null
-      this.visible = true
-    },
-    handleEdit (record) {
-      this.visible = true
-      this.mdl = { ...record }
-    },
+    // handleAdd () {
+    //   this.mdl = null
+    //   this.visible = true
+    // },
+    // handleEdit (record) {
+    //   this.visible = true
+    //   this.mdl = { ...record }
+    // },
     // 新增/修改框事件
     handleOk () {
       const form = this.$refs.createModal.form
