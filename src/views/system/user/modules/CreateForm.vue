@@ -1,150 +1,46 @@
 <template>
   <a-modal
-    ref="aModal"
-    title="新增/更新用户"
+    ref="createModal"
+    :title="readOnly ? '详情' : (form.userId ? '用户编辑' : '新增操作')"
     :width="640"
     :visible="visible"
-    :confirmLoading="loading"
     @ok="() => { $emit('ok') }"
-    @cancel="() => { $emit('cancel') }"
+    @cancel="close"
   >
     <a-spin :spinning="loading">
-      <a-form :form="form" v-bind="formLayout">
-        <!-- 检查是否有 id 并且大于0，大于0是修改。其他是新增，新增不显示主键ID -->
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form-item label="用户名称">
-              <a-input v-decorator="['nickName']" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="归属部门">
-              <a-tree-select
-                v-decorator="['dept']"
-                v-model="value"
-                style="width: 100%"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                :tree-data="treeData"
-                placeholder="Please select"
-                tree-default-expand-all
-              >
-              <!-- <span v-if="key === '0-0-1'" slot="title" slot-scope="{ key, value }" style="color: #08c">
-                Child Node1 {{ value }}
-              </span> -->
-              </a-tree-select>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form-item label="手机号码">
-              <a-input v-decorator="['phonenumber']" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="邮箱">
-              <a-input v-decorator="['email']" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form-item label="用户名称">
-              <a-input v-decorator="['phonenumber']" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="用户密码">
-              <a-input v-decorator="['email',{ rules: [{ required: true, message: '请输入用户密码' }] }]" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form-item label="用户性别">
-              <a-input v-decorator="['phonenumber']" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="状态">
-              <a-radio-group v-decorator="['email']">
-                <a-radio :value="1">
-                  正常
-                </a-radio>
-                <a-radio :value="2">
-                  停用
-                </a-radio>
-              </a-radio-group>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="12">
-            <a-form-item label="岗位">
-              <a-select
-                mode="tags"
-                placeholder="Please select"
-                :default-value="['a1', 'b2']"
-                style="width: 200px"
-              >
-              <!--:size="size" -->
-              <!--@change="handleChange"-->
-                <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
-                  {{ (i + 9).toString(36) + i }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-item label="角色">
-              <a-select
-                mode="tags"
-                placeholder="Please select"
-                :default-value="['a1', 'b2']"
-                style="width: 200px"
-              >
-              <!--:size="size" -->
-              <!--@change="handleChange"-->
-                <a-select-option v-for="i in 25" :key="(i + 9).toString(36) + i">
-                  {{ (i + 9).toString(36) + i }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-        </a-row>
-        <a-row>
-          <a-col :span="24" :style="{ textAlign: 'left' }">
-            <a-form-item label="备注" width="100%">
-              <a-textarea width="100%" placeholder="Basic usage" :rows="4" />
-            </a-form-item>
-          </a-col>
-        </a-row>
-      </a-form>
+      <a-form-model
+      ref="ruleForm"
+      :model="form"
+      :rules="rules"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
+    >
+        <a-form-model-item ref="username" label="用户名" prop="username">
+          <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.username" placeholder="请输入菜单名称" />
+        </a-form-model-item>
+        <a-form-model-item label="昵称" prop="nickname">
+          <a-input v-model="form.nickname" placeholder="请输入昵称或真实姓名" />
+        </a-form-model-item>
+        <a-form-model-item label="邮箱地址" prop="email">
+          <a-auto-complete
+            v-model="form.email"
+            placeholder="请输入邮箱地址"
+          />
+           <!-- @change="handleEmailChange" -->
+        </a-form-model-item>
+        <a-form-model-item label="手机号" prop="mobile">
+          <a-input v-model="form.mobile" placeholder="请输入手机号" />
+        </a-form-model-item>
+      </a-form-model>
     </a-spin>
   </a-modal>
 </template>
 
 <script>
-import pick from 'lodash.pick'
+// import pick from 'lodash.pick'
 import { getTreeSelect } from '@/api/system/dept'
 // 表单字段
-const fields = ['userName', 'nickName']
-
 export default {
-  props: {
-    visible: {
-      type: Boolean,
-      required: true
-    },
-    loading: {
-      type: Boolean,
-      default: () => false
-    },
-    model: {
-      type: Object,
-      default: () => null
-    }
-  },
   data () {
     this.formLayout = {
       labelCol: {
@@ -157,22 +53,41 @@ export default {
       }
     }
     return {
-      form: this.$form.createForm(this),
+      readOnly: false,
+      visible: false,
+      loading: false,
+      // form: this.$form.createForm(this),
       treeData: [],
-      value: undefined
+      value: undefined,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 18 },
+      form: {
+        username: '',
+        nickname: '',
+        resourceIds: [],
+        status: undefined,
+        roleIds: []
+      },
+      rules: {
+        username: [
+          { required: true, message: '此项为必输项', trigger: 'blur' },
+          { max: 20, message: '最多输入20个字符', trigger: 'change' }
+        ],
+        nickname: [
+          { required: true, message: '此项为必输项', trigger: 'blur' },
+          { max: 50, message: '最多输入50个字符', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '此项为必选项', trigger: 'change' }
+        ],
+        mobile: [{ pattern: new RegExp('^[1][3-8][0-9]{9}$'), message: '格式不合法', trigger: 'change' }],
+        email: [{ type: 'email', message: '格式不合法', trigger: 'change' }]
+        // pattern: new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$')
+        // ,resourceIds: [{ required: true, message: '此项为必选项', trigger: 'select' }]
+      }
     }
   },
   created () {
-    console.log('custom modal created')
-
-    // 防止表单未注册
-    fields.forEach(v => this.form.getFieldDecorator(v))
-
-    // 当 model 发生改变时，为表单设置值
-    this.$watch('model', () => {
-      this.model && this.form.setFieldsValue(pick(this.model, fields))
-    })
-
     // 初始化树菜单
     getTreeSelect()
     .then(res => {
@@ -195,11 +110,34 @@ export default {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
       console.log('调用成功')
-      if (data) this.form = Object.assign({}, data) || {}
+      console.log(data)
+      console.log(readOnly)
+      console.log('================================')
+      console.log(this.form)
+      if (data) {
+        this.form = Object.assign({}, data) || {}
+      } else {
+        console.log('data是空的')
+      }
+      // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
-      this.defaultExpandedKeys = this.form.resourceIds
-      this.$refs.aModal.show()
+      // this.defaultExpandedKeys = this.form.resourceIds
+      this.visible = true
       // this.visible = true
+      // this.visible = true
+    },
+    // 关闭模态框
+    close () {
+      // this.form = {
+      //   name: '',
+      //   resourceIds: [],
+      //   nickname: '',
+      //   status: undefined,
+      //   roleIds: []
+      // }
+      this.visible = false
+      // this.confirmLoading = false
+      // this.form.resetFields()
     }
   }
 }

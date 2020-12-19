@@ -46,10 +46,11 @@ import {
   message,
   notification,
   TreeSelect,
-  Pagination
+  Pagination,
+  FormModel,
+  AutoComplete
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
-
 // ext library
 import VueCropper from 'vue-cropper'
 import Dialog from '@/components/Dialog'
@@ -58,6 +59,7 @@ import PageLoading from '@/components/PageLoading'
 import PermissionHelper from '@/core/permission/permission'
 import './directives/action'
 
+const FormModelItem = FormModel.Item
 Vue.use(ConfigProvider)
 Vue.use(Layout)
 Vue.use(Input)
@@ -118,4 +120,7 @@ Vue.use(VueCropper)
 // my
 Vue.use(TreeSelect)
 Vue.use(Pagination)
+Vue.use(FormModel)
+Vue.use(FormModelItem)
+Vue.use(AutoComplete)
 process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')

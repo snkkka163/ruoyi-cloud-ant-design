@@ -78,7 +78,7 @@
           <resource-panel @add-action="$refs.editPanel.show(record)" :resourceIds="record.resourceIds || []" action-name="sys:user:update"/>
         </div> -->
         <span slot="action" slot-scope="text, record">
-          <a >编辑</a><!-- @click="$refs.editPanel.show(record)" -->
+          <a @click="$refs.createModal.show(record)">编辑</a><!-- @click="$refs.editPanel.show(record)" -->
           <a-divider type="vertical" />
           <a-dropdown>
             <a class="ant-dropdown-link">
@@ -109,13 +109,9 @@
           <span v-if="props.value === '50'">全部</span>
         </template>
       </a-pagination>
+      <!-- :visible="visible" -->
       <create-form
         ref="createModal"
-        :visible="visible"
-        :columns="columns"
-        :loading="confirmLoading"
-        :model="mdl"
-        @cancel="handleCancel"
         @ok="handleOk"
       />
 
@@ -162,9 +158,9 @@ export default {
   data () {
     return {
       // create model
-      visible: false,
-      confirmLoading: false,
-      mdl: null,
+      // visible: false,
+      // confirmLoading: false,
+      // mdl: null,
       // resetPassword model
       resetPasswordVisible: false,
       resetPasswordConfirmLoading: false,
@@ -249,25 +245,6 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      // 加载数据方法 必须为 Promise 对象
-      // loadData: parameter => {
-      //   const params = Object.assign({}, this.queryParam)
-      //   console.log('加载数据的方法')
-      //   console.log(params)
-      //   if (params.status === '-1') {
-      //     delete params.status
-      //   }
-      //   return getUserList(Object.assign(parameter, params))
-      //     .then(res => {
-      //       return {
-      //         data: res.rows,
-      //         pageSize: 20,
-      //         pageNo: res.rows.size / 20,
-      //         totalCount: res.total
-      //       }
-      //     })
-      // },
-
       selectedRowKeys: [],
       selectedRows: [],
       rowSelection: {
@@ -420,7 +397,7 @@ export default {
     // 新增/修改框事件
     handleOk () {
       const form = this.$refs.createModal.form
-      this.confirmLoading = true
+      // this.confirmLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
           console.log('values', values)
@@ -431,8 +408,8 @@ export default {
                 resolve()
               }, 1000)
             }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
+              // this.visible = false
+              // this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
@@ -447,8 +424,8 @@ export default {
                 resolve()
               }, 1000)
             }).then(res => {
-              this.visible = false
-              this.confirmLoading = false
+              // this.visible = false
+              // this.confirmLoading = false
               // 重置表单数据
               form.resetFields()
               // 刷新表格
@@ -458,15 +435,20 @@ export default {
             })
           }
         } else {
-          this.confirmLoading = false
+          // this.confirmLoading = false
         }
       })
     },
-    handleCancel () {
-      this.visible = false
-
-      const form = this.$refs.createModal.form
-      form.resetFields() // 清理表单数据（可不做）
+    // handleCancel () {
+    //   // this.visible = false
+    //   const form = this.$refs.createModal.form
+    //   // form.visible = false
+    //   form.resetFields() // 清理表单数据（可不做）
+    // },
+    // 显示新增/修改框
+    showCreateForm (data, readOnly) {
+      this.$refs.createModal.show(data, readOnly)
+      // this.visible = true
     },
     // 搜索框中的日期选择
     rangePicker (date, dateString) {
@@ -485,7 +467,7 @@ export default {
     // 重置密码提交事件
     resetPasswordHandleOk () {
       const form = this.$refs.resetPassword.form
-      this.confirmLoading = true
+      this.resetPasswordConfirmLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
             console.log('values', values)
@@ -511,7 +493,7 @@ export default {
               })
             })
         } else {
-          this.confirmLoading = false
+          this.resetPasswordConfirmLoading = false
         }
       })
     }
