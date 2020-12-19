@@ -112,7 +112,7 @@
       <!-- :visible="visible" -->
       <create-form
         ref="createModal"
-        @ok="handleOk"
+        @handle-success="handleOk"
       />
 
       <reset-password
@@ -130,7 +130,7 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { getUserList, resetPwd } from '@/api/system/user'
+import { listUser, resetPwd } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
 import ResetPassword from './modules/ResetPassword'
@@ -290,7 +290,7 @@ export default {
       if (params.status === '-1') {
         delete params.status
       }
-      getUserList(Object.assign(params))
+      listUser(Object.assign(params))
             .then(res => {
               this.data = res.rows
               this.total = res.total
@@ -397,47 +397,48 @@ export default {
     // 新增/修改框事件
     handleOk () {
       const form = this.$refs.createModal.form
+      console.log('拿到了')
+      console.log(form)
       // this.confirmLoading = true
-      form.validateFields((errors, values) => {
-        if (!errors) {
-          console.log('values', values)
-          if (values.id > 0) {
-            // 修改 e.g.
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              // this.visible = false
-              // this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.info('修改成功')
-            })
-          } else {
-            // 新增
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                resolve()
-              }, 1000)
-            }).then(res => {
-              // this.visible = false
-              // this.confirmLoading = false
-              // 重置表单数据
-              form.resetFields()
-              // 刷新表格
-              this.$refs.table.refresh()
-
-              this.$message.info('新增成功')
-            })
-          }
-        } else {
-          // this.confirmLoading = false
+      console.log('values', form)
+      if (form.userId > 0) {
+        // 修改 e.g.
+        // 刷新表格
+        this.getList()
+        this.$message.info('修改成功')
+        this.$refs.createModal.form = {
+            userId: 0
         }
-      })
+      } else {
+        // 新增
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve()
+          }, 1000)
+        }).then(res => {
+          // this.visible = false
+          // this.confirmLoading = false
+          // 重置表单数据
+          // 刷新表格
+          this.$refs.table.refresh()
+          this.$refs.createModal.form = {
+            userId: undefined,
+            nickName: '',
+            deptId: undefined,
+            phonenumber: '',
+            email: '',
+            userName: '',
+            password: '',
+            sex: '',
+            status: undefined,
+            postIds: [],
+            roleIds: [],
+            remark: ''
+          }
+          this.$message.info('新增成功')
+          console.log(this.$refs.createModal.form)
+        })
+      }
     },
     // handleCancel () {
     //   // this.visible = false

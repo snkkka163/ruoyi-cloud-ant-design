@@ -4,8 +4,9 @@
     :title="readOnly ? '详情' : (form.userId ? '用户编辑' : '新增操作')"
     :width="640"
     :visible="visible"
-    @ok="() => { $emit('ok') }"
     @cancel="close"
+    @ok="confirm"
+    :confirmLoading="confirmLoading"
   >
     <a-spin :spinning="loading">
       <a-form-model
@@ -15,22 +16,108 @@
       :label-col="labelCol"
       :wrapper-col="wrapperCol"
     >
-        <a-form-model-item ref="username" label="用户名" prop="username">
-          <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.username" placeholder="请输入菜单名称" />
-        </a-form-model-item>
-        <a-form-model-item label="昵称" prop="nickname">
-          <a-input v-model="form.nickname" placeholder="请输入昵称或真实姓名" />
-        </a-form-model-item>
-        <a-form-model-item label="邮箱地址" prop="email">
-          <a-auto-complete
-            v-model="form.email"
-            placeholder="请输入邮箱地址"
-          />
-           <!-- @change="handleEmailChange" -->
-        </a-form-model-item>
-        <a-form-model-item label="手机号" prop="mobile">
-          <a-input v-model="form.mobile" placeholder="请输入手机号" />
-        </a-form-model-item>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item ref="nickName" label="用户昵称" prop="nickName">
+              <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.nickName" placeholder="请输入用户昵称" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="归属部门" prop="deptId">
+              <a-tree-select
+                v-model="form.deptId"
+                style="width: 100%"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :tree-data="treeData"
+                placeholder="Please select"
+                tree-default-expand-all
+              >
+              <!-- <span v-if="key === '0-0-1'" slot="title" slot-scope="{ key, value }" style="color: #08c">
+                Child Node1 {{ value }}
+              </span> -->
+              </a-tree-select>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="手机号" prop="phonenumber">
+              <a-input v-model="form.phonenumber" placeholder="请输入手机号" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="邮箱地址" prop="email">
+              <a-auto-complete
+                v-model="form.email"
+                placeholder="请输入邮箱地址"
+              />
+              <!-- @change="handleEmailChange" -->
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item v-if="form.userId == undefined" label="用户名称" prop="userName">
+              <a-input v-model="form.userName" placeholder="请输入用户名称" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item  v-if="form.userId == undefined" label="用户密码" prop="password">
+              <a-input v-model="form.password" placeholder="请输入用户密码" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="用户性别" prop="sex">
+              <!-- <a-input v-model="form.sex" placeholder="请输入用户性别" /> -->
+              <a-radio-group v-model="form.sex">
+                <a-radio :value="0">
+                  男
+                </a-radio>
+                <a-radio :value="1">
+                  女
+                </a-radio>
+                <a-radio :value="2">
+                  未知
+                </a-radio>
+              </a-radio-group>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="状态" prop="status">
+              <a-radio-group button-style="solid" v-model="form.status">
+                <a-radio-button value="0">
+                  正常
+                </a-radio-button>
+                <a-radio-button value="1">
+                  停用
+                </a-radio-button>
+              </a-radio-group>
+              <!-- <a-input v-model="form.status" placeholder="请输入状态" /> -->
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="12">
+            <a-form-model-item label="岗位" prop="postIds">
+              <a-input v-model="form.postIds" placeholder="请输入用户性别" />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-model-item label="角色" prop="roleIds">
+              <a-input v-model="form.roleIds" placeholder="请输入状态" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24" :pull="3">
+            <a-form-model-item label="备注" prop="remark">
+              <!-- <a-input v-model="form.mobile" placeholder="请输入用户性别" /> -->
+              <a-textarea v-model="form.remark" placeholder="Basic usage" :rows="4" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
       </a-form-model>
     </a-spin>
   </a-modal>
@@ -42,46 +129,64 @@ import { getTreeSelect } from '@/api/system/dept'
 // 表单字段
 export default {
   data () {
-    this.formLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 13 }
-      }
-    }
     return {
+      // 部门树选择
+      treeData: [],
+      // 状态数据字典
+      statusOptions: [],
+      // 性别状态字典
+      sexOptions: [],
+      // 岗位选项
+      postOptions: [],
+      // 角色选项
+      roleOptions: [],
+      // 当前控件配置:
+      confirmLoading: false,
       readOnly: false,
       visible: false,
       loading: false,
       // form: this.$form.createForm(this),
-      treeData: [],
-      value: undefined,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 18 },
+      // value: undefined,
+      labelCol: {
+        xs: { span: 12 },
+        sm: { span: 6 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 }
+      },
+      // 表单属性:
       form: {
-        username: '',
-        nickname: '',
-        resourceIds: [],
-        status: undefined,
+        userId: undefined,
+        deptId: undefined,
+        userName: undefined,
+        nickName: undefined,
+        password: undefined,
+        phonenumber: undefined,
+        email: undefined,
+        sex: undefined,
+        status: '0',
+        remark: undefined,
+        postIds: [],
         roleIds: []
       },
+      // 输入框校验:
       rules: {
-        username: [
-          { required: true, message: '此项为必输项', trigger: 'blur' },
+        nickName: [
+          { required: true, message: '用户昵称为必填', trigger: 'blur' },
           { max: 20, message: '最多输入20个字符', trigger: 'change' }
         ],
-        nickname: [
-          { required: true, message: '此项为必输项', trigger: 'blur' },
-          { max: 50, message: '最多输入50个字符', trigger: 'change' }
+        deptId: [
+          { required: true, message: '归属部门为必填', trigger: 'change' }
         ],
-        status: [
-          { required: true, message: '此项为必选项', trigger: 'change' }
+        phonenumber: [{ required: true, pattern: new RegExp('^[1][3-8][0-9]{9}$'), message: '格式不合法', trigger: 'change' }],
+        email: [{ required: true, type: 'email', message: '格式不合法', trigger: 'change' }],
+        userName: [
+          { required: true, message: '用户名称为必填', trigger: 'change' }
         ],
-        mobile: [{ pattern: new RegExp('^[1][3-8][0-9]{9}$'), message: '格式不合法', trigger: 'change' }],
-        email: [{ type: 'email', message: '格式不合法', trigger: 'change' }]
+        password: [
+          { required: true, message: '用户密码为必填', trigger: 'change' }
+        ]
         // pattern: new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$')
         // ,resourceIds: [{ required: true, message: '此项为必选项', trigger: 'select' }]
       }
@@ -100,6 +205,7 @@ export default {
   methods: {
     getTreeSelectChildren (treeData) {
       treeData.forEach(element => {
+        console.log(element)
         element.value = element.id
         element.key = element.label
         if (element.hasOwnProperty('children') === true) {
@@ -121,10 +227,7 @@ export default {
       }
       // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
-      // this.defaultExpandedKeys = this.form.resourceIds
       this.visible = true
-      // this.visible = true
-      // this.visible = true
     },
     // 关闭模态框
     close () {
@@ -138,6 +241,47 @@ export default {
       this.visible = false
       // this.confirmLoading = false
       // this.form.resetFields()
+      this.reset()
+    },
+    confirm () {
+      console.log('执行确认事件')
+      this.confirmLoading = true
+      this.$refs.ruleForm.validate(valid => {
+        const params = Object.assign({}, this.form)
+        console.log(params)
+        console.log('上述值')
+        // if (!(params.resourceIds instanceof Array) && params.resourceIds.checked) {
+        //   params.resourceIds = params.resourceIds.checked
+        // }
+        if (valid) {
+          (this.form.id ? this.$http.put : this.$http.post)('user', params).then(res => {
+            this.$message.success('操作成功！')
+            this.$emit('handle-success')
+            this.$refs.standardDrawer.close()
+          }).catch(e => {
+            this.confirmLoading = false
+          })
+        } else {
+          return (this.confirmLoading = false)
+        }
+      })
+    },
+    // 表单重置
+    reset () {
+      this.form = {
+        userId: undefined,
+        deptId: undefined,
+        userName: undefined,
+        nickName: undefined,
+        password: undefined,
+        phonenumber: undefined,
+        email: undefined,
+        sex: undefined,
+        status: '0',
+        remark: undefined,
+        postIds: [],
+        roleIds: []
+      }
     }
   }
 }
