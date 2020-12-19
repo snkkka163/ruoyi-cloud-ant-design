@@ -72,14 +72,11 @@
             <a-form-model-item label="用户性别" prop="sex">
               <!-- <a-input v-model="form.sex" placeholder="请输入用户性别" /> -->
               <a-radio-group v-model="form.sex">
-                <a-radio :value="0">
-                  男
-                </a-radio>
-                <a-radio :value="1">
-                  女
-                </a-radio>
-                <a-radio :value="2">
-                  未知
+                <a-radio
+                v-for="dict in sexOptions"
+                :key="dict.dictValue"
+                :value="dict.dictValue">
+                  {{ dict.dictLabel }}
                 </a-radio>
               </a-radio-group>
             </a-form-model-item>
@@ -101,12 +98,26 @@
         <a-row>
           <a-col :span="12">
             <a-form-model-item label="岗位" prop="postIds">
-              <a-input v-model="form.postIds" placeholder="请输入用户性别" />
+              <a-select mode="multiple" v-model="form.postIds" placeholder="请选择">
+                <a-select-option
+                  v-for="item in postOptions"
+                  :key="item.postId"
+                  :value="item.postId">
+                  {{ item.postName }}
+                 </a-select-option>
+              </a-select>
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
             <a-form-model-item label="角色" prop="roleIds">
-              <a-input v-model="form.roleIds" placeholder="请输入状态" />
+              <a-select v-model="form.roleIds" placeholder="请选择">
+                <a-select-option
+                  v-for="item in roleOptions"
+                  :key="item.roleId"
+                  :value="item.roleId">
+                  {{ item.roleName }}
+                 </a-select-option>
+              </a-select>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -126,6 +137,7 @@
 <script>
 // import pick from 'lodash.pick'
 import { getTreeSelect } from '@/api/system/dept'
+import { getUser } from '@/api/system/user'
 // 表单字段
 export default {
   data () {
@@ -140,6 +152,8 @@ export default {
       postOptions: [],
       // 角色选项
       roleOptions: [],
+      // 默认密码
+      initPassword: undefined,
       // 当前控件配置:
       confirmLoading: false,
       readOnly: false,
@@ -201,6 +215,15 @@ export default {
       this.getTreeSelectChildren(this.treeData)
       console.log(this.treeData)
     })
+    this.getDicts('sys_normal_disable').then(response => {
+      this.statusOptions = response.data
+    })
+    this.getDicts('sys_user_sex').then(response => {
+      this.sexOptions = response.data
+    })
+    this.getConfigKey('sys.user.initPassword').then(response => {
+      this.initPassword = response.msg
+    })
   },
   methods: {
     getTreeSelectChildren (treeData) {
@@ -215,14 +238,23 @@ export default {
     },
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log('调用成功')
-      console.log(data)
-      console.log(readOnly)
-      console.log('================================')
-      console.log(this.form)
       if (data) {
+        // 修改行为
         this.form = Object.assign({}, data) || {}
+        getUser().then(response => {
+          this.postOptions = response.posts
+          this.roleOptions = response.roles
+          this.form.postIds = response.postIds
+          this.form.roleIds = response.roleIds
+          this.form.password = ''
+        })
       } else {
+        // 新增行为
+        getUser().then(response => {
+          this.postOptions = response.posts
+          this.roleOptions = response.roles
+          this.form.password = this.initPassword
+        })
         console.log('data是空的')
       }
       // if (data) this.form = Object.assign({}, data) || {}
@@ -231,16 +263,7 @@ export default {
     },
     // 关闭模态框
     close () {
-      // this.form = {
-      //   name: '',
-      //   resourceIds: [],
-      //   nickname: '',
-      //   status: undefined,
-      //   roleIds: []
-      // }
       this.visible = false
-      // this.confirmLoading = false
-      // this.form.resetFields()
       this.reset()
     },
     confirm () {
