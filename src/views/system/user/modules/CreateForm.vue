@@ -110,7 +110,7 @@
           </a-col>
           <a-col :span="12">
             <a-form-model-item label="角色" prop="roleIds">
-              <a-select v-model="form.roleIds" placeholder="请选择">
+              <a-select mode="multiple" v-model="form.roleIds" placeholder="请选择">
                 <a-select-option
                   v-for="item in roleOptions"
                   :key="item.roleId"
@@ -137,7 +137,7 @@
 <script>
 // import pick from 'lodash.pick'
 import { getTreeSelect } from '@/api/system/dept'
-import { getUser } from '@/api/system/user'
+import { getUser, updateUser, addUser } from '@/api/system/user'
 // 表单字段
 export default {
   data () {
@@ -193,7 +193,7 @@ export default {
         deptId: [
           { required: true, message: '归属部门为必填', trigger: 'change' }
         ],
-        phonenumber: [{ required: true, pattern: new RegExp('^[1][3-8][0-9]{9}$'), message: '格式不合法', trigger: 'change' }],
+        phonenumber: [{ required: true, pattern: new RegExp(/^1[3|4|5|6|7|8|9][0-9]\d{8}$/), message: '格式不合法', trigger: 'change' }],
         email: [{ required: true, type: 'email', message: '格式不合法', trigger: 'change' }],
         userName: [
           { required: true, message: '用户名称为必填', trigger: 'change' }
@@ -241,7 +241,7 @@ export default {
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        getUser().then(response => {
+        getUser(data.userId).then(response => {
           this.postOptions = response.posts
           this.roleOptions = response.roles
           this.form.postIds = response.postIds
@@ -267,20 +267,48 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('执行确认事件')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         const params = Object.assign({}, this.form)
-        console.log(params)
-        console.log('上述值')
         // if (!(params.resourceIds instanceof Array) && params.resourceIds.checked) {
         //   params.resourceIds = params.resourceIds.checked
         // }
         if (valid) {
-          (this.form.id ? this.$http.put : this.$http.post)('user', params).then(res => {
-            this.$message.success('操作成功！')
-            this.$emit('handle-success')
-            this.$refs.standardDrawer.close()
+          (this.form.userId ? this.$http.put : this.$http.post)('user', params).then(res => {
+            // 进行新增行为:
+            if (this.form.userId > 0) {
+              // 刷新表格
+              updateUser(this.form).then(response => {
+                if (response.code === 200) {
+                  this.$message.success('修改成功')
+                  // 关闭本组件
+                  this.visible = false
+                  // 调用外部刷新列表方法
+                  this.$emit('handle-success')
+                  // 刷新表单
+                  this.reset()
+                } else {
+                  this.$message.error(response.msg)
+                  this.confirmLoading = false
+                }
+              })
+            } else {
+              // 新增
+              addUser(this.form).then(response => {
+                if (response.code === 200) {
+                  this.$message.success('新增成功')
+                  // 关闭本组件
+                  this.visible = false
+                  // 调用外部刷新列表方法
+                  this.$emit('handle-success')
+                  // 刷新表单
+                  this.reset()
+                } else {
+                  this.$message.error(response.msg)
+                  this.confirmLoading = false
+                }
+              })
+            }
           }).catch(e => {
             this.confirmLoading = false
           })

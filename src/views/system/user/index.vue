@@ -52,7 +52,8 @@
         <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="exprotExcel">导出Excel</a-menu-item>
+            <a-menu-item key="export-data" @click="importTemplate">下载Excel模板</a-menu-item>
+            <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
           </a-menu>
           <a-button>
             更多操作 <a-icon type="down" />
@@ -87,6 +88,9 @@
             <a-menu slot="overlay">
               <a-menu-item>
                 <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a href="javascript:;" @click="deleteRecord(record)">删除</a>
               </a-menu-item>
               <!-- <a-menu-item>
                 <a href="javascript:;" @click="deleteRecord(record)">删除</a>
@@ -130,7 +134,7 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { listUser, resetPwd } from '@/api/system/user'
+import { listUser, resetPwd, delUser } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
 import ResetPassword from './modules/ResetPassword'
@@ -203,7 +207,7 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {
-        status: '0'
+        // status: '0'
       },
       // 表头
       columns: [
@@ -303,36 +307,20 @@ export default {
     },
     // 刷新搜索框
     reset () {
-      this.queryParam = {
-        status: '0'
-      }
+      this.queryParam = {}
       this.getList()
-    },
-    // 更新
-    updateStatus (record, status) {
-      console.log('更新操作')
-      console.log(record)
-      this.$http.put('/user/updateStatus', {
-        id: record.id,
-        status: status
-      }).then(res => {
-        console.log(res)
-        if (res.data) {
-          this.getList()
-        }
-      })
     },
     // 删除
     deleteRecord (record) {
       const that = this
       this.$confirm({
         title: '警告',
-        content: `真的要删除 ${record.nickname} 吗?`,
+        content: `真的要删除 ${record.nickName} 吗?`,
         okText: '删除',
         okType: 'danger',
         cancelText: '取消',
         onOk () {
-          that.handleDelete([record.id], {
+          that.handleDelete([record.userId], {
             success () {},
             done () {}
           })
@@ -356,96 +344,29 @@ export default {
         }
       })
     },
-    // handleDelete (ids, callback) {
-    //   if (ids.length > 0) {
-    //     this.$http.delete('user/' + ids.join(',')).then(res => {
-    //       this.$message.success('已成功删除')
-    //       this.$refs.table.refresh()
-    //       if (callback) {
-    //         (typeof callback.done === 'function') && callback.done.call(this)
-    //         if (typeof callback.success === 'function') { callback.success.call(this, res) }
-    //       }
-    //     }).catch(e => {
-    //       if (callback) {
-    //         (typeof callback.done === 'function') && callback.done.call(this)
-
-    //         if (typeof callback.fail === 'function') { callback.fail.call(this, e) }
-    //       }
-    //     })
-    //   }
-    // },
-    // excel导出
-    exprotExcel () {
-       console.log('导出excel')
-    },
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    formHandleSuccess () {
-      console.log('1')
-      this.$refs.table.refresh()
-    },
-    // 动态操作(打开模态框)
-    // handleAdd () {
-    //   this.mdl = null
-    //   this.visible = true
-    // },
-    // handleEdit (record) {
-    //   this.visible = true
-    //   this.mdl = { ...record }
-    // },
-    // 新增/修改框事件
-    handleOk () {
-      const form = this.$refs.createModal.form
-      console.log('拿到了')
-      console.log(form)
-      // this.confirmLoading = true
-      console.log('values', form)
-      if (form.userId > 0) {
-        // 修改 e.g.
-        // 刷新表格
-        this.getList()
-        this.$message.info('修改成功')
-        this.$refs.createModal.form = {
-            userId: 0
-        }
-      } else {
-        // 新增
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve()
-          }, 1000)
-        }).then(res => {
-          // this.visible = false
-          // this.confirmLoading = false
-          // 重置表单数据
-          // 刷新表格
-          this.$refs.table.refresh()
-          this.$refs.createModal.form = {
-            userId: undefined,
-            nickName: '',
-            deptId: undefined,
-            phonenumber: '',
-            email: '',
-            userName: '',
-            password: '',
-            sex: '',
-            status: undefined,
-            postIds: [],
-            roleIds: [],
-            remark: ''
+    // 发送删除行为
+    handleDelete (ids, callback) {
+      if (ids.length > 0) {
+        console.log('准备执行删除行为')
+        console.log(ids)
+        delUser(ids).then(response => {
+          if (response.code === 200) {
+            this.$message.success('删除成功!')
+            this.getList()
+          } else {
+            this.$$message.error(response.msg)
           }
-          this.$message.info('新增成功')
-          console.log(this.$refs.createModal.form)
         })
       }
     },
-    // handleCancel () {
-    //   // this.visible = false
-    //   const form = this.$refs.createModal.form
-    //   // form.visible = false
-    //   form.resetFields() // 清理表单数据（可不做）
-    // },
+    // 搜索框展开、收起
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
+    // 新增/修改框事件
+    handleOk () {
+      this.getList()
+    },
     // 显示新增/修改框
     showCreateForm (data, readOnly) {
       this.$refs.createModal.show(data, readOnly)
@@ -497,6 +418,19 @@ export default {
           this.resetPasswordConfirmLoading = false
         }
       })
+    },
+    // 导入导出excel
+    /** 导出按钮操作 */
+    handleExport () {
+      this.download('system/user/export', {
+        ...this.queryParams
+      }, `user_${new Date().getTime()}.xlsx`)
+    },
+    /** 下载模板操作 */
+    importTemplate () {
+      this.download('system/user/importTemplate', {
+        ...this.queryParams
+      }, `user_${new Date().getTime()}.xlsx`)
     }
   }
 }

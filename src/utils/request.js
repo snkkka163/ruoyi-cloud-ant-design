@@ -4,6 +4,7 @@ import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { tansParams } from '@/utils/ruoyi'
 
 // 创建 axios 实例
 const request = axios.create({
@@ -72,4 +73,34 @@ export default request
 export {
   installer as VueAxios,
   request as axios
+}
+
+// 通用下载方法
+export function download (url, params, filename) {
+  return request.post(url, params, {
+    transformRequest: [(params) => {
+      return tansParams(params)
+    }],
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    responseType: 'blob'
+  }).then((data) => {
+    const content = data
+    const blob = new Blob([content])
+    if ('download' in document.createElement('a')) {
+      const elink = document.createElement('a')
+      elink.download = filename
+      elink.style.display = 'none'
+      elink.href = URL.createObjectURL(blob)
+      document.body.appendChild(elink)
+      elink.click()
+      URL.revokeObjectURL(elink.href)
+      document.body.removeChild(elink)
+    } else {
+      navigator.msSaveBlob(blob, filename)
+    }
+  }).catch((r) => {
+    console.error(r)
+  })
 }
