@@ -52,15 +52,16 @@
         <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="importTemplate">下载Excel模板</a-menu-item>
-            <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+            <a-menu-item key="export-data1" @click="importTemplate">下载Excel模板</a-menu-item>
+            <a-menu-item key="export-data2" @click="handleExport">导出Excel</a-menu-item>
+            <a-menu-item key="export-data3" @click="importExcelHandleOpen">导入Excel</a-menu-item>
           </a-menu>
           <a-button>
             更多操作 <a-icon type="down" />
           </a-button>
         </a-dropdown>
       </div>
-
+      <!-- 表格 -->
       <a-table
         ref="table"
         :columns="columns"
@@ -99,6 +100,7 @@
           </a-dropdown>
         </span>
       </a-table>
+      <!-- 底部分页按钮 -->
       <a-pagination
           class="ant-table-pagination"
           v-model="current"
@@ -113,12 +115,12 @@
           <span v-if="props.value === '50'">全部</span>
         </template>
       </a-pagination>
-      <!-- :visible="visible" -->
+      <!-- 创建/编辑用户,单独封装了组件 -->
       <create-form
         ref="createModal"
         @handle-success="handleOk"
       />
-
+      <!-- 修改密码抽屉 -->
       <reset-password
         ref="resetPassword"
         :visible="resetPasswordVisible"
@@ -127,7 +129,31 @@
         @cancel="resetPasswordHandleCancel"
         @ok="resetPasswordHandleOk"
       />
-      <!-- <user-edit-panel ref="editPanel" @handle-success="formHandleSuccess"/> -->
+      <!-- 上传文件 -->
+      <a-modal
+        :title="upload.title"
+        :visible="excelVisible"
+        @cancel="importExcelHandleCancel"
+      >
+        <a-upload-dragger
+          name="file"
+          accept=".xlsx, .xls"
+          :multiple="true"
+          :headers="upload.headers"
+          :action="upload.url + '?updateSupport=' + upload.updateSupport"
+          @change="importExcelHandleChange"
+        >
+          <p class="ant-upload-drag-icon">
+            <a-icon type="inbox" />
+          </p>
+          <p class="ant-upload-text">
+            请将文件拖拽到此处上传❥(^_-)
+          </p>
+          <p class="ant-upload-hint">
+            支持单个或批量上传，也可以点击后选择文件上传
+          </p>
+        </a-upload-dragger>
+    </a-modal>
     </template>
   </page-header-wrapper>
 </template>
@@ -138,6 +164,8 @@ import { listUser, resetPwd, delUser } from '@/api/system/user'
 import { STable, DescriptionList } from '@/components'
 import CreateForm from './modules/CreateForm'
 import ResetPassword from './modules/ResetPassword'
+import storage from 'store'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 const statusMap = {
   0: {
     status: 'success',
@@ -161,11 +189,24 @@ export default {
   },
   data () {
     return {
-      // create model
-      // visible: false,
-      // confirmLoading: false,
-      // mdl: null,
-      // resetPassword model
+      // 导入excel
+      excelVisible: false,
+      // 用户导入参数
+      upload: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: '导入Excel',
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: 'Bearer ' + storage.get(ACCESS_TOKEN) },
+        // 上传的地址
+        url: process.env.VUE_APP_API_BASE_URL + '/system/user/importData'
+      },
+      // 重置密码
       resetPasswordVisible: false,
       resetPasswordConfirmLoading: false,
       resetPasswordmdl: null,
@@ -431,6 +472,30 @@ export default {
       this.download('system/user/importTemplate', {
         ...this.queryParams
       }, `user_${new Date().getTime()}.xlsx`)
+    },
+    /** 导入excel窗体关闭 */
+    importExcelHandleCancel (e) {
+      console.log('Clicked cancel button')
+      this.excelVisible = false
+      // 关闭后刷新列表
+      this.getList()
+    },
+    /** 导入excel窗体开启 */
+    importExcelHandleOpen (e) {
+      console.log('Clicked cancel button')
+      this.excelVisible = true
+    },
+    /** 导入excel */
+    importExcelHandleChange (info) {
+      const status = info.file.status
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList)
+      }
+      if (status === 'done') {
+        this.$message.success(`${info.file.name}: ${info.file.response.msg}`)
+      } else if (status === 'error') {
+        this.$message.error(`${info.file.name}: ${info.file.response.msg}`)
+      }
     }
   }
 }
