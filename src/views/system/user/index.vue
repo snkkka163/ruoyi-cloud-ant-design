@@ -109,6 +109,7 @@
           show-size-changer
           :page-size="pageSize"
           @showSizeChange="onShowSizeChange"
+          @change="currentPageChange"
         >
         <template slot="buildOptionText" slot-scope="props">
           <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
@@ -318,7 +319,14 @@ export default {
     this.getList()
   },
   methods: {
+    /** pageSize 变化的回调 */
     onShowSizeChange (current, pageSize) {
+      this.pageSize = pageSize
+      this.current = current
+      this.getList()
+    },
+    /** 页码改变的回调 */
+    currentPageChange (current, pageSize) {
       this.pageSize = pageSize
       this.current = current
       this.getList()
