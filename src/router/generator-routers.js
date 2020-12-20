@@ -109,8 +109,8 @@ export const generatorDynamicRouter = (token) => {
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
       // 问题还是出在 routers中的component 是报错的，所以这些路由没法跳转页面
-      console.log('最终路由')
-      console.log(routers)
+      // console.log('最终路由')
+      // console.log(routers)
       routers.push(notFoundRouter)
       resolve(routers)
     }).catch(err => {
@@ -127,7 +127,7 @@ export const generatorDynamicRouter = (token) => {
  * @returns {*}
  */
 export const generator = (routerMap, parent) => {
-  console.log('hola hola', routerMap)
+  // console.log('hola hola', routerMap)
   // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
   return routerMap.map(item => {
     const { title, show, hideChildren, hiddenHeaderContent, target, icon, hidden } = item.meta || {}
@@ -142,7 +142,7 @@ export const generator = (routerMap, parent) => {
     if (item.isFrame === 0) {
       item.target = '_blank'
     }
-    console.log(item)
+    // console.log(item)
 
     const currentRouter = {
 

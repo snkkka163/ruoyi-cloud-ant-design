@@ -1,9 +1,9 @@
 import axios from 'axios'
 import store from '@/store'
-import storage from 'store'
+// import storage from 'store'
 import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+// import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { tansParams } from '@/utils/ruoyi'
 
 // 创建 axios 实例
@@ -19,7 +19,8 @@ const errorHandler = (error) => {
   if (error.response) {
     const data = error.response.data
     // 从 localstorage 获取 token
-    const token = storage.get(ACCESS_TOKEN)
+    const token = localStorage.getItem('token')
+    // const token = storage.get(ACCESS_TOKEN)
     console.log(error.response.status)
     if (error.response.status === 403) {
       notification.error({
@@ -46,10 +47,12 @@ const errorHandler = (error) => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  const token = storage.get(ACCESS_TOKEN)
+  const token = localStorage.getItem('token')
+  // const token = storage.get(ACCESS_TOKEN)
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   if (token) {
+    console.log(token)
     // config.headers['Access-Token'] = token
     config.headers['Authorization'] = 'Bearer ' + token
   }

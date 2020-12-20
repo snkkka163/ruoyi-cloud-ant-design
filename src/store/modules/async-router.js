@@ -11,6 +11,7 @@ const permission = {
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
+      // state.addRouters = routers
       state.addRouters = routers
       state.routers = constantRouterMap.concat(routers)
     }
@@ -20,7 +21,6 @@ const permission = {
       return new Promise(resolve => {
         const { token } = data
         generatorDynamicRouter(token).then(routers => {
-          console.log('最终生成的路由111111111111111111111111')
           console.log(routers)
           commit('SET_ROUTERS', routers)
           resolve()
