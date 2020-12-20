@@ -26,14 +26,14 @@
           <a-input-number v-model="form.roleSort" :min="0" :max="100" />
         </a-form-model-item>
         <a-form-model-item ref="status" label="状态" prop="status">
-          <a-radio-group name="radioGroup" v-model="form.status">
-            <a-radio :value="'0'">
-              正常
-            </a-radio>
-            <a-radio :value="'2'">
-              停用
-            </a-radio>
-          </a-radio-group>
+          <a-radio-group button-style="solid" v-model="form.status">
+            <a-radio-button
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :value="dict.dictValue">
+                  {{ dict.dictLabel }}
+              </a-radio-button>
+            </a-radio-group>
         </a-form-model-item>
         <a-form-model-item ref="menuIds" label="菜单权限" prop="menuIds">
           <a-tree-select
@@ -66,6 +66,8 @@ export default {
       menuOptions: [],
       // 部门列表
       deptOptions: [],
+      // 状态数据字典
+      statusOptions: [],
       // 当前控件配置:
       confirmLoading: false,
       readOnly: false,
@@ -117,8 +119,11 @@ export default {
       }
     }
   },
-  // created () {
-  // },
+  created () {
+    this.getDicts('sys_normal_disable').then(response => {
+      this.statusOptions = response.data
+    })
+  },
   methods: {
     /** 查询菜单树结构 */
     getMenuTreeselect () {
