@@ -3,7 +3,7 @@ import * as loginService from '@/api/login'
 // eslint-disable-next-line
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
 import { DEFAULT_ROUTE_PATH } from '@/store/mutation-types'
-
+import all from '@/core/icons'
 // 前端路由表
 const constantRouterComponents = {
   // 基础页面 layout 必须引入
@@ -103,13 +103,11 @@ export const generatorDynamicRouter = (token) => {
         path: DEFAULT_ROUTE_PATH,
         name: 'WorkPlace',
         component: 'dashboard/Workplace',
-        meta: { title: '工作台', keepAlive: true, icon: 'dashboard' }
+        meta: { title: '工作台', keepAlive: true, icon: all['dashboard' + 'Icon'] }
       }]
       rootRouter.children = childrenNav.concat(resList)
       menuNav.push(rootRouter)
-      console.log('qiguai')
       const routers = generator(menuNav)
-      console.log(JSON.stringify(routers))
       // 问题还是出在 routers中的component 是报错的，所以这些路由没法跳转页面
       console.log('最终路由')
       console.log(routers)
@@ -132,7 +130,7 @@ export const generator = (routerMap, parent) => {
   console.log('hola hola', routerMap)
   // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
   return routerMap.map(item => {
-    const { title, show, hideChildren, hiddenHeaderContent, target, icon } = item.meta || {}
+    const { title, show, hideChildren, hiddenHeaderContent, target, icon, hidden } = item.meta || {}
     if (item.component) {
       // Layout ParentView 组件特殊处理
       if (item.component === 'Layout') {
@@ -161,10 +159,12 @@ export const generator = (routerMap, parent) => {
       // meta: 页面标题, 菜单图标, 页面权限(供指令权限用，可去掉)
       meta: {
         title: title,
-        icon: icon || undefined,
+        icon: all[String(icon).replace('-', '') + 'Icon'] || icon,
         hiddenHeaderContent: hiddenHeaderContent,
         target: target,
-        permission: item.name
+        permission: item.name,
+        keepAlive: true,
+        hidden: hidden
       }
     }
     // 是否设置了隐藏菜单
