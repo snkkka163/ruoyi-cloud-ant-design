@@ -23,7 +23,8 @@ primaryColor: '#2F54EB', // primary color of ant design： rgb(24, 144, 255)
   colorWeak: false,
   multiTab: false,
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true',
-  title: 'Ant Design Pro',
+  // Ant Design Pro
+  title: '若依管理系统',
   // vue-ls options
   storageOptions: {
     namespace: 'pro__', // key prefix
