@@ -13,6 +13,7 @@ import themePluginConfig from '../config/themePluginConfig'
 import { getDicts } from '@/api/system/dict/data'
 import { getConfigKey } from '@/api/system/config'
 import { download } from '@/utils/request'
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from '@/utils/ruoyi'
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
 // import './mock'
@@ -27,6 +28,12 @@ Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
 Vue.config.productionTip = false
 Vue.prototype.download = download
+Vue.prototype.parseTime = parseTime
+Vue.prototype.resetForm = resetForm
+Vue.prototype.addDateRange = addDateRange
+Vue.prototype.selectDictLabel = selectDictLabel
+Vue.prototype.selectDictLabels = selectDictLabels
+Vue.prototype.handleTree = handleTree
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)
 // use pro-layout components
