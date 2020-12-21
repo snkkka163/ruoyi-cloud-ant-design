@@ -67,6 +67,22 @@
           </a-dropdown>
         </span>
       </a-table>
+      <!-- 底部分页按钮 -->
+      <a-pagination
+          class="ant-table-pagination"
+          v-model="current"
+          :page-size-options="pageSizeOptions"
+          :total="total"
+          show-size-changer
+          :page-size="pageSize"
+          @showSizeChange="onShowSizeChange"
+          @change="currentPageChange"
+        >
+        <template slot="buildOptionText" slot-scope="props">
+          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+          <span v-if="props.value === '50'">全部</span>
+        </template>
+      </a-pagination>
       <!-- 创建/编辑部门,单独封装了组件 -->
       <create-form
         ref="createModal"
@@ -97,6 +113,11 @@ export default {
   },
   data () {
     return {
+      // 分页数据(默认第一页):
+      pageSizeOptions: ['10', '20', '30', '40', '50'],
+      current: 1,
+      pageSize: 10,
+      total: 0,
       statusMap: [],
       tableLoading: false,
       // 表格树数据
@@ -172,6 +193,7 @@ export default {
       this.tableLoading = true
       listDept(this.queryParams).then(response => {
         this.deptList = this.handleTree(response.data, 'deptId')
+        this.total = response.total
         this.tableLoading = false
       })
     },
@@ -224,6 +246,22 @@ export default {
           })
         }
       })
+    },
+    /** pageSize 变化的回调 */
+    onShowSizeChange (current, pageSize) {
+      this.current = current
+      this.pageSize = pageSize
+      this.queryParams.pageSize = pageSize
+      this.queryParams.pageNum = current
+      this.getList()
+    },
+    /** 页码改变的回调 */
+    currentPageChange (current, pageSize) {
+      this.current = current
+      this.pageSize = pageSize
+      this.queryParams.pageSize = pageSize
+      this.queryParams.pageNum = current
+      this.getList()
     }
   }
 }

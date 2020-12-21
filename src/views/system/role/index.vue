@@ -115,11 +115,7 @@
 </template>
 
 <script>
-// import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-// getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus
 import { listRole, delRole } from '@/api/system/role'
-// import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu";
-// import { treeselect as deptTreeselect, roleDeptTreeselect } from "@/api/system/dept";
 import CreateForm from './modules/CreateForm'
 const statusMap = {
   0: {

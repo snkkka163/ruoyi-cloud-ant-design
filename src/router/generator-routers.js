@@ -4,6 +4,7 @@ import * as loginService from '@/api/login'
 import { BasicLayout, BlankLayout, PageView, RouteView } from '@/layouts'
 import { DEFAULT_ROUTE_PATH } from '@/store/mutation-types'
 import all from '@/core/icons'
+import { validURL } from '@/utils/validate'
 // 前端路由表
 const constantRouterComponents = {
   // 基础页面 layout 必须引入
@@ -130,7 +131,7 @@ export const generator = (routerMap, parent) => {
   // console.log('hola hola', routerMap)
   // console.log('格式化树形结构数据 生成 vue-router 层级路由表')
   return routerMap.map(item => {
-    const { title, show, hideChildren, hiddenHeaderContent, target, icon, hidden } = item.meta || {}
+    const { title, show, hideChildren, hiddenHeaderContent, icon, hidden } = item.meta || {}
     if (item.component) {
       // Layout ParentView 组件特殊处理
       if (item.component === 'Layout') {
@@ -161,7 +162,7 @@ export const generator = (routerMap, parent) => {
         title: title,
         icon: all[String(icon).replace('-', '') + 'Icon'] || icon,
         hiddenHeaderContent: hiddenHeaderContent,
-        target: target,
+        target: validURL(item.path) ? '_blank' : '',
         permission: item.name,
         keepAlive: true,
         hidden: hidden
@@ -176,9 +177,6 @@ export const generator = (routerMap, parent) => {
       currentRouter.hideChildrenInMenu = true
     }
     // 为了防止出现后端返回结果不规范，处理有可能出现拼接出两个 反斜杠
-    if (!currentRouter.path.startsWith('http')) {
-      currentRouter.path = currentRouter.path.replace('//', '/')
-    }
     // 重定向
     item.redirect && (currentRouter.redirect = item.redirect)
     // 是否有子菜单，并递归处理
