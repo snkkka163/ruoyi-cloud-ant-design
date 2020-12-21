@@ -1,6 +1,38 @@
 <template>
   <page-header-wrapper>
     <template v-slot:content>
+      <div class="page-header-content">
+        <a-card :bordered="false" class="content">
+          <div class="table-page-search-wrapper">
+            <a-form layout="inline">
+              <a-row :gutter="48">
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="菜单名称">
+                    <a-input placeholder="请输入" v-model="queryParams.menuName"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                    <a-form-item label="状态">
+                        <a-select placeholder="请选择" v-model="queryParams.status">
+                          <a-select-option value="0">正常</a-select-option>
+                          <a-select-option value="1">禁用</a-select-option>
+                        </a-select>
+                      </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24">
+                    <span class="table-page-search-submitButtons">
+                      <a-button @click="handleQuery" type="primary">查询</a-button>
+                      <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
+                    </span>
+                  </a-col>
+                </a-row>
+            </a-form>
+          </div>
+        </a-card>
+      </div>
+      <div class="table-page-operator-wrapper">
+        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+      </div>
       <!-- 表格 -->
       <a-table
         ref="table"
@@ -11,15 +43,54 @@
         row-key="menuId"
         :pagination="false"
       >
+        <!-- 插槽指向状态 -->
+        <span slot="status" slot-scope="text">
+          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+        </span>
+
+        <!-- 更多选择 -->
+        <span slot="action" slot-scope="text, record">
+          <a @click="$refs.createModal.show(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a-dropdown>
+            <a class="ant-dropdown-link">
+              更多 <a-icon type="down" />
+            </a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a href="javascript:;" @click="handleDelete(record)">删除</a>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </span>
       </a-table>
+      <!-- 创建/编辑菜单,单独封装了组件 -->
+      <create-form
+        ref="createModal"
+        @handle-success="handleOk"
+      />
     </template>
   </page-header-wrapper>
 </template>
 
 <script>
 import { listMenu } from '@/api/system/menu'
+import CreateForm from './modules/CreateForm'
+const statusMap = {
+  0: {
+    status: 'success',
+    text: '正常'
+  },
+  1: {
+    status: 'error',
+    text: '停用'
+  }
+}
 export default {
   name: 'Menu',
+  components: {
+    CreateForm
+  },
   data () {
     return {
       tableLoading: false,
@@ -65,6 +136,13 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        menuName: undefined,
+        status: undefined
+      },
       // 表格多选
       selectedRowKeys: [],
       selectedRows: [],
@@ -80,6 +158,15 @@ export default {
   },
   created () {
     this.getList()
+  },
+  // 状态过滤
+  filters: {
+    statusFilter (type) {
+      return statusMap[type].text
+    },
+    statusTypeFilter (type) {
+      return statusMap[type].status
+    }
   },
   methods: {
     /** 查询菜单列表 */
@@ -109,6 +196,25 @@ export default {
         menu.children = this.handleTree(response.data, 'menuId')
         this.menuOptions.push(menu)
       })
+    },
+    /** 搜索按钮操作 */
+    handleQuery () {
+      this.queryParams.pageNum = 1
+      this.getList()
+    },
+    /** 重置按钮操作 */
+    resetQuery () {
+      this.queryParams = {
+        pageNum: 1,
+        pageSize: 10,
+        menuName: undefined,
+        status: undefined
+      }
+      this.handleQuery()
+    },
+    // 新增/修改框事件
+    handleOk () {
+      this.getList()
     }
   }
 }
