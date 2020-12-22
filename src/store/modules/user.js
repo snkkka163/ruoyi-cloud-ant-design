@@ -53,12 +53,19 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          const result = response.data
-          console.log(result.access_token)
+          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+          console.log(response)
+          console.log(response.code)
+          // 保证登录成功以后才来获取token
+          if (response.code === 200) {
+            console.log('成功进入了')
+            const result = response.data
+            localStorage.setItem('token', result.access_token)
+          }
           // storage.set(ACCESS_TOKEN, result.access_token, 7 * 24 * 60 * 60 * 1000)
-          localStorage.setItem('token', result.access_token)
+          // localStorage.setItem('token', result.access_token)
           // commit('SET_TOKEN', result.access_token)
-          resolve()
+          resolve(response)
         }).catch(error => {
           reject(error)
         })

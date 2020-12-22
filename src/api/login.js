@@ -79,3 +79,11 @@ export function get2step (parameter) {
     data: parameter
   })
 }
+
+// 获取验证码
+export function getCodeImg () {
+  return request({
+    url: '/code',
+    method: 'get'
+  })
+}

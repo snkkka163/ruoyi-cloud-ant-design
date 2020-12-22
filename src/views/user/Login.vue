@@ -40,6 +40,26 @@
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input-password>
           </a-form-item>
+
+          <a-row :gutter="16">
+            <a-col class="gutter-row" :span="16">
+              <a-form-item>
+                <a-input size="large" type="text" placeholder="验证码" v-decorator="['code', {rules: [{ required: true, message: '请输入验证码' }], validateTrigger: 'blur'}]">
+                  <a-icon slot="prefix" type="mail" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+                </a-input>
+              </a-form-item>
+            </a-col>
+            <a-col class="gutter-row" :span="8">
+              <!-- <a-button
+                class="getCaptcha"
+                tabindex="-1"
+                :disabled="state.smsSendBtn"
+                @click.stop.prevent="getCaptcha"
+                v-text="!state.smsSendBtn && '获取验证码' || (state.time+' s')"
+              ></a-button> -->
+              <img @click="usernamePasswordGetCodeImg" v-bind:src="captchaImg" class="getCaptcha" />
+            </a-col>
+          </a-row>
         </a-tab-pane>
         <a-tab-pane key="tab2" tab="手机号登录">
           <a-form-item>
@@ -118,8 +138,7 @@
 import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
-import { getSmsCaptcha, get2step } from '@/api/login'
-
+import { getSmsCaptcha, get2step, getCodeImg } from '@/api/login'
 export default {
   components: {
     TwoStepCaptcha
@@ -140,7 +159,10 @@ export default {
         // login type: 0 email, 1 username, 2 telephone
         loginType: 0,
         smsSendBtn: false
-      }
+      },
+      // 验证码以及UUID
+      captchaImg: 'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png',
+      uuid: ''
     }
   },
   created () {
@@ -152,6 +174,7 @@ export default {
         this.requiredTwoStepCaptcha = false
       })
     // this.requiredTwoStepCaptcha = true
+    this.usernamePasswordGetCodeImg()
   },
   methods: {
     ...mapActions(['Login', 'Logout']),
@@ -181,18 +204,26 @@ export default {
 
       state.loginBtn = true
 
-      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password'] : ['mobile', 'captcha']
+      const validateFieldsKey = customActiveKey === 'tab1' ? ['username', 'password', 'code'] : ['mobile', 'captcha']
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
           console.log('login form', values)
+          values.uuid = this.uuid
           const loginParams = { ...values }
+          console.log('最终上传的', loginParams)
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
           // loginParams.password = md5(values.password)
           Login(loginParams)
             .then((res) => {
-              this.loginSuccess(res)
+              console.log('回调的res')
+              console.log(res)
+              if (res.code === 200) {
+                this.loginSuccess(res)
+              } else {
+                this.requestFailedMsg(res.msg)
+              }
             })
             .catch(err => {
               console.log('登录失败!')
@@ -242,6 +273,13 @@ export default {
         }
       })
     },
+    // 用户名密码登录时的验证码获取
+    usernamePasswordGetCodeImg () {
+      getCodeImg().then(res => {
+        this.captchaImg = 'data:image/gif;base64,' + res.img
+        this.uuid = res.uuid
+      })
+    },
     stepCaptchaSuccess () {
       this.loginSuccess()
     },
@@ -276,10 +314,21 @@ export default {
       this.isLoginError = false
     },
     requestFailed (err) {
+      console.log('请求错误之后')
+      console.log(err)
       this.isLoginError = true
       this.$notification['error']({
         message: '错误',
-        description: ((err.response || {}).data || {}).message || '请求出现错误，请稍后再试',
+        description: ((err.response || {}).data || {}).msg || '请求出现错误，请稍后再试',
+        duration: 4
+      })
+    },
+    requestFailedMsg (msg) {
+      console.log('请求错误之后')
+      this.isLoginError = true
+      this.$notification['error']({
+        message: '错误',
+        description: `错误提示:[${msg}]`,
         duration: 4
       })
     }
