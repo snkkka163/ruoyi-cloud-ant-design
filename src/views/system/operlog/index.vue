@@ -221,7 +221,6 @@ export default {
     }
   },
   created () {
-    console.log('进入操作日志')
     this.getList()
     this.getDicts('sys_oper_type').then(response => {
       this.typeOptions = response.data

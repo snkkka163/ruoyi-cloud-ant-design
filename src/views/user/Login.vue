@@ -223,10 +223,12 @@ export default {
                 this.loginSuccess(res)
               } else {
                 this.requestFailedMsg(res.msg)
+                this.usernamePasswordGetCodeImg()
               }
             })
             .catch(err => {
               console.log('登录失败!')
+              this.usernamePasswordGetCodeImg()
               this.requestFailed(err)
             })
             .finally(() => {
