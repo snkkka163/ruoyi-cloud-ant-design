@@ -48,7 +48,8 @@ import {
   TreeSelect,
   Pagination,
   FormModel,
-  AutoComplete
+  AutoComplete,
+  Tree
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 // ext library
@@ -123,4 +124,5 @@ Vue.use(Pagination)
 Vue.use(FormModel)
 Vue.use(FormModelItem)
 Vue.use(AutoComplete)
+Vue.use(Tree)
 process.env.NODE_ENV !== 'production' && console.warn('[antd-pro] NOTICE: Antd use lazy-load.')

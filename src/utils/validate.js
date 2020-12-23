@@ -21,7 +21,8 @@ export function validUsername (str) {
  */
 export function validURL (url) {
   console.log(url)
-  const reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~/])+$/
+  // const reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~/])+$/
+  const reg = /^([hH][tT]{2}[pP]|[hH][tT]{2}[pP][sS]):\/\/[\S]+$/
   console.log(reg.test(url))
   return reg.test(url)
 }
