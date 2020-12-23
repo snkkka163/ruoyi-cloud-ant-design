@@ -5,7 +5,7 @@ import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
 // import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { tansParams } from '@/utils/ruoyi'
-
+// import errorCode from '@/utils/errorCode'
 // 创建 axios 实例
 const request = axios.create({
   // API 请求的默认前缀
@@ -63,6 +63,53 @@ request.interceptors.request.use(config => {
 request.interceptors.response.use((response) => {
   return response.data
 }, errorHandler)
+
+// response interceptor
+// request.interceptors.response.use((res) => {
+//   // 未设置状态码则默认成功状态
+//   const code = res.data.code || 200
+//   // 获取错误信息
+//   const msg = errorCode[code] || res.data.msg || errorCode['default']
+//   if (code === 401) {
+//     notification.open({
+//       message: '系统提示',
+//       description: '登录状态已过期，您可以继续留在该页面，或者重新登录',
+//       btn: h => {
+//         return h(
+//           'a-button',
+//           {
+//             props: {
+//               type: 'primary',
+//               size: 'small'
+//             },
+//             on: {
+//               click: () => {
+//                 store.dispatch('Logout').then(() => {
+//                   location.href = '/index'
+//                 })
+//               }
+//             }
+//           },
+//           '确认'
+//         )
+//       },
+//       duration: 0,
+//       onClose: close
+//     })
+//   } else if (code === 500) {
+//     notification.error({
+//       message: msg,
+//       description: msg
+//     })
+//   } else if (code !== 200) {
+//     notification.error({
+//       message: msg
+//     })
+//   } else {
+//     return res.data
+//   }
+//   return Promise.reject(msg)
+// }, errorHandler)
 
 const installer = {
   vm: {},

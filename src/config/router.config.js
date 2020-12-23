@@ -115,6 +115,20 @@ export const asyncRouterMap = [
         meta: { title: '调度日志', keepAlive: true },
         hidden: true
       }]
+    },
+    {
+      path: '/dict',
+      name: 'dict',
+      redirect: '/system/dict',
+      component: RouteView,
+      meta: { title: '字典管理', keepAlive: true, icon: 'control' },
+      children: [{
+        path: 'type/data/:dictId(\\d+)',
+        name: 'Data',
+        component: () => import('@/views/system/dict/data'),
+        meta: { title: '字典子项' },
+        hidden: true
+      }]
     }]
   }
 ]

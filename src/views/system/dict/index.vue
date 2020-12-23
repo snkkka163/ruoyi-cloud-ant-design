@@ -31,7 +31,6 @@
                     </a-col>
                     <a-col :md="8" :sm="24">
                       <a-form-item label="创建时间">
-                        <!--  @change="onChange" -->
                           <a-range-picker @change="rangePicker" />
                       </a-form-item>
                     </a-col>
@@ -93,6 +92,16 @@
         <span slot="status" slot-scope="text, record">
           {{ statusFormat(record) }}
         </span>
+        <!-- 插槽指向状态 -->
+        <span slot="dictType" slot-scope="text, record">
+          <router-link :to="'/dict/type/data/' + record.dictId" class="link-type">
+            <span>{{ record.dictType }}</span>
+          </router-link>
+        </span>
+        <!-- 展开子树 -->
+        <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
+            <sub-data-table :parendDictId="record.dictId" />
+        </p>
       </a-table>
       <!-- 底部分页按钮 -->
       <a-pagination
@@ -122,10 +131,12 @@
 <script>
 import { delType, listType, clearCache } from '@/api/system/dict/type'
 import CreateForm from './modules/CreateForm'
+import SubDataTable from './modules/subDataTable'
 export default {
   name: 'Dict',
   components: {
-    CreateForm
+    CreateForm,
+    SubDataTable
   },
   data () {
     return {
@@ -168,6 +179,7 @@ export default {
           title: '字典类型',
           dataIndex: 'dictType',
           ellipsis: true,
+          scopedSlots: { customRender: 'dictType' },
           align: 'center'
         },
         {
@@ -261,7 +273,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete (row) {
-      const dictId = row.configId
+      const dictId = row.dictId
       const that = this
       this.$confirm({
         title: '警告',
