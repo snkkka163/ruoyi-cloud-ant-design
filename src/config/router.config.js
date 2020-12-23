@@ -100,7 +100,22 @@ export const asyncRouterMap = [
         ]
       }
     ]
-  }]
+  },
+    // 任务日志
+    {
+      path: '/job',
+      name: 'job',
+      redirect: '/monitor/job',
+      component: RouteView,
+      meta: { title: '定时任务', keepAlive: true, icon: 'control' },
+      children: [{
+        path: '/job/log',
+        name: 'JobLog',
+        component: () => import('@/views/monitor/job/log'),
+        meta: { title: '调度日志', keepAlive: true },
+        hidden: true
+      }]
+    }]
   }
 ]
 

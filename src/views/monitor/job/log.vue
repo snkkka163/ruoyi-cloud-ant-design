@@ -25,7 +25,7 @@
                   </a-col>
                   <template v-if="advanced">
                     <a-col :md="8" :sm="24">
-                      <a-form-item label="任务状态">
+                      <a-form-item label="执行状态">
                         <a-select button-style="solid" v-model="queryParams.status">
                           <a-select-option
                             v-for="dict in statusOptions"
@@ -34,6 +34,11 @@
                               {{ dict.dictLabel }}
                           </a-select-option>
                         </a-select>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :md="8" :sm="24">
+                      <a-form-item label="执行时间">
+                          <a-range-picker @change="rangePicker" />
                       </a-form-item>
                     </a-col>
                   </template>
@@ -53,12 +58,11 @@
         </a-card>
       </div>
       <div class="table-page-operator-wrapper">
-        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
         <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-        <a-button @click="handleJobLog">日志</a-button>
         <a-dropdown>
           <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+            <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
+            <a-menu-item key="export-data2" @click="handleClearCache">清空</a-menu-item>
           </a-menu>
           <a-button>
             更多操作 <a-icon type="down" />
@@ -70,55 +74,20 @@
         ref="table"
         :columns="columns"
         :loading="tableLoading"
-        :data-source="list"
+        :data-source="jobLogList"
         :row-selection="rowSelection"
-        row-key="jobId"
+        row-key="jobLogId"
         :pagination="false"
       >
         <span slot="jobGroup" slot-scope="text, record">
           {{ jobGroupFormat(record) }}
         </span>
         <span slot="status" slot-scope="text, record">
-          <a-popconfirm
-            ok-text="是"
-            cancel-text="否"
-            @confirm="confirmHandleStatus(record)"
-            @cancel="cancelHandleStatus(record)"
-          >
-            <span slot="title">确认<b>{{ record.status === '1' ? '启用' : '停用' }}</b>{{ record.jobName }}的任务吗?</span>
-            <a-switch checked-children="开" un-checked-children="关" :checked="record.status == 0" />
-          </a-popconfirm>
+          {{ statusFormat(record) }}
         </span>
-
         <!-- 更多选择 -->
         <span slot="action" slot-scope="text, record">
-          <!-- <a @click="$refs.createModal.show(record)">执行一次</a> -->
-          <a-popconfirm
-            ok-text="是"
-            cancel-text="否"
-            @confirm="confirmHandleRun(record)"
-            @cancel="cancelHandleRun(record)"
-          >
-            <span slot="title">确认执行一次{{ record.jobName }}的任务吗?</span>
-            <a>执行一次 </a>
-          </a-popconfirm>
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a href="javascript:;" @click="$refs.createModal.show(record)">编辑</a>
-              </a-menu-item>
-               <a-menu-item>
-                 <a href="javascript:;" @click="$refs.detailDrawer.show(record)">详细</a>
-               </a-menu-item>
-               <a-menu-item>
-                 <a href="javascript:;" @click="handleDelete(record)">删除</a>
-               </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a @click="$refs.logDetailDrawer.show(record)">详细</a>
         </span>
       </a-table>
       <!-- 底部分页按钮 -->
@@ -138,23 +107,17 @@
         </template>
       </a-pagination>
       <!-- 详细 -->
-      <detail-drawer ref='detailDrawer' />
-      <!-- 新增/修改 -->
-      <create-form
-        ref="createModal"
-        @handle-success="handleOk"
-      />
+      <log-detail-drawer ref='logDetailDrawer' />
     </template>
   </page-header-wrapper>
 </template>
 
 <script>
-import { changeJobStatus, delJob, listJob, runJob } from '@/api/monitor/job'
-import DetailDrawer from './modules/DetailDrawer'
-import CreateForm from './modules/CreateForm'
+import { cleanJobLog, delJobLog, listJobLog } from '@/api/monitor/jobLog'
+import LogDetailDrawer from './modules/LogDetailDrawer'
 export default {
-  components: { DetailDrawer, CreateForm },
-  name: 'Job',
+  name: 'JobLog',
+  components: { LogDetailDrawer },
   data () {
     return {
       // 分页数据(默认第一页):
@@ -162,26 +125,39 @@ export default {
       current: 1,
       pageSize: 10,
       total: 0,
-      // 表格数据
-      list: [],
-      // 表格加载
-      tableLoading: false,
       // 高级搜索 展开/关闭
       advanced: false,
+      tableLoading: false,
+      // 调度日志表格数据
+      jobLogList: [],
+      // 执行状态字典
+      statusOptions: [],
+      // 任务组名字典
+      jobGroupOptions: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        jobName: undefined,
+        jobGroup: undefined,
+        status: undefined
+      },
+      // 日期范围
+      dateRange: [],
       columns: [
         {
-          title: '任务编号',
-          dataIndex: 'jobId',
+          title: '日志编号',
+          dataIndex: 'jobLogId',
           align: 'center'
         },
         {
-          title: '任务名称',
+          title: '系统模块',
           dataIndex: 'jobName',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '任务组名',
+          title: '操作类型',
           dataIndex: 'jobGroup',
           scopedSlots: { customRender: 'jobGroup' },
           align: 'center'
@@ -193,22 +169,27 @@ export default {
           align: 'center'
         },
         {
-          title: 'cron执行表达式',
-          dataIndex: 'cronExpression',
+          title: '日志信息',
+          dataIndex: 'jobMessage',
           ellipsis: true,
           align: 'center'
         },
         {
-          title: '状态',
+          title: '执行状态',
           dataIndex: 'status',
           scopedSlots: { customRender: 'status' },
           align: 'center'
         },
         {
+          title: '执行时间',
+          dataIndex: 'createTime',
+          align: 'center'
+        },
+        {
           title: '操作',
-          width: '150',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: { customRender: 'action' },
+          align: 'center'
         }
       ],
       // 表格多选
@@ -221,19 +202,7 @@ export default {
         },
         onSelect: (record, selected, selectedRows) => {},
         onSelectAll: (selected, selectedRows, changeRows) => {}
-      },
-      // 日期范围
-      dateRange: [],
-      queryParams: {
-        current: 1,
-        pageSize: 10,
-        jobName: undefined,
-        jobGroup: undefined,
-        status: undefined
-      },
-      // 状态数据字典
-      statusOptions: [],
-      jobGroupOptions: []
+      }
     }
   },
   created () {
@@ -246,11 +215,11 @@ export default {
     })
   },
   methods: {
-    /** 查询定时任务列表 */
+    /** 查询调度日志列表 */
     getList () {
       this.tableLoading = true
-      listJob(this.queryParams).then(response => {
-          this.list = response.rows
+      listJobLog(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+          this.jobLogList = response.rows
           this.total = response.total
           this.tableLoading = false
         }
@@ -264,16 +233,24 @@ export default {
     jobGroupFormat (row) {
       return this.selectDictLabel(this.jobGroupOptions, row.jobGroup)
     },
+    // 搜索框中的日期选择
+    rangePicker (date, dateString) {
+      this.dateRange = dateString
+    },
+    // 搜索框展开、收起
+    toggleAdvanced () {
+      this.advanced = !this.advanced
+    },
     /** 搜索按钮操作 */
     handleQuery () {
-      this.queryParams.current = 1
+      this.queryParams.pageNum = 1
       this.getList()
     },
     /** 重置按钮操作 */
     resetQuery () {
       this.dateRange = []
       this.queryParams = {
-        current: 1,
+        pageNum: 1,
         pageSize: 10,
         jobName: undefined,
         jobGroup: undefined,
@@ -281,76 +258,18 @@ export default {
       }
       this.handleQuery()
     },
-    /* 任务状态修改 */
-    confirmHandleStatus (row) {
-      row.status = row.status === '0' ? '1' : '0'
-      const text = row.status === '0' ? '启用' : '停用'
-      changeJobStatus(row.jobId, row.status)
-      .then(() => {
-        this.$message.success(
-          text + '成功',
-          3
-        )
-      }).catch(function () {
-        this.$message.error(
-          text + '发生异常',
-          3
-        )
-      })
-    },
-    cancelHandleStatus (row) {
-    },
-    /* 立即执行一次 */
-    confirmHandleRun (row) {
-      runJob(row.jobId, row.jobGroup)
-      .then(() => {
-        this.$message.success(
-          '执行成功',
-          3
-        )
-      }).catch(function () {
-        this.$message.error(
-          '发生异常',
-          3
-        )
-      })
-    },
-    cancelHandleRun (row) {
-    },
-    /** 删除按钮操作 */
-    handleDelete (row) {
-      const jobId = row.jobId
-      const that = this
-      this.$confirm({
-        title: '警告',
-        content: `真的要删除 任务编号为${jobId}的数据项吗?`,
-        okText: '删除',
-        okType: 'danger',
-        cancelText: '取消',
-        onOk () {
-          delJob(jobId).then(response => {
-            if (response.code === 200) {
-              that.$message.success('删除成功!')
-              that.getList()
-            } else {
-              that.$message.error(response.msg)
-            }
-          })
-        }
-      })
-    },
     /** 批量删除按钮操作 */
     handleDeleteBatch (ids) {
-      const jobIds = ids
+      const jobLogIds = ids
       const that = this
       this.$confirm({
         title: '警告',
-        content: `真的要删除 任务编号为${jobIds}的数据项吗?`,
+        content: `真的要删除 角色编号为${jobLogIds}的数据项吗?`,
         okText: '删除',
         okType: 'danger',
         cancelText: '取消',
         onOk () {
-          delJob(jobIds).then(response => {
+          delJobLog(jobLogIds).then(response => {
             if (response.code === 200) {
               that.$message.success('删除成功!')
               that.getList()
@@ -359,25 +278,20 @@ export default {
             }
           })
         }
+      })
+    },
+    /** 清理缓存按钮操作 */
+    handleClearCache () {
+      cleanJobLog().then(response => {
+        this.$message.success('清除成功!')
+        this.getList()
       })
     },
     /** 导出按钮操作 */
     handleExport () {
-      this.download('schedule/job/export', {
+      this.download('schedule/job/log/export', {
         ...this.queryParams
-      }, `job_${new Date().getTime()}.xlsx`)
-    },
-    // 新增/修改框事件
-    handleOk () {
-      this.getList()
-    },
-    // 搜索框展开、收起
-    toggleAdvanced () {
-      this.advanced = !this.advanced
-    },
-    /** 任务日志列表查询 */
-    handleJobLog () {
-      this.$router.push({ path: '/job/log' })
+      }, `log_${new Date().getTime()}.xlsx`)
     },
     /** pageSize 变化的回调 */
     onShowSizeChange (current, pageSize) {

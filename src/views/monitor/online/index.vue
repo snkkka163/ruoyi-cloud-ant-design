@@ -45,6 +45,22 @@
           <a @click="handleForceLogout(record)">强退</a>
         </span>
       </a-table>
+      <!-- 底部分页按钮 -->
+      <a-pagination
+          class="ant-table-pagination"
+          v-model="current"
+          :page-size-options="pageSizeOptions"
+          :total="total"
+          show-size-changer
+          :page-size="pageSize"
+          @showSizeChange="onShowSizeChange"
+          @change="currentPageChange"
+        >
+        <template slot="buildOptionText" slot-scope="props">
+          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+          <span v-if="props.value === '50'">全部</span>
+        </template>
+      </a-pagination>
     </template>
   </page-header-wrapper>
 </template>
@@ -158,6 +174,22 @@ export default {
           })
         }
       })
+    },
+    /** pageSize 变化的回调 */
+    onShowSizeChange (current, pageSize) {
+      this.current = current
+      this.pageSize = pageSize
+      this.queryParams.pageSize = pageSize
+      this.queryParams.pageNum = current
+      this.getList()
+    },
+    /** 页码改变的回调 */
+    currentPageChange (current, pageSize) {
+      this.current = current
+      this.pageSize = pageSize
+      this.queryParams.pageSize = pageSize
+      this.queryParams.pageNum = current
+      this.getList()
     }
   }
 }
