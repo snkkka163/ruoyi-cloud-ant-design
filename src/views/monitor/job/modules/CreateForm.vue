@@ -22,12 +22,12 @@
         <a-form-model-item ref="jobGroup" label="任务分组" prop="jobGroup">
           <a-select button-style="solid" v-model="form.jobGroup">
             <a-select-option
-                v-for="dict in jobGroupOptions"
-                :key="dict.dictValue"
-                :value="dict.dictValue">
-                  {{ dict.dictLabel }}
-              </a-select-option>
-            </a-select>
+              v-for="dict in jobGroupOptions"
+              :key="dict.dictValue"
+              :value="dict.dictValue">
+                {{ dict.dictLabel }}
+            </a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item ref="invokeTarget" prop="invokeTarget">
           <span slot="label">

@@ -1,7 +1,7 @@
 <template>
   <a-modal
     ref="createModal"
-    :title="readOnly ? '详情' : (form.roleId ? '角色编辑' : '新增操作')"
+    :title="readOnly ? '详情' : (form.menuId ? '菜单编辑' : '新增操作')"
     :width="640"
     :visible="visible"
     @cancel="close"
@@ -19,14 +19,14 @@
         <a-row>
           <a-col :span="24" :pull="3">
             <a-form-model-item ref="parentId" label="上级菜单" prop="parentId">
+              <!-- v-model="form.parentId" -->
               <a-tree-select
-                v-model="form.parentId"
-                show-search
+                :tree-data="deptOptions"
                 style="width: 100%"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 placeholder="Please select"
-                allow-clear
                 tree-default-expand-all
+                :replaceFields="treeReplaceFields"
               />
             </a-form-model-item>
           </a-col>
@@ -41,87 +41,76 @@
           </a-col>
           <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="菜单图标">
-              <a-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
-                  <svg-icon
-                    v-if="form.icon"
-                    slot="prefix"
-                    :icon-class="form.icon"
-                    class="el-input__icon"
-                    style="height: 32px;width: 16px;"
-                  />
-                  <i v-else slot="prefix" class="el-icon-search el-input__icon" />
-              </a-input>
               <a-popover
                   placement="bottom"
                   width="460"
                   trigger="click"
-                  @click="$refs['iconSelect'].reset()"
-                  :visible="false"
                 >
-                <IconSelect ref="iconSelect" @selected="selected" />
+                <IconSelect slot="content" ref="iconSelect" @selected="selected" />
+                <a-input v-model="form.icon" placeholder="点击选择图标" readonly></a-input>
               </a-popover>
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item ref="menuName" label="菜单名称" prop="menuName">
-              <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.menuName" placeholder="请输入菜单名称" />
+              <a-input v-model="form.menuName" placeholder="请输入菜单名称" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item ref="orderNum" label="显示排序" prop="orderNum">
-              <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.orderNum" placeholder="请输入显示排序" />
+              <a-input v-model="form.orderNum" placeholder="请输入显示排序" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="是否外链">
                 <a-radio-group v-model="form.isFrame">
-                  <a-radio label="0">是</a-radio>
-                  <a-radio label="1">否</a-radio>
+                  <a-radio :value="0">是</a-radio>
+                  <a-radio :value="1">否</a-radio>
                 </a-radio-group>
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="路由地址" prop="path">
               <a-input v-model="form.path" placeholder="请输入路由地址" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12" v-if="form.menuType == 'C'">
+          <a-col :span="24" :pull="3" v-if="form.menuType == 'C'">
             <a-form-model-item label="组件路径" prop="component">
               <a-input v-model="form.component" placeholder="请输入组件路径" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'M'" label="权限标识">
               <a-input v-model="form.perms" placeholder="请权限标识" maxlength="50" />
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="显示状态">
               <a-radio-group v-model="form.visible">
                 <a-radio
                   v-for="dict in visibleOptions"
                   :key="dict.dictValue"
-                  :label="dict.dictValue"
+                  :value="dict.dictValue"
                 >{{dict.dictLabel}}</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
-          <a-col :span="12">
+          <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="菜单状态">
               <a-radio-group v-model="form.status">
                 <a-radio
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
-                  :label="dict.dictValue"
+                  :value="dict.dictValue"
                 >{{dict.dictLabel}}</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
-          <a-col :span="12" v-if="form.menuType == 'C'">
+          <a-col :span="24" :pull="3" v-if="form.menuType == 'C'">
             <a-form-model-item v-if="form.menuType == 'C'" label="是否缓存">
               <a-radio-group v-model="form.isCache">
-                <a-radio label="0">缓存</a-radio>
-                <a-radio label="1">不缓存</a-radio>
+                <a-radio :value="0">缓存</a-radio>
+                <a-radio :value="1">不缓存</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -134,10 +123,17 @@
 <script>
 // import pick from 'lodash.pick'
 import IconSelect from '@/components/IconSelect'
+import { listDept } from '@/api/system/dept'
 // 表单字段
 export default {
   components: {
     IconSelect
+  },
+  props: {
+    parendDictId: {
+      type: Number,
+      required: true
+    }
   },
   data () {
     return {
@@ -181,13 +177,9 @@ export default {
       },
       treeReplaceFields: {
         children: 'children',
-        title: 'label',
-        key: 'id',
-        value: 'id'
-      },
-      // 选择图标
-      selected (name) {
-        this.form.icon = name
+        title: 'deptName',
+        key: 'deptId',
+        value: 'deptId'
       }
     }
   },
@@ -197,6 +189,11 @@ export default {
     })
     this.getDicts('sys_normal_disable').then(response => {
       this.statusOptions = response.data
+    })
+    listDept().then(response => {
+      this.deptOptions = this.handleTree(response.data, 'deptId')
+      console.log('测试结果')
+      console.log(this.deptOptions)
     })
   },
   methods: {
@@ -274,6 +271,12 @@ export default {
     // 表单重置
     reset () {
       this.form = {}
+    },
+    // 选择图标
+    selected (name) {
+      console.log('为表单设置值为')
+      console.log(name)
+      this.form.icon = name
     }
   }
 }

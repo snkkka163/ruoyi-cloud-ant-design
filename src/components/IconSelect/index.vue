@@ -12,7 +12,8 @@
     </a-input>
     <div class="icon-list">
       <div v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
-        <a-icon :icon-class="item" style="height: 30px;width: 16px;" />
+        <a-icon :type="'systemIcon'" :style="{ fontSize: '36px' }"  />
+        <!-- <a-icon :type="icon" :style="{ fontSize: '36px' }" /> -->
         <span>{{ item }}</span>
       </div>
     </div>
@@ -34,13 +35,14 @@ export default {
       this.iconList = icons
       if (this.name) {
         this.iconList = this.iconList.filter(item => item.includes(this.name))
+        console.log('过滤后的===========================================================')
+        console.log(this.iconList)
       }
     },
     selectedIcon (name) {
-      console.log('执行selectedIcon')
-      console.log(name)
       this.$emit('selected', name)
-      document.body.click()
+      // document.body.click()
+      // this.reset()
     },
     reset () {
       this.name = ''

@@ -1,16 +1,5 @@
 <template>
   <div>
-    <!-- <a-button type="primary" @click="showDrawer">
-      Open
-    </a-button> -->
-    <!-- <a-drawer
-      title="安全设置-修改密码"
-      width="520"
-      :closable="false"
-      :visible="visible"
-      @close="() => { $emit('close') }"
-      @ok="() => { $emit('ok') }"
-    > -->
     <a-drawer
       title="安全设置-修改密码"
       :width="640"
@@ -19,14 +8,11 @@
       @close="() => { $emit('cancel') }"
       @ok="() => { $emit('ok') }"
     >
-    <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
-      <a-form-item label="新密码">
-        <a-input
-          v-decorator="['password', { rules: [{ required: true, message: '新密码不能为空!' }] }]"
-        />
-      </a-form-item>
-    </a-form>
-
+      <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+        <a-form-item label="新密码">
+          <a-input v-decorator="['password', { rules: [{ required: true, message: '新密码不能为空!' }] }]" />
+        </a-form-item>
+      </a-form>
       <div
         :style="{
           position: 'absolute',

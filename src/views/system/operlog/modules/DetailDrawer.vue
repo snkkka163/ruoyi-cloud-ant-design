@@ -7,63 +7,62 @@
       :confirmLoading="loading"
       @close="close"
     >
-    <a-spin :spinning="loading">
-      <a-form-model
-        ref="ruleForm"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-row>
-          <a-col :span="12">
-            <a-form-model-item label="操作模块">
-              {{ data.title }} / {{ typeFormat(data) }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="请求地址">
-              {{ data.operUrl }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="登录信息">
-              {{ data.operName }} / {{ data.operIp }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="请求方式">
-              {{ data.requestMethod }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="操作方法">
-              {{ data.method }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="请求参数">
-              {{ data.operParam }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="返回参数">
-              {{ data.jsonResult }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="操作状态">
-              <a-badge v-if="data.status === 0" :status="'success'" :text="'正常'" />
-              <a-badge v-if="data.status === 1" :status="'error'" :text="'错误'" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="操作时间">
-              {{ data.operTime }}
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </a-spin>
-
+      <a-spin :spinning="loading">
+        <a-form-model
+          ref="ruleForm"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-row>
+            <a-col :span="12">
+              <a-form-model-item label="操作模块">
+                {{ data.title }} / {{ typeFormat(data) }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="请求地址">
+                {{ data.operUrl }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="登录信息">
+                {{ data.operName }} / {{ data.operIp }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="请求方式">
+                {{ data.requestMethod }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="操作方法">
+                {{ data.method }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="请求参数">
+                {{ data.operParam }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="返回参数">
+                {{ data.jsonResult }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="操作状态">
+                <a-badge v-if="data.status === 0" :status="'success'" :text="'正常'" />
+                <a-badge v-if="data.status === 1" :status="'error'" :text="'错误'" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="操作时间">
+                {{ data.operTime }}
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+        </a-form-model>
+      </a-spin>
       <div
         :style="{
           position: 'absolute',
