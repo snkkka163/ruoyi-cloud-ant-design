@@ -5,48 +5,48 @@
         <a-card :bordered="false" class="content">
           <div class="table-page-search-wrapper">
             <a-form layout="inline">
-                <a-row :gutter="48">
+              <a-row :gutter="48">
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="参数名称">
+                    <a-input placeholder="请输入" v-model="queryParams.configName"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="参数键名">
+                    <a-input placeholder="请输入" v-model="queryParams.configKey"/>
+                  </a-form-item>
+                </a-col>
+                <template v-if="advanced">
                   <a-col :md="8" :sm="24">
-                    <a-form-item label="参数名称">
-                      <a-input placeholder="请输入" v-model="queryParams.configName"/>
+                    <a-form-item label="系统内置">
+                      <a-radio-group button-style="solid" v-model="queryParams.configType">
+                        <a-radio-button
+                          v-for="dict in typeOptions"
+                          :key="dict.dictValue"
+                          :value="dict.dictValue">
+                          {{ dict.dictLabel }}
+                        </a-radio-button>
+                      </a-radio-group>
                     </a-form-item>
                   </a-col>
                   <a-col :md="8" :sm="24">
-                    <a-form-item label="参数键名">
-                      <a-input placeholder="请输入" v-model="queryParams.configKey"/>
+                    <a-form-item label="创建时间">
+                      <!--  @change="onChange" -->
+                      <a-range-picker @change="rangePicker" />
                     </a-form-item>
                   </a-col>
-                  <template v-if="advanced">
-                    <a-col :md="8" :sm="24">
-                      <a-form-item label="系统内置">
-                        <a-radio-group button-style="solid" v-model="queryParams.configType">
-                          <a-radio-button
-                            v-for="dict in typeOptions"
-                            :key="dict.dictValue"
-                            :value="dict.dictValue">
-                              {{ dict.dictLabel }}
-                          </a-radio-button>
-                        </a-radio-group>
-                      </a-form-item>
-                    </a-col>
-                    <a-col :md="8" :sm="24">
-                      <a-form-item label="创建时间">
-                        <!--  @change="onChange" -->
-                          <a-range-picker @change="rangePicker" />
-                      </a-form-item>
-                    </a-col>
-                  </template>
-                  <a-col :md="8" :sm="24">
-                    <span class="table-page-search-submitButtons">
-                      <a-button @click="handleQuery" type="primary">查询</a-button>
-                      <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
-                      <a @click="toggleAdvanced" style="margin-left: 8px">
-                        {{ advanced ? '收起' : '展开' }}
-                        <a-icon :type="advanced ? 'up' : 'down'"/>
-                      </a>
-                    </span>
-                  </a-col>
-                </a-row>
+                </template>
+                <a-col :md="8" :sm="24">
+                  <span class="table-page-search-submitButtons">
+                    <a-button @click="handleQuery" type="primary">查询</a-button>
+                    <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
+                    <a @click="toggleAdvanced" style="margin-left: 8px">
+                      {{ advanced ? '收起' : '展开' }}
+                      <a-icon :type="advanced ? 'up' : 'down'"/>
+                    </a>
+                  </span>
+                </a-col>
+              </a-row>
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
@@ -63,6 +63,35 @@
             </a-dropdown>
           </div>
           <!-- 更多选择 -->
+          <span slot="action" slot-scope="text, record">
+            <a @click="$refs.createModal.show(record)">编辑</a>
+            <a-divider type="vertical" />
+            <a-dropdown>
+              <a class="ant-dropdown-link">
+                更多 <a-icon type="down" />
+              </a>
+              <a-menu slot="overlay">
+                <a-menu-item>
+                  <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                </a-menu-item>
+              </a-menu>
+            </a-dropdown>
+          </span>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="configList"
+            :row-selection="rowSelection"
+            row-key="configId"
+            :pagination="false"
+          >
+            <!-- 插槽指向状态 -->
+            <span slot="configType" slot-scope="text, record">
+              {{ typeFormat(record) }}
+            </span>
+            <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
               <a @click="$refs.createModal.show(record)">编辑</a>
               <a-divider type="vertical" />
@@ -77,57 +106,28 @@
                 </a-menu>
               </a-dropdown>
             </span>
-            <!-- 表格 -->
-            <a-table
-              ref="table"
-              :columns="columns"
-              :loading="tableLoading"
-              :data-source="configList"
-              :row-selection="rowSelection"
-              row-key="configId"
-              :pagination="false"
-            >
-              <!-- 插槽指向状态 -->
-              <span slot="configType" slot-scope="text, record">
-                {{ typeFormat(record) }}
-              </span>
-              <!-- 更多选择 -->
-              <span slot="action" slot-scope="text, record">
-                <a @click="$refs.createModal.show(record)">编辑</a>
-                <a-divider type="vertical" />
-                <a-dropdown>
-                  <a class="ant-dropdown-link">
-                    更多 <a-icon type="down" />
-                  </a>
-                  <a-menu slot="overlay">
-                    <a-menu-item>
-                      <a href="javascript:;" @click="handleDelete(record)">删除</a>
-                    </a-menu-item>
-                  </a-menu>
-                </a-dropdown>
-              </span>
-            </a-table>
-            <!-- 底部分页按钮 -->
-            <a-pagination
-                class="ant-table-pagination"
-                v-model="current"
-                :page-size-options="pageSizeOptions"
-                :total="total"
-                show-size-changer
-                :page-size="pageSize"
-                @showSizeChange="onShowSizeChange"
-                @change="currentPageChange"
-              >
-              <template slot="buildOptionText" slot-scope="props">
-                <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-                <span v-if="props.value === '50'">全部</span>
-              </template>
-            </a-pagination>
-            <!-- 创建/编辑配置,单独封装了组件 -->
-            <create-form
-              ref="createModal"
-              @handle-success="handleOk"
-            />
+          </a-table>
+          <!-- 底部分页按钮 -->
+          <a-pagination
+            class="ant-table-pagination"
+            v-model="current"
+            :page-size-options="pageSizeOptions"
+            :total="total"
+            show-size-changer
+            :page-size="pageSize"
+            @showSizeChange="onShowSizeChange"
+            @change="currentPageChange"
+          >
+            <template slot="buildOptionText" slot-scope="props">
+              <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+              <span v-if="props.value === '50'">全部</span>
+            </template>
+          </a-pagination>
+          <!-- 创建/编辑配置,单独封装了组件 -->
+          <create-form
+            ref="createModal"
+            @handle-success="handleOk"
+          />
         </a-card>
       </div>
     </template>

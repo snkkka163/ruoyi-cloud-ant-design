@@ -13,7 +13,7 @@
         <vue-cropper
           ref="cropper"
 
-          v-bind:img="avatar"
+          :img="avatar"
           :info="true"
           :autoCrop="options.autoCrop"
           :autoCropWidth="options.autoCropWidth"

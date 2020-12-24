@@ -2,17 +2,17 @@
 <template>
   <div class="icon-body">
     <a-input
-    v-model="name"
-    style='position: relative;'
-    clearable
-    placeholder='请输入图标名称'
-    @clear="filterIcons"
-    @change.native="filterIcons">
+      v-model="name"
+      style="position: relative;"
+      clearable
+      placeholder="请输入图标名称"
+      @clear="filterIcons"
+      @change.native="filterIcons">
       <i slot="suffix" class="el-icon-search el-input__icon" />
     </a-input>
     <div class="icon-list">
       <div v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
-        <a-icon :type="'systemIcon'" :style="{ fontSize: '36px' }"  />
+        <!-- <a-icon :component="'zipIcon'" :style="{ fontSize: '36px' }" /> -->
         <!-- <a-icon :type="icon" :style="{ fontSize: '36px' }" /> -->
         <span>{{ item }}</span>
       </div>
@@ -22,6 +22,7 @@
 
 <script>
 import icons from './requireIcons'
+// import zipIcon from '@/assets/icons/svg/zip.svg?inline'
 export default {
   name: 'IconSelect',
   data () {
@@ -35,14 +36,11 @@ export default {
       this.iconList = icons
       if (this.name) {
         this.iconList = this.iconList.filter(item => item.includes(this.name))
-        console.log('过滤后的===========================================================')
-        console.log(this.iconList)
       }
     },
     selectedIcon (name) {
-      this.$emit('selected', name)
-      // document.body.click()
-      // this.reset()
+      document.body.click()
+      this.reset()
     },
     reset () {
       this.name = ''

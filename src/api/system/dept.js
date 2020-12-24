@@ -1,15 +1,9 @@
 import request from '@/utils/request'
 
-const api = {
-  treeselect: '/system/dept/treeselect'
-}
-
-export default api
-
 // 查询部门下拉树结构
-export function getTreeSelect () {
+export function treeselect () {
   return request({
-    url: api.treeselect,
+    url: '/system/dept/treeselect',
     method: 'get'
   })
 }

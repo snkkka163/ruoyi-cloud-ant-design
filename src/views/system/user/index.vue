@@ -21,7 +21,7 @@
                         <a-input placeholder="请输入" v-model="queryParam.userName"/>
                       </a-form-item>
                     </a-col>
-                  <a-col :md="8" :sm="24">
+                    <a-col :md="8" :sm="24">
                       <a-form-item label="手机号码">
                         <a-input placeholder="请输入" v-model="queryParam.phonenumber"/>
                       </a-form-item>
@@ -38,7 +38,7 @@
                       <a-col :md="8" :sm="24">
                         <a-form-item label="创建时间">
                           <!--  @change="onChange" -->
-                            <a-range-picker @change="rangePicker" />
+                          <a-range-picker @change="rangePicker" />
                         </a-form-item>
                       </a-col>
                     </template>
@@ -57,112 +57,112 @@
               </div>
               <!-- 新增 -->
               <div class="table-page-operator-wrapper">
-                  <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-                  <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-                  <a-dropdown>
-                    <a-menu slot="overlay">
-                      <a-menu-item key="export-data1" @click="importTemplate">下载Excel模板</a-menu-item>
-                      <a-menu-item key="export-data2" @click="handleExport">导出Excel</a-menu-item>
-                      <a-menu-item key="export-data3" @click="importExcelHandleOpen">导入Excel</a-menu-item>
-                    </a-menu>
-                    <a-button>
-                      更多操作 <a-icon type="down" />
-                    </a-button>
-                  </a-dropdown>
-                </div>
-                <!-- 表格 -->
-                <a-table
-                  ref="table"
-                  :columns="columns"
-                  :loading="tableLoading"
-                  :data-source="data"
-                  :row-selection="rowSelection"
-                  row-key="userId"
-                  :pagination="false"
-                >
-                  <span slot="status" slot-scope="text">
-                    <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-                  </span>
-                  <!-- <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+                <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+                <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+                <a-dropdown>
+                  <a-menu slot="overlay">
+                    <a-menu-item key="export-data1" @click="importTemplate">下载Excel模板</a-menu-item>
+                    <a-menu-item key="export-data2" @click="handleExport">导出Excel</a-menu-item>
+                    <a-menu-item key="export-data3" @click="importExcelHandleOpen">导入Excel</a-menu-item>
+                  </a-menu>
+                  <a-button>
+                    更多操作 <a-icon type="down" />
+                  </a-button>
+                </a-dropdown>
+              </div>
+              <!-- 表格 -->
+              <a-table
+                ref="table"
+                :columns="columns"
+                :loading="tableLoading"
+                :data-source="data"
+                :row-selection="rowSelection"
+                row-key="userId"
+                :pagination="false"
+              >
+                <span slot="status" slot-scope="text">
+                  <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+                </span>
+                <!-- <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
                     <role-panel @add-action="$refs.editPanel.show(record)" :role-ids="record.roleIds || []" action-name="sys:user:update"/>
                     <a-divider type="horizontal" :dashed="true" style="margin-bottom: 6px; margin-top: 6px;"/>
                     <resource-panel @add-action="$refs.editPanel.show(record)" :resourceIds="record.resourceIds || []" action-name="sys:user:update"/>
                   </div> -->
-                  <span slot="action" slot-scope="text, record">
-                    <a @click="$refs.createModal.show(record)">编辑</a><!-- @click="$refs.editPanel.show(record)" -->
-                    <a-divider type="vertical" />
-                    <a-dropdown>
-                      <a class="ant-dropdown-link">
-                        更多 <a-icon type="down" />
-                      </a>
-                      <a-menu slot="overlay">
-                        <a-menu-item>
-                          <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
-                        </a-menu-item>
-                        <a-menu-item>
-                          <a href="javascript:;" @click="deleteRecord(record)">删除</a>
-                        </a-menu-item>
-                        <!-- <a-menu-item>
+                <span slot="action" slot-scope="text, record">
+                  <a @click="$refs.createModal.show(record)">编辑</a><!-- @click="$refs.editPanel.show(record)" -->
+                  <a-divider type="vertical" />
+                  <a-dropdown>
+                    <a class="ant-dropdown-link">
+                      更多 <a-icon type="down" />
+                    </a>
+                    <a-menu slot="overlay">
+                      <a-menu-item>
+                        <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
+                      </a-menu-item>
+                      <a-menu-item>
+                        <a href="javascript:;" @click="deleteRecord(record)">删除</a>
+                      </a-menu-item>
+                      <!-- <a-menu-item>
                           <a href="javascript:;" @click="deleteRecord(record)">删除</a>
                         </a-menu-item> -->
-                      </a-menu>
-                    </a-dropdown>
-                  </span>
-                </a-table>
-                <!-- 底部分页按钮 -->
-                <a-pagination
-                    class="ant-table-pagination"
-                    v-model="current"
-                    :page-size-options="pageSizeOptions"
-                    :total="total"
-                    show-size-changer
-                    :page-size="pageSize"
-                    @showSizeChange="onShowSizeChange"
-                    @change="currentPageChange"
-                  >
-                  <template slot="buildOptionText" slot-scope="props">
-                    <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-                    <span v-if="props.value === '50'">全部</span>
-                  </template>
-                </a-pagination>
-                <!-- 创建/编辑用户,单独封装了组件 -->
-                <create-form
-                  ref="createModal"
-                  @handle-success="handleOk"
-                />
-                <!-- 修改密码抽屉 -->
-                <reset-password
-                  ref="resetPassword"
-                  :visible="resetPasswordVisible"
-                  :loading="resetPasswordConfirmLoading"
-                  :model="resetPasswordmdl"
-                  @cancel="resetPasswordHandleCancel"
-                  @ok="resetPasswordHandleOk"
-                />
-                <!-- 上传文件 -->
-                <a-modal
-                  :title="upload.title"
-                  :visible="excelVisible"
-                  @cancel="importExcelHandleCancel"
+                    </a-menu>
+                  </a-dropdown>
+                </span>
+              </a-table>
+              <!-- 底部分页按钮 -->
+              <a-pagination
+                class="ant-table-pagination"
+                v-model="current"
+                :page-size-options="pageSizeOptions"
+                :total="total"
+                show-size-changer
+                :page-size="pageSize"
+                @showSizeChange="onShowSizeChange"
+                @change="currentPageChange"
+              >
+                <template slot="buildOptionText" slot-scope="props">
+                  <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+                  <span v-if="props.value === '50'">全部</span>
+                </template>
+              </a-pagination>
+              <!-- 创建/编辑用户,单独封装了组件 -->
+              <create-form
+                ref="createModal"
+                @handle-success="handleOk"
+              />
+              <!-- 修改密码抽屉 -->
+              <reset-password
+                ref="resetPassword"
+                :visible="resetPasswordVisible"
+                :loading="resetPasswordConfirmLoading"
+                :model="resetPasswordmdl"
+                @cancel="resetPasswordHandleCancel"
+                @ok="resetPasswordHandleOk"
+              />
+              <!-- 上传文件 -->
+              <a-modal
+                :title="upload.title"
+                :visible="excelVisible"
+                @cancel="importExcelHandleCancel"
+              >
+                <a-upload-dragger
+                  name="file"
+                  accept=".xlsx, .xls"
+                  :multiple="true"
+                  :headers="upload.headers"
+                  :action="upload.url + '?updateSupport=' + upload.updateSupport"
+                  @change="importExcelHandleChange"
                 >
-                  <a-upload-dragger
-                    name="file"
-                    accept=".xlsx, .xls"
-                    :multiple="true"
-                    :headers="upload.headers"
-                    :action="upload.url + '?updateSupport=' + upload.updateSupport"
-                    @change="importExcelHandleChange"
-                  >
-                    <p class="ant-upload-drag-icon">
-                      <a-icon type="inbox" />
-                    </p>
-                    <p class="ant-upload-text">
-                      请将文件拖拽到此处上传❥(^_-)
-                    </p>
-                    <p class="ant-upload-hint">
-                      支持单个或批量上传，也可以点击后选择文件上传
-                    </p>
-                  </a-upload-dragger>
+                  <p class="ant-upload-drag-icon">
+                    <a-icon type="inbox" />
+                  </p>
+                  <p class="ant-upload-text">
+                    请将文件拖拽到此处上传❥(^_-)
+                  </p>
+                  <p class="ant-upload-hint">
+                    支持单个或批量上传，也可以点击后选择文件上传
+                  </p>
+                </a-upload-dragger>
               </a-modal>
             </a-col>
           </a-row>
@@ -175,13 +175,13 @@
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { listUser, resetPwd, delUser } from '@/api/system/user'
-import { STable, DescriptionList } from '@/components'
+import { STable } from '@/components'
 import CreateForm from './modules/CreateForm'
 import DeptTree from './modules/DeptTree'
 import ResetPassword from './modules/ResetPassword'
 import storage from 'store'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { getTreeSelect } from '@/api/system/dept'
+import { treeselect } from '@/api/system/dept'
 const statusMap = {
   0: {
     status: 'success',
@@ -198,7 +198,6 @@ export default {
   components: {
     PageHeaderWrapper,
     STable,
-    DescriptionList,
     CreateForm,
     ResetPassword,
     DeptTree
@@ -531,7 +530,7 @@ export default {
     },
     /** 查询部门下拉树结构 */
     getTreeselect () {
-      getTreeSelect().then(response => {
+      treeselect().then(response => {
         this.deptOptions = response.data
       })
     }

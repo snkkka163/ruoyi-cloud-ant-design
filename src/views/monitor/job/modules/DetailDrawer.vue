@@ -7,71 +7,71 @@
       :confirmLoading="loading"
       @close="close"
     >
-    <a-spin :spinning="loading">
-      <a-form-model
-        ref="ruleForm"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-row>
-          <a-col :span="12">
-            <a-form-model-item label="任务编号">
-              {{ data.jobId }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="任务分组">
-              {{ jobGroupFormat(data.jobGroup) }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="任务名称">
-              {{ data.jobName }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="创建时间">
-              {{ data.createTime }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="cron表达式">
-              {{ data.cronExpression }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item  label="执行时间">
-              {{ data.nextValidTime }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="调用目标方法">
-              {{ data.invokeTarget }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="任务状态">
-              <a-badge v-if="data.status === '0'" :status="'success'" :text="'运行中'" />
-              <a-badge v-if="data.status === '1'" :status="'error'" :text="'暂停'" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="是否并发">
-              <a-badge v-if="data.concurrent == 0" status="processing" text="允许" />
-              <a-badge v-if="data.concurrent == 1" status="warning" text="禁止" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="执行策略">
-              <a-badge v-if="data.misfirePolicy == 0" status="default" text="默认策略" />
-              <a-badge v-if="data.misfirePolicy == 1" status="Processing" text="立即执行" />
-              <a-badge v-if="data.misfirePolicy == 2" color="purple" text="执行一次" />
-              <a-badge v-if="data.misfirePolicy == 3" status="warning" text="放弃执行" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </a-spin>
+      <a-spin :spinning="loading">
+        <a-form-model
+          ref="ruleForm"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-row>
+            <a-col :span="12">
+              <a-form-model-item label="任务编号">
+                {{ data.jobId }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="任务分组">
+                {{ jobGroupFormat(data.jobGroup) }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="任务名称">
+                {{ data.jobName }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="创建时间">
+                {{ data.createTime }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="cron表达式">
+                {{ data.cronExpression }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="执行时间">
+                {{ data.nextValidTime }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="调用目标方法">
+                {{ data.invokeTarget }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="任务状态">
+                <a-badge v-if="data.status === '0'" :status="'success'" :text="'运行中'" />
+                <a-badge v-if="data.status === '1'" :status="'error'" :text="'暂停'" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="是否并发">
+                <a-badge v-if="data.concurrent == 0" status="processing" text="允许" />
+                <a-badge v-if="data.concurrent == 1" status="warning" text="禁止" />
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="执行策略">
+                <a-badge v-if="data.misfirePolicy == 0" status="default" text="默认策略" />
+                <a-badge v-if="data.misfirePolicy == 1" status="Processing" text="立即执行" />
+                <a-badge v-if="data.misfirePolicy == 2" color="purple" text="执行一次" />
+                <a-badge v-if="data.misfirePolicy == 3" status="warning" text="放弃执行" />
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+        </a-form-model>
+      </a-spin>
 
       <div
         :style="{

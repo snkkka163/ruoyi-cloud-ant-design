@@ -5,24 +5,24 @@
         <a-card :bordered="false" class="content">
           <div class="table-page-search-wrapper">
             <a-form layout="inline">
-                <a-row :gutter="48">
-                  <a-col :md="8" :sm="24">
-                    <a-form-item label="登录地址">
-                      <a-input placeholder="请输入" v-model="queryParams.ipaddr"/>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :md="8" :sm="24">
-                    <a-form-item label="用户名称">
-                      <a-input placeholder="请输入" v-model="queryParams.userName"/>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :md="8" :sm="24">
-                    <span class="table-page-search-submitButtons">
-                      <a-button @click="handleQuery" type="primary">查询</a-button>
-                      <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
-                    </span>
-                  </a-col>
-                </a-row>
+              <a-row :gutter="48">
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="登录地址">
+                    <a-input placeholder="请输入" v-model="queryParams.ipaddr"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="用户名称">
+                    <a-input placeholder="请输入" v-model="queryParams.userName"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <span class="table-page-search-submitButtons">
+                    <a-button @click="handleQuery" type="primary">查询</a-button>
+                    <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
+                  </span>
+                </a-col>
+              </a-row>
             </a-form>
           </div>
           <!-- 表格 -->
@@ -45,15 +45,15 @@
           </a-table>
           <!-- 底部分页按钮 -->
           <a-pagination
-              class="ant-table-pagination"
-              v-model="current"
-              :page-size-options="pageSizeOptions"
-              :total="total"
-              show-size-changer
-              :page-size="pageSize"
-              @showSizeChange="onShowSizeChange"
-              @change="currentPageChange"
-            >
+            class="ant-table-pagination"
+            v-model="current"
+            :page-size-options="pageSizeOptions"
+            :total="total"
+            show-size-changer
+            :page-size="pageSize"
+            @showSizeChange="onShowSizeChange"
+            @change="currentPageChange"
+          >
             <template slot="buildOptionText" slot-scope="props">
               <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
               <span v-if="props.value === '50'">全部</span>

@@ -10,11 +10,11 @@
   >
     <a-spin :spinning="loading">
       <a-form-model
-      ref="ruleForm"
-      :model="form"
-      :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
+        ref="ruleForm"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
       >
         <a-row>
           <a-col :span="24" :pull="3">
@@ -62,7 +62,7 @@
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue">
-                    {{ dict.dictLabel }}
+                  {{ dict.dictLabel }}
                 </a-radio-button>
               </a-radio-group>
             </a-form-model-item>
@@ -142,12 +142,13 @@ export default {
     })
     listDept().then(response => {
       this.deptOptions = this.handleTree(response.data, 'deptId')
+      const dept = { deptId: 0, deptName: '主类目', children: [] }
+      this.deptOptions.push(dept)
     })
   },
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
@@ -155,10 +156,8 @@ export default {
         console.log(this.form)
       } else {
         // 新增行为
-        // 刷新表单,查询角色树
         this.reset()
       }
-      // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
       this.visible = true
     },

@@ -15,7 +15,7 @@
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
-        >
+      >
         <a-row>
           <a-col :span="12">
             <a-form-model-item ref="noticeTitle" label="公告标题" prop="noticeTitle">
@@ -29,7 +29,7 @@
                   v-for="dict in typeOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue">
-                    {{ dict.dictLabel }}
+                  {{ dict.dictLabel }}
                 </a-select-option>
               </a-select>
             </a-form-model-item>
@@ -41,7 +41,7 @@
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue">
-                    {{ dict.dictLabel }}
+                  {{ dict.dictLabel }}
                 </a-radio>
               </a-radio-group>
             </a-form-model-item>

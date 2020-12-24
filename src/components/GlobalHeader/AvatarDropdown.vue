@@ -1,7 +1,7 @@
 <template>
   <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
     <span class="ant-pro-account-avatar">
-      <a-avatar size="small" v-bind:src="avatar" class="antd-pro-global-header-index-avatar" />
+      <a-avatar size="small" :src="avatar" class="antd-pro-global-header-index-avatar" />
       <span>{{ name }}</span>
     </span>
     <template v-slot:overlay>

@@ -10,11 +10,11 @@
   >
     <a-spin :spinning="loading">
       <a-form-model
-      ref="ruleForm"
-      :model="form"
-      :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
+        ref="ruleForm"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
       >
         <a-form-model-item label="字典名称" prop="dictName">
           <a-input v-model="form.dictName" placeholder="请输入参数名称" />
@@ -28,7 +28,7 @@
               v-for="dict in statusOptions"
               :key="dict.dictValue"
               :value="dict.dictValue">
-                {{ dict.dictLabel }}
+              {{ dict.dictLabel }}
             </a-radio-button>
           </a-radio-group>
         </a-form-model-item>

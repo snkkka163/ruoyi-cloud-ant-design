@@ -10,11 +10,11 @@
   >
     <a-spin :spinning="loading">
       <a-form-model
-      ref="ruleForm"
-      :model="form"
-      :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
+        ref="ruleForm"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
       >
         <a-form-model-item ref="roleName" label="角色名称" prop="roleName">
           <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.roleName" placeholder="请输入用户昵称" />
@@ -28,12 +28,12 @@
         <a-form-model-item ref="status" label="状态" prop="status">
           <a-radio-group button-style="solid" v-model="form.status">
             <a-radio-button
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :value="dict.dictValue">
-                  {{ dict.dictLabel }}
-              </a-radio-button>
-            </a-radio-group>
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :value="dict.dictValue">
+              {{ dict.dictLabel }}
+            </a-radio-button>
+          </a-radio-group>
         </a-form-model-item>
         <a-form-model-item ref="menuIds" label="菜单权限" prop="menuIds">
           <a-tree-select

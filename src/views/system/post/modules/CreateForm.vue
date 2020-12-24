@@ -15,7 +15,7 @@
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
-        >
+      >
         <a-form-model-item ref="postName" label="岗位名称" prop="postName">
           <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.postName" placeholder="请输入岗位名称" />
         </a-form-model-item>
@@ -28,12 +28,12 @@
         <a-form-model-item ref="status" label="岗位状态" prop="status">
           <a-radio-group button-style="solid" v-model="form.status">
             <a-radio-button
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :value="dict.dictValue">
-                  {{ dict.dictLabel }}
-              </a-radio-button>
-            </a-radio-group>
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :value="dict.dictValue">
+              {{ dict.dictLabel }}
+            </a-radio-button>
+          </a-radio-group>
         </a-form-model-item>
         <a-form-model-item ref="remark" label="备注" prop="remark">
           <a-textarea

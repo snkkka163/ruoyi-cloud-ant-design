@@ -7,52 +7,52 @@
       :confirmLoading="loading"
       @close="close"
     >
-    <a-spin :spinning="loading">
-      <a-form-model
-        ref="ruleForm"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
-        <a-row>
-          <a-col :span="12">
-            <a-form-model-item label="日志序号">
-              {{ data.jobLogId }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="任务分组">
-              {{ jobGroupFormat(data) }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item label="任务名称">
-              {{ data.jobName }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="12">
-            <a-form-model-item  label="执行时间">
-              {{ data.createTime }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="2">
-            <a-form-model-item label="调用目标方法">
-              {{ data.invokeTarget }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="日志信息">
-              {{ data.jobMessage }}
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="24" :pull="3">
-            <a-form-model-item label="执行状态">
-              <a-badge v-if="data.status == 0" status="processing" text="正常" />
-              <a-badge v-if="data.status == 1" status="warning" text="失败" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </a-spin>
+      <a-spin :spinning="loading">
+        <a-form-model
+          ref="ruleForm"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-row>
+            <a-col :span="12">
+              <a-form-model-item label="日志序号">
+                {{ data.jobLogId }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="任务分组">
+                {{ jobGroupFormat(data) }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="任务名称">
+                {{ data.jobName }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-model-item label="执行时间">
+                {{ data.createTime }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="2">
+              <a-form-model-item label="调用目标方法">
+                {{ data.invokeTarget }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="日志信息">
+                {{ data.jobMessage }}
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="24" :pull="3">
+              <a-form-model-item label="执行状态">
+                <a-badge v-if="data.status == 0" status="processing" text="正常" />
+                <a-badge v-if="data.status == 1" status="warning" text="失败" />
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+        </a-form-model>
+      </a-spin>
 
       <div
         :style="{

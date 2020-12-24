@@ -23,7 +23,7 @@
       :model="mdl"
       @cancel="handleCancel"
       @ok="handleOk"
-      />
+    />
   </a-list>
 </template>
 

@@ -19,23 +19,23 @@
       @ok="() => { $emit('ok') }"
       @cancel="() => { $emit('cancel') }"
     >
-    <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
-      <a-form-item label="旧密码">
-        <a-input
-          v-decorator="['oldPassword', { rules: [{ required: true, message: '旧密码不能为空!' }] }]"
-        />
-      </a-form-item>
-      <a-form-item label="新密码">
-        <a-input
-          v-decorator="['newPassword', { rules: [{ required: true, message: '新密码不能为空!' }] }]"
-        />
-      </a-form-item>
-      <a-form-item label="确认密码">
-        <a-input
-          v-decorator="['newPassword2', { rules: [{ required: true, message: '确认密码不能为空!' }] }]"
-        />
-      </a-form-item>
-    </a-form>
+      <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+        <a-form-item label="旧密码">
+          <a-input
+            v-decorator="['oldPassword', { rules: [{ required: true, message: '旧密码不能为空!' }] }]"
+          />
+        </a-form-item>
+        <a-form-item label="新密码">
+          <a-input
+            v-decorator="['newPassword', { rules: [{ required: true, message: '新密码不能为空!' }] }]"
+          />
+        </a-form-item>
+        <a-form-item label="确认密码">
+          <a-input
+            v-decorator="['newPassword2', { rules: [{ required: true, message: '确认密码不能为空!' }] }]"
+          />
+        </a-form-item>
+      </a-form>
 
       <div
         :style="{

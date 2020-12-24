@@ -12,20 +12,20 @@
                   </a-form-item>
                 </a-col>
                 <a-col :md="8" :sm="24">
-                    <a-form-item label="状态">
-                        <a-select placeholder="请选择" v-model="queryParams.status">
-                          <a-select-option value="0">正常</a-select-option>
-                          <a-select-option value="1">禁用</a-select-option>
-                        </a-select>
-                      </a-form-item>
-                  </a-col>
-                  <a-col :md="8" :sm="24">
-                    <span class="table-page-search-submitButtons">
-                      <a-button @click="handleQuery" type="primary">查询</a-button>
-                      <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
-                    </span>
-                  </a-col>
-                </a-row>
+                  <a-form-item label="状态">
+                    <a-select placeholder="请选择" v-model="queryParams.status">
+                      <a-select-option value="0">正常</a-select-option>
+                      <a-select-option value="1">禁用</a-select-option>
+                    </a-select>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <span class="table-page-search-submitButtons">
+                    <a-button @click="handleQuery" type="primary">查询</a-button>
+                    <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
+                  </span>
+                </a-col>
+              </a-row>
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { listMenu } from '@/api/system/menu'
+import { delMenu, listMenu } from '@/api/system/menu'
 import CreateForm from './modules/CreateForm'
 const statusMap = {
   0: {
@@ -211,6 +211,28 @@ export default {
         status: undefined
       }
       this.handleQuery()
+    },
+    /** 删除按钮操作 */
+    handleDelete (row) {
+      const menuId = row.menuId
+      const that = this
+      this.$confirm({
+        title: '警告',
+        content: `真的要删除 菜单编号为${menuId}的数据项吗?`,
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          delMenu(menuId).then(response => {
+            if (response.code === 200) {
+              that.$message.success('删除成功!')
+              that.getList()
+            } else {
+              that.$message.error(response.msg)
+            }
+          })
+        }
+      })
     },
     // 新增/修改框事件
     handleOk () {

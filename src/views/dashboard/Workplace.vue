@@ -3,7 +3,7 @@
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
-          <a-avatar size="large" v-bind:src="avatar"/>
+          <a-avatar size="large" :src="avatar"/>
         </div>
         <div class="content">
           <div class="content-title">

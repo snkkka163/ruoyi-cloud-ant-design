@@ -15,17 +15,16 @@
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
-        >
+      >
         <a-row>
           <a-col :span="24" :pull="3">
             <a-form-model-item ref="parentId" label="上级菜单" prop="parentId">
-              <!-- v-model="form.parentId" -->
               <a-tree-select
-                :tree-data="deptOptions"
+                :tree-data="menuOptions"
+                v-model="form.parentId"
                 style="width: 100%"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 placeholder="Please select"
-                tree-default-expand-all
                 :replaceFields="treeReplaceFields"
               />
             </a-form-model-item>
@@ -42,12 +41,12 @@
           <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="菜单图标">
               <a-popover
-                  placement="bottom"
-                  width="460"
-                  trigger="click"
-                >
+                placement="bottom"
+                width="460"
+                trigger="click"
+              >
                 <IconSelect slot="content" ref="iconSelect" @selected="selected" />
-                <a-input v-model="form.icon" placeholder="点击选择图标" readonly></a-input>
+                <a-input v-model="form.icon" placeholder="点击选择图标" read-only></a-input>
               </a-popover>
             </a-form-model-item>
           </a-col>
@@ -63,10 +62,10 @@
           </a-col>
           <a-col :span="24" :pull="3">
             <a-form-model-item v-if="form.menuType != 'F'" label="是否外链">
-                <a-radio-group v-model="form.isFrame">
-                  <a-radio :value="0">是</a-radio>
-                  <a-radio :value="1">否</a-radio>
-                </a-radio-group>
+              <a-radio-group v-model="form.isFrame">
+                <a-radio :value="'0'">是</a-radio>
+                <a-radio :value="'1'">否</a-radio>
+              </a-radio-group>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" :pull="3">
@@ -91,7 +90,7 @@
                   v-for="dict in visibleOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue"
-                >{{dict.dictLabel}}</a-radio>
+                >{{ dict.dictLabel }}</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -102,15 +101,15 @@
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue"
-                >{{dict.dictLabel}}</a-radio>
+                >{{ dict.dictLabel }}</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
           <a-col :span="24" :pull="3" v-if="form.menuType == 'C'">
             <a-form-model-item v-if="form.menuType == 'C'" label="是否缓存">
               <a-radio-group v-model="form.isCache">
-                <a-radio :value="0">缓存</a-radio>
-                <a-radio :value="1">不缓存</a-radio>
+                <a-radio :value="'0'">缓存</a-radio>
+                <a-radio :value="'1'">不缓存</a-radio>
               </a-radio-group>
             </a-form-model-item>
           </a-col>
@@ -123,24 +122,16 @@
 <script>
 // import pick from 'lodash.pick'
 import IconSelect from '@/components/IconSelect'
-import { listDept } from '@/api/system/dept'
+import { addMenu, listMenu, updateMenu } from '@/api/system/menu'
 // 表单字段
 export default {
   components: {
     IconSelect
   },
-  props: {
-    parendDictId: {
-      type: Number,
-      required: true
-    }
-  },
   data () {
     return {
       // 菜单列表
       menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 状态数据字典
       statusOptions: [],
       // 显示状态数据字典
@@ -162,7 +153,9 @@ export default {
       },
       // 表单属性:
       // 表单参数
-      form: {},
+      form: {
+        icon: ''
+      },
       // 表单校验
       rules: {
         menuName: [
@@ -177,9 +170,9 @@ export default {
       },
       treeReplaceFields: {
         children: 'children',
-        title: 'deptName',
-        key: 'deptId',
-        value: 'deptId'
+        title: 'menuName',
+        key: 'menuId',
+        value: 'menuId'
       }
     }
   },
@@ -190,25 +183,25 @@ export default {
     this.getDicts('sys_normal_disable').then(response => {
       this.statusOptions = response.data
     })
-    listDept().then(response => {
-      this.deptOptions = this.handleTree(response.data, 'deptId')
-      console.log('测试结果')
-      console.log(this.deptOptions)
+    listMenu().then(response => {
+      this.menuOptions = this.handleTree(response.data, 'menuId')
+      const menu = { menuId: 0, menuName: '主类目', children: [] }
+      this.menuOptions.push(menu)
     })
   },
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
+      // 给类型选择框赋值:
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log('此时的值')
-        console.log(this.form)
+        this.form.menuType = data.menuType
       } else {
         // 新增行为
-        // 刷新表单,查询角色树
-        this.reset()
+        // 默认将类型设置为目录
+         this.form.menuType = 'M'
+        // this.reset()
       }
       // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
@@ -220,7 +213,6 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         const params = Object.assign({}, this.form)
@@ -228,37 +220,40 @@ export default {
           (this.form.menuId ? this.$http.put : this.$http.post)('user', params).then(res => {
             // 进行新增行为:
             if (this.form.menuId > 0) {
-              // 刷新表格
-              // updateRole(this.form).then(response => {
-              //   if (response.code === 200) {
-              //     this.$message.success('修改成功')
-              //     // 关闭本组件
-              //     this.visible = false
-              //     // 调用外部刷新列表方法
-              //     this.$emit('handle-success')
-              //     // 刷新表单
-              //     this.reset()
-              //   } else {
-              //     this.$message.error(response.msg)
-              //     this.confirmLoading = false
-              //   }
-              // })
+              // 暂时在本处处理若依最高级菜单下无子菜单情况下children是个字符串的bug
+              if (this.form.children === '') {
+                this.form.children = []
+              }
+              updateMenu(this.form).then(response => {
+                if (response.code === 200) {
+                  this.$message.success('修改成功')
+                  // 关闭本组件
+                  this.visible = false
+                  // 调用外部刷新列表方法
+                  this.$emit('handle-success')
+                  // 刷新表单
+                  this.reset()
+                } else {
+                  this.$message.error(response.msg)
+                  this.confirmLoading = false
+                }
+              })
             } else {
               // 新增
-              // addRole(this.form).then(response => {
-              //   if (response.code === 200) {
-              //     this.$message.success('新增成功')
-              //     // 关闭本组件
-              //     this.visible = false
-              //     // 调用外部刷新列表方法
-              //     this.$emit('handle-success')
-              //     // 刷新表单
-              //     this.reset()
-              //   } else {
-              //     this.$message.error(response.msg)
-              //     this.confirmLoading = false
-              //   }
-              // })
+              addMenu(this.form).then(response => {
+                if (response.code === 200) {
+                  this.$message.success('新增成功')
+                  // 关闭本组件
+                  this.visible = false
+                  // 调用外部刷新列表方法
+                  this.$emit('handle-success')
+                  // 刷新表单
+                  this.reset()
+                } else {
+                  this.$message.error(response.msg)
+                  this.confirmLoading = false
+                }
+              })
             }
           }).catch(e => {
             this.confirmLoading = false
@@ -270,12 +265,12 @@ export default {
     },
     // 表单重置
     reset () {
-      this.form = {}
+      this.form = {
+        icon: ''
+      }
     },
     // 选择图标
     selected (name) {
-      console.log('为表单设置值为')
-      console.log(name)
       this.form.icon = name
     }
   }

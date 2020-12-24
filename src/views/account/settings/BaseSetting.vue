@@ -7,21 +7,21 @@
           <a-form-item
             label="昵称"
           >
-            <a-input v-bind:value="name" v-model="userObj.nickName" />
+            <a-input :value="name" v-model="userObj.nickName" />
           </a-form-item>
 
           <a-form-item
             label="手机号码"
             :required="false"
           >
-            <a-input v-bind:value="phonenumber" v-model="userObj.phonenumber" />
+            <a-input :value="phonenumber" v-model="userObj.phonenumber" />
           </a-form-item>
 
           <a-form-item
             label="邮箱"
             :required="false"
           >
-            <a-input v-bind:value="email" v-model="userObj.email" />
+            <a-input :value="email" v-model="userObj.email" />
           </a-form-item>
 
           <a-form-item
@@ -51,7 +51,7 @@
           <div class="mask">
             <a-icon type="plus" />
           </div>
-          <img v-bind:src="avatar" />
+          <img :src="avatar" />
         </div>
       </a-col>
 

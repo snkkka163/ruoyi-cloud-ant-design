@@ -10,12 +10,12 @@
   >
     <a-spin :spinning="loading">
       <a-form-model
-      ref="ruleForm"
-      :model="form"
-      :rules="rules"
-      :label-col="labelCol"
-      :wrapper-col="wrapperCol"
-    >
+        ref="ruleForm"
+        :model="form"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
         <a-row>
           <a-col :span="12">
             <a-form-model-item ref="nickName" label="用户昵称" prop="nickName">
@@ -62,7 +62,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="12">
-            <a-form-model-item  v-if="form.userId == undefined" label="用户密码" prop="password">
+            <a-form-model-item v-if="form.userId == undefined" label="用户密码" prop="password">
               <a-input v-model="form.password" placeholder="请输入用户密码" />
             </a-form-model-item>
           </a-col>
@@ -73,9 +73,9 @@
               <!-- <a-input v-model="form.sex" placeholder="请输入用户性别" /> -->
               <a-radio-group v-model="form.sex">
                 <a-radio
-                v-for="dict in sexOptions"
-                :key="dict.dictValue"
-                :value="dict.dictValue">
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :value="dict.dictValue">
                   {{ dict.dictLabel }}
                 </a-radio>
               </a-radio-group>
@@ -88,7 +88,7 @@
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
                   :value="dict.dictValue">
-                    {{ dict.dictLabel }}
+                  {{ dict.dictLabel }}
                 </a-radio-button>
               </a-radio-group>
               <!-- <a-input v-model="form.status" placeholder="请输入状态" /> -->
@@ -104,7 +104,7 @@
                   :key="item.postId"
                   :value="item.postId">
                   {{ item.postName }}
-                 </a-select-option>
+                </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -116,7 +116,7 @@
                   :key="item.roleId"
                   :value="item.roleId">
                   {{ item.roleName }}
-                 </a-select-option>
+                </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
@@ -136,7 +136,7 @@
 
 <script>
 // import pick from 'lodash.pick'
-import { getTreeSelect } from '@/api/system/dept'
+import { treeselect } from '@/api/system/dept'
 import { getUser, updateUser, addUser } from '@/api/system/user'
 // 表单字段
 export default {
@@ -208,7 +208,7 @@ export default {
   },
   created () {
     // 初始化树菜单
-    getTreeSelect()
+    treeselect()
     .then(res => {
       // 层级遍历赋值给treeData
       this.treeData = res.data

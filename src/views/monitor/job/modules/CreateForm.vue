@@ -15,7 +15,7 @@
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
-        >
+      >
         <a-form-model-item ref="jobName" label="任务名称" prop="jobName">
           <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.jobName" placeholder="请输入任务名称" />
         </a-form-model-item>
@@ -25,13 +25,13 @@
               v-for="dict in jobGroupOptions"
               :key="dict.dictValue"
               :value="dict.dictValue">
-                {{ dict.dictLabel }}
+              {{ dict.dictLabel }}
             </a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-model-item ref="invokeTarget" prop="invokeTarget">
           <span slot="label">
-              调用方法
+            调用方法
             <a-tooltip>
               <template slot="title" placement="top">
                 Bean调用示例：ryTask.ryParams('ry')
@@ -63,12 +63,12 @@
         <a-form-model-item ref="status" label="状态" prop="status">
           <a-radio-group v-model="form.status">
             <a-radio
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :value="dict.dictValue">
-                  {{ dict.dictLabel }}
-              </a-radio>
-            </a-radio-group>
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :value="dict.dictValue">
+              {{ dict.dictLabel }}
+            </a-radio>
+          </a-radio-group>
         </a-form-model-item>
       </a-form-model>
     </a-spin>

@@ -5,42 +5,42 @@
         <a-card :bordered="false" class="content">
           <div class="table-page-search-wrapper">
             <a-form layout="inline">
-                <a-row :gutter="48">
+              <a-row :gutter="48">
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="公告标题">
+                    <a-input placeholder="请输入" v-model="queryParams.noticeTitle"/>
+                  </a-form-item>
+                </a-col>
+                <a-col :md="8" :sm="24">
+                  <a-form-item label="操作人员">
+                    <a-input placeholder="请输入" v-model="queryParams.createBy"/>
+                  </a-form-item>
+                </a-col>
+                <template v-if="advanced">
                   <a-col :md="8" :sm="24">
-                    <a-form-item label="公告标题">
-                      <a-input placeholder="请输入" v-model="queryParams.noticeTitle"/>
+                    <a-form-item label="类型">
+                      <a-radio-group button-style="solid" v-model="queryParams.noticeType">
+                        <a-radio-button
+                          v-for="dict in typeOptions"
+                          :key="dict.dictValue"
+                          :value="dict.dictValue">
+                          {{ dict.dictLabel }}
+                        </a-radio-button>
+                      </a-radio-group>
                     </a-form-item>
                   </a-col>
-                  <a-col :md="8" :sm="24">
-                    <a-form-item label="操作人员">
-                      <a-input placeholder="请输入" v-model="queryParams.createBy"/>
-                    </a-form-item>
-                  </a-col>
-                  <template v-if="advanced">
-                    <a-col :md="8" :sm="24">
-                      <a-form-item label="类型">
-                        <a-radio-group button-style="solid" v-model="queryParams.noticeType">
-                          <a-radio-button
-                            v-for="dict in typeOptions"
-                            :key="dict.dictValue"
-                            :value="dict.dictValue">
-                              {{ dict.dictLabel }}
-                          </a-radio-button>
-                        </a-radio-group>
-                      </a-form-item>
-                    </a-col>
-                  </template>
-                  <a-col :md="8" :sm="24">
-                    <span class="table-page-search-submitButtons">
-                      <a-button @click="handleQuery" type="primary">查询</a-button>
-                      <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
-                      <a @click="toggleAdvanced" style="margin-left: 8px">
-                        {{ advanced ? '收起' : '展开' }}
-                        <a-icon :type="advanced ? 'up' : 'down'"/>
-                      </a>
-                    </span>
-                  </a-col>
-                </a-row>
+                </template>
+                <a-col :md="8" :sm="24">
+                  <span class="table-page-search-submitButtons">
+                    <a-button @click="handleQuery" type="primary">查询</a-button>
+                    <a-button @click="resetQuery" style="margin-left: 8px">重置</a-button>
+                    <a @click="toggleAdvanced" style="margin-left: 8px">
+                      {{ advanced ? '收起' : '展开' }}
+                      <a-icon :type="advanced ? 'up' : 'down'"/>
+                    </a>
+                  </span>
+                </a-col>
+              </a-row>
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
@@ -90,15 +90,15 @@
           </a-table>
           <!-- 底部分页按钮 -->
           <a-pagination
-              class="ant-table-pagination"
-              v-model="current"
-              :page-size-options="pageSizeOptions"
-              :total="total"
-              show-size-changer
-              :page-size="pageSize"
-              @showSizeChange="onShowSizeChange"
-              @change="currentPageChange"
-            >
+            class="ant-table-pagination"
+            v-model="current"
+            :page-size-options="pageSizeOptions"
+            :total="total"
+            show-size-changer
+            :page-size="pageSize"
+            @showSizeChange="onShowSizeChange"
+            @change="currentPageChange"
+          >
             <template slot="buildOptionText" slot-scope="props">
               <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
               <span v-if="props.value === '50'">全部</span>
