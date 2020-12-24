@@ -28,47 +28,47 @@
                 </a-row>
             </a-form>
           </div>
+          <div class="table-page-operator-wrapper">
+            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+          </div>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="menuList"
+            :row-selection="rowSelection"
+            row-key="menuId"
+            :pagination="false"
+          >
+            <!-- 插槽指向状态 -->
+            <span slot="status" slot-scope="text">
+              <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+            </span>
+
+            <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <a @click="$refs.createModal.show(record)">编辑</a>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a class="ant-dropdown-link">
+                  更多 <a-icon type="down" />
+                </a>
+                <a-menu slot="overlay">
+                  <a-menu-item>
+                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </span>
+          </a-table>
+          <!-- 创建/编辑菜单,单独封装了组件 -->
+          <create-form
+            ref="createModal"
+            @handle-success="handleOk"
+          />
         </a-card>
       </div>
-      <div class="table-page-operator-wrapper">
-        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-      </div>
-      <!-- 表格 -->
-      <a-table
-        ref="table"
-        :columns="columns"
-        :loading="tableLoading"
-        :data-source="menuList"
-        :row-selection="rowSelection"
-        row-key="menuId"
-        :pagination="false"
-      >
-        <!-- 插槽指向状态 -->
-        <span slot="status" slot-scope="text">
-          <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
-        </span>
-
-        <!-- 更多选择 -->
-        <span slot="action" slot-scope="text, record">
-          <a @click="$refs.createModal.show(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a href="javascript:;" @click="handleDelete(record)">删除</a>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
-        </span>
-      </a-table>
-      <!-- 创建/编辑菜单,单独封装了组件 -->
-      <create-form
-        ref="createModal"
-        @handle-success="handleOk"
-      />
     </template>
   </page-header-wrapper>
 </template>

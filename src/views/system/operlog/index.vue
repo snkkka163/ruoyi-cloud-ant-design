@@ -61,60 +61,60 @@
                 </a-row>
             </a-form>
           </div>
+          <div class="table-page-operator-wrapper">
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+                <a-menu-item key="clear-data" @click="handleClean">清除</a-menu-item>
+              </a-menu>
+              <a-button>
+                更多操作 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="list"
+            :row-selection="rowSelection"
+            row-key="operId"
+            :pagination="false"
+          >
+            <span slot="businessType" slot-scope="text, record">
+              {{ typeFormat(record) }}
+            </span>
+            <span slot="status" slot-scope="text, record">
+              {{ statusFormat(record) }}
+            </span>
+
+            <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <a @click="$refs.detailDrawer.show(record)">详细</a>
+            </span>
+          </a-table>
+          <!-- 底部分页按钮 -->
+          <a-pagination
+              class="ant-table-pagination"
+              v-model="current"
+              :page-size-options="pageSizeOptions"
+              :total="total"
+              show-size-changer
+              :page-size="pageSize"
+              @showSizeChange="onShowSizeChange"
+              @change="currentPageChange"
+            >
+            <template slot="buildOptionText" slot-scope="props">
+              <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+              <span v-if="props.value === '50'">全部</span>
+            </template>
+          </a-pagination>
+          <!-- 详细 -->
+          <detail-drawer ref='detailDrawer' />
         </a-card>
       </div>
-      <div class="table-page-operator-wrapper">
-        <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-        <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
-            <a-menu-item key="clear-data" @click="handleClean">清除</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作 <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
-      </div>
-      <!-- 表格 -->
-      <a-table
-        ref="table"
-        :columns="columns"
-        :loading="tableLoading"
-        :data-source="list"
-        :row-selection="rowSelection"
-        row-key="operId"
-        :pagination="false"
-      >
-        <span slot="businessType" slot-scope="text, record">
-          {{ typeFormat(record) }}
-        </span>
-        <span slot="status" slot-scope="text, record">
-          {{ statusFormat(record) }}
-        </span>
-
-        <!-- 更多选择 -->
-        <span slot="action" slot-scope="text, record">
-          <a @click="$refs.detailDrawer.show(record)">详细</a>
-        </span>
-      </a-table>
-      <!-- 底部分页按钮 -->
-      <a-pagination
-          class="ant-table-pagination"
-          v-model="current"
-          :page-size-options="pageSizeOptions"
-          :total="total"
-          show-size-changer
-          :page-size="pageSize"
-          @showSizeChange="onShowSizeChange"
-          @change="currentPageChange"
-        >
-        <template slot="buildOptionText" slot-scope="props">
-          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-          <span v-if="props.value === '50'">全部</span>
-        </template>
-      </a-pagination>
-      <!-- 详细 -->
-      <detail-drawer ref='detailDrawer' />
     </template>
   </page-header-wrapper>
 </template>

@@ -138,6 +138,7 @@ export const generator = (routerMap, parent) => {
         item.component = 'RouteView'
       } else if (item.component === 'ParentView') {
         item.component = 'RouteView'
+        item.path = '/' + item.path
       }
     }
     if (item.isFrame === 0) {

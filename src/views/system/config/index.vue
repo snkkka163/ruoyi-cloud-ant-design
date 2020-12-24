@@ -49,87 +49,87 @@
                 </a-row>
             </a-form>
           </div>
+          <div class="table-page-operator-wrapper">
+            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
+                <a-menu-item key="export-data2" @click="handleClearCache">清除缓存</a-menu-item>
+              </a-menu>
+              <a-button>
+                更多操作 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
+          <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <a @click="$refs.createModal.show(record)">编辑</a>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a class="ant-dropdown-link">
+                  更多 <a-icon type="down" />
+                </a>
+                <a-menu slot="overlay">
+                  <a-menu-item>
+                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </span>
+            <!-- 表格 -->
+            <a-table
+              ref="table"
+              :columns="columns"
+              :loading="tableLoading"
+              :data-source="configList"
+              :row-selection="rowSelection"
+              row-key="configId"
+              :pagination="false"
+            >
+              <!-- 插槽指向状态 -->
+              <span slot="configType" slot-scope="text, record">
+                {{ typeFormat(record) }}
+              </span>
+              <!-- 更多选择 -->
+              <span slot="action" slot-scope="text, record">
+                <a @click="$refs.createModal.show(record)">编辑</a>
+                <a-divider type="vertical" />
+                <a-dropdown>
+                  <a class="ant-dropdown-link">
+                    更多 <a-icon type="down" />
+                  </a>
+                  <a-menu slot="overlay">
+                    <a-menu-item>
+                      <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    </a-menu-item>
+                  </a-menu>
+                </a-dropdown>
+              </span>
+            </a-table>
+            <!-- 底部分页按钮 -->
+            <a-pagination
+                class="ant-table-pagination"
+                v-model="current"
+                :page-size-options="pageSizeOptions"
+                :total="total"
+                show-size-changer
+                :page-size="pageSize"
+                @showSizeChange="onShowSizeChange"
+                @change="currentPageChange"
+              >
+              <template slot="buildOptionText" slot-scope="props">
+                <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+                <span v-if="props.value === '50'">全部</span>
+              </template>
+            </a-pagination>
+            <!-- 创建/编辑配置,单独封装了组件 -->
+            <create-form
+              ref="createModal"
+              @handle-success="handleOk"
+            />
         </a-card>
       </div>
-      <div class="table-page-operator-wrapper">
-        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-        <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-        <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
-            <a-menu-item key="export-data2" @click="handleClearCache">清除缓存</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作 <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
-      </div>
-      <!-- 更多选择 -->
-        <span slot="action" slot-scope="text, record">
-          <a @click="$refs.createModal.show(record)">编辑</a>
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a href="javascript:;" @click="handleDelete(record)">删除</a>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
-        </span>
-        <!-- 表格 -->
-        <a-table
-          ref="table"
-          :columns="columns"
-          :loading="tableLoading"
-          :data-source="configList"
-          :row-selection="rowSelection"
-          row-key="configId"
-          :pagination="false"
-        >
-          <!-- 插槽指向状态 -->
-          <span slot="configType" slot-scope="text, record">
-            {{ typeFormat(record) }}
-          </span>
-          <!-- 更多选择 -->
-          <span slot="action" slot-scope="text, record">
-            <a @click="$refs.createModal.show(record)">编辑</a>
-            <a-divider type="vertical" />
-            <a-dropdown>
-              <a class="ant-dropdown-link">
-                更多 <a-icon type="down" />
-              </a>
-              <a-menu slot="overlay">
-                <a-menu-item>
-                  <a href="javascript:;" @click="handleDelete(record)">删除</a>
-                </a-menu-item>
-              </a-menu>
-            </a-dropdown>
-          </span>
-        </a-table>
-        <!-- 底部分页按钮 -->
-        <a-pagination
-            class="ant-table-pagination"
-            v-model="current"
-            :page-size-options="pageSizeOptions"
-            :total="total"
-            show-size-changer
-            :page-size="pageSize"
-            @showSizeChange="onShowSizeChange"
-            @change="currentPageChange"
-          >
-          <template slot="buildOptionText" slot-scope="props">
-            <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-            <span v-if="props.value === '50'">全部</span>
-          </template>
-        </a-pagination>
-        <!-- 创建/编辑配置,单独封装了组件 -->
-        <create-form
-          ref="createModal"
-          @handle-success="handleOk"
-        />
     </template>
   </page-header-wrapper>
 </template>

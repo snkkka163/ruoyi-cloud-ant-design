@@ -50,100 +50,100 @@
                 </a-row>
             </a-form>
           </div>
+          <div class="table-page-operator-wrapper">
+            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-button @click="handleJobLog">日志</a-button>
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+              </a-menu>
+              <a-button>
+                更多操作 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="list"
+            :row-selection="rowSelection"
+            row-key="jobId"
+            :pagination="false"
+          >
+            <span slot="jobGroup" slot-scope="text, record">
+              {{ jobGroupFormat(record) }}
+            </span>
+            <span slot="status" slot-scope="text, record">
+              <a-popconfirm
+                ok-text="是"
+                cancel-text="否"
+                @confirm="confirmHandleStatus(record)"
+                @cancel="cancelHandleStatus(record)"
+              >
+                <span slot="title">确认<b>{{ record.status === '1' ? '启用' : '停用' }}</b>{{ record.jobName }}的任务吗?</span>
+                <a-switch checked-children="开" un-checked-children="关" :checked="record.status == 0" />
+              </a-popconfirm>
+            </span>
+
+            <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <!-- <a @click="$refs.createModal.show(record)">执行一次</a> -->
+              <a-popconfirm
+                ok-text="是"
+                cancel-text="否"
+                @confirm="confirmHandleRun(record)"
+                @cancel="cancelHandleRun(record)"
+              >
+                <span slot="title">确认执行一次{{ record.jobName }}的任务吗?</span>
+                <a>执行一次 </a>
+              </a-popconfirm>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a class="ant-dropdown-link">
+                  更多 <a-icon type="down" />
+                </a>
+                <a-menu slot="overlay">
+                  <a-menu-item>
+                    <a href="javascript:;" @click="$refs.createModal.show(record)">编辑</a>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <a href="javascript:;" @click="$refs.detailDrawer.show(record)">详细</a>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </span>
+          </a-table>
+          <!-- 底部分页按钮 -->
+          <a-pagination
+              class="ant-table-pagination"
+              v-model="current"
+              :page-size-options="pageSizeOptions"
+              :total="total"
+              show-size-changer
+              :page-size="pageSize"
+              @showSizeChange="onShowSizeChange"
+              @change="currentPageChange"
+            >
+            <template slot="buildOptionText" slot-scope="props">
+              <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+              <span v-if="props.value === '50'">全部</span>
+            </template>
+          </a-pagination>
+          <!-- 详细 -->
+          <detail-drawer ref='detailDrawer' />
+          <!-- 新增/修改 -->
+          <create-form
+            ref="createModal"
+            @handle-success="handleOk"
+          />
         </a-card>
       </div>
-      <div class="table-page-operator-wrapper">
-        <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-        <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-        <a-button @click="handleJobLog">日志</a-button>
-        <a-dropdown>
-          <a-menu slot="overlay">
-            <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作 <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
-      </div>
-      <!-- 表格 -->
-      <a-table
-        ref="table"
-        :columns="columns"
-        :loading="tableLoading"
-        :data-source="list"
-        :row-selection="rowSelection"
-        row-key="jobId"
-        :pagination="false"
-      >
-        <span slot="jobGroup" slot-scope="text, record">
-          {{ jobGroupFormat(record) }}
-        </span>
-        <span slot="status" slot-scope="text, record">
-          <a-popconfirm
-            ok-text="是"
-            cancel-text="否"
-            @confirm="confirmHandleStatus(record)"
-            @cancel="cancelHandleStatus(record)"
-          >
-            <span slot="title">确认<b>{{ record.status === '1' ? '启用' : '停用' }}</b>{{ record.jobName }}的任务吗?</span>
-            <a-switch checked-children="开" un-checked-children="关" :checked="record.status == 0" />
-          </a-popconfirm>
-        </span>
-
-        <!-- 更多选择 -->
-        <span slot="action" slot-scope="text, record">
-          <!-- <a @click="$refs.createModal.show(record)">执行一次</a> -->
-          <a-popconfirm
-            ok-text="是"
-            cancel-text="否"
-            @confirm="confirmHandleRun(record)"
-            @cancel="cancelHandleRun(record)"
-          >
-            <span slot="title">确认执行一次{{ record.jobName }}的任务吗?</span>
-            <a>执行一次 </a>
-          </a-popconfirm>
-          <a-divider type="vertical" />
-          <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多 <a-icon type="down" />
-            </a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a href="javascript:;" @click="$refs.createModal.show(record)">编辑</a>
-              </a-menu-item>
-               <a-menu-item>
-                 <a href="javascript:;" @click="$refs.detailDrawer.show(record)">详细</a>
-               </a-menu-item>
-               <a-menu-item>
-                 <a href="javascript:;" @click="handleDelete(record)">删除</a>
-               </a-menu-item>
-            </a-menu>
-          </a-dropdown>
-        </span>
-      </a-table>
-      <!-- 底部分页按钮 -->
-      <a-pagination
-          class="ant-table-pagination"
-          v-model="current"
-          :page-size-options="pageSizeOptions"
-          :total="total"
-          show-size-changer
-          :page-size="pageSize"
-          @showSizeChange="onShowSizeChange"
-          @change="currentPageChange"
-        >
-        <template slot="buildOptionText" slot-scope="props">
-          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-          <span v-if="props.value === '50'">全部</span>
-        </template>
-      </a-pagination>
-      <!-- 详细 -->
-      <detail-drawer ref='detailDrawer' />
-      <!-- 新增/修改 -->
-      <create-form
-        ref="createModal"
-        @handle-success="handleOk"
-      />
     </template>
   </page-header-wrapper>
 </template>

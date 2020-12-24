@@ -25,42 +25,42 @@
                 </a-row>
             </a-form>
           </div>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="list"
+            row-key="tokenId"
+            :pagination="false"
+          >
+            <span slot="loginTime" slot-scope="record">
+              {{ parseTime(record) }}
+            </span>
+
+            <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <a @click="handleForceLogout(record)">强退</a>
+            </span>
+          </a-table>
+          <!-- 底部分页按钮 -->
+          <a-pagination
+              class="ant-table-pagination"
+              v-model="current"
+              :page-size-options="pageSizeOptions"
+              :total="total"
+              show-size-changer
+              :page-size="pageSize"
+              @showSizeChange="onShowSizeChange"
+              @change="currentPageChange"
+            >
+            <template slot="buildOptionText" slot-scope="props">
+              <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+              <span v-if="props.value === '50'">全部</span>
+            </template>
+          </a-pagination>
         </a-card>
       </div>
-      <!-- 表格 -->
-      <a-table
-        ref="table"
-        :columns="columns"
-        :loading="tableLoading"
-        :data-source="list"
-        row-key="tokenId"
-        :pagination="false"
-      >
-        <span slot="loginTime" slot-scope="record">
-          {{ parseTime(record) }}
-        </span>
-
-        <!-- 更多选择 -->
-        <span slot="action" slot-scope="text, record">
-          <a @click="handleForceLogout(record)">强退</a>
-        </span>
-      </a-table>
-      <!-- 底部分页按钮 -->
-      <a-pagination
-          class="ant-table-pagination"
-          v-model="current"
-          :page-size-options="pageSizeOptions"
-          :total="total"
-          show-size-changer
-          :page-size="pageSize"
-          @showSizeChange="onShowSizeChange"
-          @change="currentPageChange"
-        >
-        <template slot="buildOptionText" slot-scope="props">
-          <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-          <span v-if="props.value === '50'">全部</span>
-        </template>
-      </a-pagination>
     </template>
   </page-header-wrapper>
 </template>

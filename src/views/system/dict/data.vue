@@ -2,61 +2,63 @@
   <page-header-wrapper>
     <template v-slot:content>
       <div class="page-header-content">
+        <a-card :bordered="false" class="content">
+          <div class="table-page-operator-wrapper">
+            <a-button @click="$refs.dataCreateModal.show(Object.assign({}),defaultDictType)" type="primary" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
+              </a-menu>
+              <a-button>
+                更多操作 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
+          <!-- 表格 -->
+          <a-table
+            ref="table"
+            :columns="columns"
+            :loading="tableLoading"
+            :data-source="dataList"
+            :row-selection="rowSelection"
+            row-key="dictCode"
+            :pagination="false"
+          >
+            <!-- 更多选择 -->
+            <span slot="action" slot-scope="text, record">
+              <a @click="$refs.dataCreateModal.show(record,defaultDictType)">编辑</a>
+              <a-divider type="vertical" />
+              <a-dropdown>
+                <a class="ant-dropdown-link">
+                  更多 <a-icon type="down" />
+                </a>
+                <a-menu slot="overlay">
+                  <a-menu-item>
+                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                  </a-menu-item>
+                </a-menu>
+              </a-dropdown>
+            </span>
+            <!-- 插槽指向状态 -->
+            <span slot="status" slot-scope="text, record">
+              {{ statusFormat(record) }}
+            </span>
+            <!-- 插槽指向状态 -->
+            <span slot="dictType" slot-scope="text, record">
+              <router-link :to="'/dict/type/data/' + record.dictId" class="link-type">
+                <span>{{ record.dictType }}</span>
+              </router-link>
+            </span>
+          </a-table>
+          <!-- 创建/编辑字典,单独封装了组件 -->
+          <data-create-form
+            ref="dataCreateModal"
+            @handle-success="handleOk"
+          />
+        </a-card>
       </div>
     </template>
-    <div class="table-page-operator-wrapper">
-      <a-button @click="$refs.dataCreateModal.show(Object.assign({}),defaultDictType)" type="primary" ghost>新增</a-button>
-      <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
-      <a-dropdown>
-        <a-menu slot="overlay">
-          <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
-        </a-menu>
-        <a-button>
-          更多操作 <a-icon type="down" />
-        </a-button>
-      </a-dropdown>
-    </div>
-    <!-- 表格 -->
-    <a-table
-      ref="table"
-      :columns="columns"
-      :loading="tableLoading"
-      :data-source="dataList"
-      :row-selection="rowSelection"
-      row-key="dictCode"
-      :pagination="false"
-    >
-      <!-- 更多选择 -->
-      <span slot="action" slot-scope="text, record">
-        <a @click="$refs.dataCreateModal.show(record,defaultDictType)">编辑</a>
-        <a-divider type="vertical" />
-        <a-dropdown>
-          <a class="ant-dropdown-link">
-            更多 <a-icon type="down" />
-          </a>
-          <a-menu slot="overlay">
-            <a-menu-item>
-              <a href="javascript:;" @click="handleDelete(record)">删除</a>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown>
-      </span>
-      <!-- 插槽指向状态 -->
-      <span slot="status" slot-scope="text, record">
-        {{ statusFormat(record) }}
-      </span>
-      <!-- 插槽指向状态 -->
-      <span slot="dictType" slot-scope="text, record">
-        <router-link :to="'/dict/type/data/' + record.dictId" class="link-type">
-          <span>{{ record.dictType }}</span>
-        </router-link>
-      </span>
-    </a-table>
-    <!-- 创建/编辑字典,单独封装了组件 -->
-    <data-create-form
-      ref="dataCreateModal"
-      @handle-success="handleOk"
-    />
   </page-header-wrapper>
 </template>
 
