@@ -1,7 +1,7 @@
 <template>
   <a-modal
     ref="createModal"
-    :title="readOnly ? '详情' : (form.roleId ? '角色编辑' : '新增操作')"
+    :title="readOnly ? '详情' : (form.deptId ? '部门编辑' : '新增操作')"
     :width="640"
     :visible="visible"
     @cancel="close"
@@ -152,8 +152,6 @@ export default {
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log('此时的值')
-        console.log(this.form)
       } else {
         // 新增行为
         this.reset()
@@ -167,51 +165,49 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
-        const params = Object.assign({}, this.form)
         if (valid) {
-          (this.form.roleId ? this.$http.put : this.$http.post)('user', params).then(res => {
-            // 进行新增行为:
-            if (this.form.roleId > 0) {
-              // 刷新表格
-              updateDept(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('修改成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            } else {
-              // 新增
-              addDept(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('新增成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
+          // 进行新增行为:
+          if (this.form.deptId > 0) {
+            // 暂时在本处处理若依最高级菜单下无子菜单情况下children是个字符串的bug
+            if (this.form.children === '') {
+              this.form.children = []
             }
-          }).catch(e => {
-            this.confirmLoading = false
-          })
+            // 刷新表格
+            updateDept(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          } else {
+            // 新增
+            addDept(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          }
         } else {
           return (this.confirmLoading = false)
         }
@@ -219,18 +215,7 @@ export default {
     },
     // 表单重置
     reset () {
-      this.form = {
-        roleId: undefined,
-        roleName: undefined,
-        roleKey: undefined,
-        roleSort: 0,
-        status: '0',
-        menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
-        remark: undefined
-      }
+      this.form = {}
     }
   }
 }

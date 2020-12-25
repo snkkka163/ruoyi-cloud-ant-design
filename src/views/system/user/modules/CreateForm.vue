@@ -255,7 +255,6 @@ export default {
           this.roleOptions = response.roles
           this.form.password = this.initPassword
         })
-        console.log('data是空的')
       }
       // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
@@ -269,49 +268,41 @@ export default {
     confirm () {
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
-        const params = Object.assign({}, this.form)
-        // if (!(params.resourceIds instanceof Array) && params.resourceIds.checked) {
-        //   params.resourceIds = params.resourceIds.checked
-        // }
         if (valid) {
-          (this.form.userId ? this.$http.put : this.$http.post)('user', params).then(res => {
-            // 进行新增行为:
-            if (this.form.userId > 0) {
-              // 刷新表格
-              updateUser(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('修改成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            } else {
-              // 新增
-              addUser(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('新增成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            }
-          }).catch(e => {
-            this.confirmLoading = false
-          })
+          // 进行新增行为:
+          if (this.form.userId > 0) {
+            // 刷新表格
+            updateUser(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          } else {
+            // 新增
+            addUser(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          }
         } else {
           return (this.confirmLoading = false)
         }

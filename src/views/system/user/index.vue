@@ -83,11 +83,6 @@
                 <span slot="status" slot-scope="text">
                   <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
                 </span>
-                <!-- <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
-                    <role-panel @add-action="$refs.editPanel.show(record)" :role-ids="record.roleIds || []" action-name="sys:user:update"/>
-                    <a-divider type="horizontal" :dashed="true" style="margin-bottom: 6px; margin-top: 6px;"/>
-                    <resource-panel @add-action="$refs.editPanel.show(record)" :resourceIds="record.resourceIds || []" action-name="sys:user:update"/>
-                  </div> -->
                 <span slot="action" slot-scope="text, record">
                   <a @click="$refs.createModal.show(record)">编辑</a><!-- @click="$refs.editPanel.show(record)" -->
                   <a-divider type="vertical" />
@@ -100,11 +95,8 @@
                         <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
                       </a-menu-item>
                       <a-menu-item>
-                        <a href="javascript:;" @click="deleteRecord(record)">删除</a>
+                        <a href="javascript:;" v-if="record.userId !== 1" @click="deleteRecord(record)">删除</a>
                       </a-menu-item>
-                      <!-- <a-menu-item>
-                          <a href="javascript:;" @click="deleteRecord(record)">删除</a>
-                        </a-menu-item> -->
                     </a-menu>
                   </a-dropdown>
                 </span>

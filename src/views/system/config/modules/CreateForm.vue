@@ -1,7 +1,7 @@
 <template>
   <a-modal
     ref="createModal"
-    :title="readOnly ? '详情' : (form.configId ? '角色编辑' : '新增操作')"
+    :title="readOnly ? '详情' : (form.configId ? '参数编辑' : '新增操作')"
     :width="640"
     :visible="visible"
     @cancel="close"
@@ -61,8 +61,6 @@ export default {
       readOnly: false,
       visible: false,
       loading: false,
-      // form: this.$form.createForm(this),
-      // value: undefined,
       labelCol: {
         xs: { span: 12 },
         sm: { span: 6 }
@@ -95,18 +93,13 @@ export default {
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log('此时的值')
-        console.log(this.form)
       } else {
         // 新增行为
-        // 刷新表单,查询角色树
         this.reset()
       }
-      // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
       this.visible = true
     },
@@ -116,51 +109,45 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
-        const params = Object.assign({}, this.form)
         if (valid) {
-          (this.form.configId ? this.$http.put : this.$http.post)('user', params).then(res => {
-            // 进行新增行为:
-            if (this.form.configId > 0) {
-              // 刷新表格
-              updateConfig(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('修改成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            } else {
-              // 新增
-              addConfig(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('新增成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            }
-          }).catch(e => {
-            this.confirmLoading = false
-          })
+          // 进行新增行为:
+          if (this.form.configId > 0) {
+            // 刷新表格
+            updateConfig(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          } else {
+            // 新增
+            addConfig(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          }
         } else {
           return (this.confirmLoading = false)
         }
@@ -168,18 +155,7 @@ export default {
     },
     // 表单重置
     reset () {
-      this.form = {
-        roleId: undefined,
-        roleName: undefined,
-        roleKey: undefined,
-        roleSort: 0,
-        status: '0',
-        menuIds: [],
-        deptIds: [],
-        menuCheckStrictly: true,
-        deptCheckStrictly: true,
-        remark: undefined
-      }
+      this.form = {}
     }
   }
 }

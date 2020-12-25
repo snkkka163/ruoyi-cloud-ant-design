@@ -218,49 +218,44 @@ export default {
     confirm () {
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
-        const params = Object.assign({}, this.form)
         if (valid) {
-          (this.form.menuId ? this.$http.put : this.$http.post)('user', params).then(res => {
-            // 进行新增行为:
-            if (this.form.menuId > 0) {
-              // 暂时在本处处理若依最高级菜单下无子菜单情况下children是个字符串的bug
-              if (this.form.children === '') {
-                this.form.children = []
-              }
-              updateMenu(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('修改成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            } else {
-              // 新增
-              addMenu(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('新增成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
+          // 进行新增行为:
+          if (this.form.menuId > 0) {
+            // 暂时在本处处理若依最高级菜单下无子菜单情况下children是个字符串的bug
+            if (this.form.children === '') {
+              this.form.children = []
             }
-          }).catch(e => {
-            this.confirmLoading = false
-          })
+            updateMenu(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          } else {
+            // 新增
+            addMenu(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          }
         } else {
           return (this.confirmLoading = false)
         }

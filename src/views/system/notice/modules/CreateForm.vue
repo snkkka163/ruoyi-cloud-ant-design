@@ -2,7 +2,7 @@
   <a-modal
     ref="createModal"
     :title="readOnly ? '详情' : (form.noticeId ? '角色编辑' : '新增操作')"
-    :width="640"
+    :width="780"
     :visible="visible"
     @cancel="close"
     @ok="confirm"
@@ -47,8 +47,9 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24" :pull="3">
-            <a-form-model-item ref="noticeContent" label="公告标题" prop="noticeContent">
-              <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.noticeContent" placeholder="请输入内容" />
+            <a-form-model-item ref="noticeContent" label="内容" prop="noticeContent">
+              <!-- <a-input :disabled="!readOnly && typeof form.id !== 'undefined'" v-model="form.noticeContent" placeholder="请输入内容" /> -->
+              <notice-vditor ref="noticeVditor" @mounted="childrenMounted" :contentValue="form.noticeContent" />
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -61,13 +62,17 @@
 // import pick from 'lodash.pick'
 import IconSelect from '@/components/IconSelect'
 import { addNotice, updateNotice } from '@/api/system/notice'
+import NoticeVditor from './NoticeVditor'
 // 表单字段
 export default {
   components: {
-    IconSelect
+    IconSelect,
+    NoticeVditor
   },
   data () {
     return {
+      // 富文本组件是否初始化完成
+      noticeVditorIsInit: false,
       // 类型数据字典
       statusOptions: [],
       // 状态数据字典
@@ -112,13 +117,14 @@ export default {
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
+        if (this.noticeVditorIsInit) {
+          this.$refs.noticeVditor.setContent(this.form.noticeContent)
+        }
       } else {
         // 新增行为
-        // 刷新表单,查询角色树
         this.reset()
       }
       // if (data) this.form = Object.assign({}, data) || {}
@@ -127,55 +133,52 @@ export default {
     },
     // 关闭模态框
     close () {
+      this.$refs.noticeVditor.clear()
       this.visible = false
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
-        const params = Object.assign({}, this.form)
         if (valid) {
-          (this.form.noticeId ? this.$http.put : this.$http.post)('user', params).then(res => {
-            // 进行新增行为:
-            if (this.form.noticeId > 0) {
-              // 刷新表格
-              updateNotice(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('修改成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            } else {
-              // 新增
-              addNotice(this.form).then(response => {
-                if (response.code === 200) {
-                  this.$message.success('新增成功')
-                  // 关闭本组件
-                  this.visible = false
-                  // 调用外部刷新列表方法
-                  this.$emit('handle-success')
-                  // 刷新表单
-                  this.reset()
-                  this.confirmLoading = false
-                } else {
-                  this.$message.error(response.msg)
-                  this.confirmLoading = false
-                }
-              })
-            }
-          }).catch(e => {
-            this.confirmLoading = false
-          })
+          // 获取富文本的数据
+          this.form.noticeContent = this.$refs.noticeVditor.getContent()
+          // 进行新增行为:
+          if (this.form.noticeId > 0) {
+            // 刷新表格
+            updateNotice(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('修改成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          } else {
+            // 新增
+            addNotice(this.form).then(response => {
+              if (response.code === 200) {
+                this.$message.success('新增成功')
+                // 关闭本组件
+                this.visible = false
+                // 调用外部刷新列表方法
+                this.$emit('handle-success')
+                // 刷新表单
+                this.reset()
+                this.confirmLoading = false
+              } else {
+                this.$message.error(response.msg)
+                this.confirmLoading = false
+              }
+            })
+          }
         } else {
           return (this.confirmLoading = false)
         }
@@ -184,6 +187,10 @@ export default {
     // 表单重置
     reset () {
       this.form = {}
+    },
+    // 表示已经关闭过一次了,所以一定是初始化完成了的
+    childrenMounted () {
+      this.noticeVditorIsInit = true
     }
   }
 }
