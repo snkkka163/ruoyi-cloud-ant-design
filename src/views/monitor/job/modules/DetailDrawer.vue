@@ -51,22 +51,22 @@
             </a-col>
             <a-col :span="12">
               <a-form-model-item label="任务状态">
-                <a-badge v-if="data.status === '0'" :status="'success'" :text="'运行中'" />
-                <a-badge v-if="data.status === '1'" :status="'error'" :text="'暂停'" />
+                <a-badge v-if="data.status === '0'" :status="'processing'" :text="'运行中'" />
+                <a-badge v-if="data.status === '1'" :status="'default'" :text="'暂停'" />
               </a-form-model-item>
             </a-col>
             <a-col :span="12">
               <a-form-model-item label="是否并发">
                 <a-badge v-if="data.concurrent == 0" status="processing" text="允许" />
-                <a-badge v-if="data.concurrent == 1" status="warning" text="禁止" />
+                <a-badge v-if="data.concurrent == 1" status="default" text="禁止" />
               </a-form-model-item>
             </a-col>
             <a-col :span="12">
               <a-form-model-item label="执行策略">
-                <a-badge v-if="data.misfirePolicy == 0" status="default" text="默认策略" />
-                <a-badge v-if="data.misfirePolicy == 1" status="Processing" text="立即执行" />
-                <a-badge v-if="data.misfirePolicy == 2" color="purple" text="执行一次" />
-                <a-badge v-if="data.misfirePolicy == 3" status="warning" text="放弃执行" />
+                <a-badge v-if="data.misfirePolicy == 0" status="processing" text="默认策略" />
+                <a-badge v-if="data.misfirePolicy == 1" status="processing" text="立即执行" />
+                <a-badge v-if="data.misfirePolicy == 2" status="processing" text="执行一次" />
+                <a-badge v-if="data.misfirePolicy == 3" status="processing" text="放弃执行" />
               </a-form-model-item>
             </a-col>
           </a-row>
