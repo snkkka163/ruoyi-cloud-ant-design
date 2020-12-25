@@ -46,7 +46,9 @@
                 trigger="click"
               >
                 <IconSelect slot="content" ref="iconSelect" @selected="selected" />
-                <a-input v-model="form.icon" placeholder="点击选择图标" read-only></a-input>
+                <a-input v-model="form.icon" placeholder="点击选择图标" read-only>
+                  <a-icon slot="prefix" :component="all[form.icon + 'Icon']" :style="{height: '30px', width: '16px', position: 'relative', top: '8px'}" />
+                </a-input>
               </a-popover>
             </a-form-model-item>
           </a-col>
@@ -123,6 +125,7 @@
 // import pick from 'lodash.pick'
 import IconSelect from '@/components/IconSelect'
 import { addMenu, listMenu, updateMenu } from '@/api/system/menu'
+import all from '@/core/icons'
 // 表单字段
 export default {
   components: {
@@ -130,6 +133,8 @@ export default {
   },
   data () {
     return {
+      // 图标选择器
+      all,
       // 菜单列表
       menuOptions: [],
       // 状态数据字典
@@ -200,10 +205,8 @@ export default {
       } else {
         // 新增行为
         // 默认将类型设置为目录
-         this.form.menuType = 'M'
-        // this.reset()
+        this.reset()
       }
-      // if (data) this.form = Object.assign({}, data) || {}
       this.readOnly = typeof readOnly !== 'undefined' ? readOnly === true : false
       this.visible = true
     },
@@ -266,7 +269,8 @@ export default {
     // 表单重置
     reset () {
       this.form = {
-        icon: ''
+        icon: 'code',
+        menuType: 'M'
       }
     },
     // 选择图标

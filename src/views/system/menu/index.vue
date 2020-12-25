@@ -41,11 +41,14 @@
             row-key="menuId"
             :pagination="false"
           >
+            <!-- 插槽指向菜单图标 -->
+            <span slot="icon" slot-scope="text">
+              <a-icon :component="all[text + 'Icon']" :style="{height: '30px', width: '16px', position: 'relative', top: '1px'}" />{{ text }}
+            </span>
             <!-- 插槽指向状态 -->
             <span slot="status" slot-scope="text">
               <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
             </span>
-
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
               <a @click="$refs.createModal.show(record)">编辑</a>
@@ -76,6 +79,7 @@
 <script>
 import { delMenu, listMenu } from '@/api/system/menu'
 import CreateForm from './modules/CreateForm'
+import all from '@/core/icons'
 const statusMap = {
   0: {
     status: 'success',
@@ -93,6 +97,8 @@ export default {
   },
   data () {
     return {
+      // 图标选择器
+      all,
       tableLoading: false,
       // 表格树数据:
       menuList: [],
@@ -105,7 +111,8 @@ export default {
         },
         {
           title: '图标',
-          dataIndex: 'icon'
+          dataIndex: 'icon',
+          scopedSlots: { customRender: 'icon' }
         },
         {
           title: '排序',

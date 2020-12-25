@@ -7,13 +7,12 @@
       clearable
       placeholder="请输入图标名称"
       @clear="filterIcons"
-      @change.native="filterIcons">
+      @change="filterIcons">
       <i slot="suffix" class="el-icon-search el-input__icon" />
     </a-input>
     <div class="icon-list">
       <div v-for="(item, index) in iconList" :key="index" @click="selectedIcon(item)">
-        <!-- <a-icon :component="'zipIcon'" :style="{ fontSize: '36px' }" /> -->
-        <!-- <a-icon :type="icon" :style="{ fontSize: '36px' }" /> -->
+        <a-icon :component="all[item + 'Icon']" :style="{height: '30px', width: '16px', position: 'relative', bottom: '6px'}" />
         <span>{{ item }}</span>
       </div>
     </div>
@@ -22,13 +21,14 @@
 
 <script>
 import icons from './requireIcons'
-// import zipIcon from '@/assets/icons/svg/zip.svg?inline'
+import all from '@/core/icons'
 export default {
   name: 'IconSelect',
   data () {
     return {
-      name: '',
-      iconList: icons
+      name: 'code',
+      iconList: icons,
+      all
     }
   },
   methods: {
@@ -39,11 +39,12 @@ export default {
       }
     },
     selectedIcon (name) {
+      this.$emit('selected', name)
       document.body.click()
-      this.reset()
+      // this.reset()
     },
     reset () {
-      this.name = ''
+      this.name = 'code'
       this.iconList = icons
     }
   }
