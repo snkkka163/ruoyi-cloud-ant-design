@@ -80,11 +80,19 @@
                 row-key="userId"
                 :pagination="false"
               >
-                <span slot="status" slot-scope="text">
-                  <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+                <span slot="status" slot-scope="text, record">
+                  <a-popconfirm
+                    ok-text="是"
+                    cancel-text="否"
+                    @confirm="confirmHandleStatus(record)"
+                    @cancel="cancelHandleStatus(record)"
+                  >
+                    <span slot="title">确认<b>{{ record.status === '1' ? '启用' : '停用' }}</b>名称为:{{ record.nickName }}的用户吗?</span>
+                    <a-switch checked-children="开" un-checked-children="关" :checked="record.status == 0" />
+                  </a-popconfirm>
                 </span>
                 <span slot="action" slot-scope="text, record">
-                  <a @click="$refs.createModal.show(record)">编辑</a><!-- @click="$refs.editPanel.show(record)" -->
+                  <a @click="$refs.createModal.show(record)">编辑</a>
                   <a-divider type="vertical" />
                   <a-dropdown>
                     <a class="ant-dropdown-link">
@@ -166,7 +174,7 @@
 
 <script>
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { listUser, resetPwd, delUser } from '@/api/system/user'
+import { listUser, resetPwd, delUser, changeUserStatus } from '@/api/system/user'
 import { STable } from '@/components'
 import CreateForm from './modules/CreateForm'
 import DeptTree from './modules/DeptTree'
@@ -174,16 +182,6 @@ import ResetPassword from './modules/ResetPassword'
 import storage from 'store'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { treeselect } from '@/api/system/dept'
-const statusMap = {
-  0: {
-    status: 'success',
-    text: '正常'
-  },
-  1: {
-    status: 'error',
-    text: '停用'
-  }
-}
 
 export default {
   name: 'User',
@@ -193,7 +191,6 @@ export default {
     CreateForm,
     ResetPassword,
     DeptTree
-    // ResourcePanel
   },
   data () {
     return {
@@ -314,15 +311,6 @@ export default {
         onSelect: (record, selected, selectedRows) => {},
         onSelectAll: (selected, selectedRows, changeRows) => {}
       }
-    }
-  },
-  // 状态过滤
-  filters: {
-    statusFilter (type) {
-      return statusMap[type].text
-    },
-    statusTypeFilter (type) {
-      return statusMap[type].status
     }
   },
   created () {
@@ -525,6 +513,25 @@ export default {
       treeselect().then(response => {
         this.deptOptions = response.data
       })
+    },
+    /* 任务状态修改 */
+    confirmHandleStatus (row) {
+      row.status = row.status === '0' ? '1' : '0'
+      const text = row.status === '0' ? '启用' : '停用'
+      changeUserStatus(row.userId, row.status)
+      .then(() => {
+        this.$message.success(
+          text + '成功',
+          3
+        )
+      }).catch(function () {
+        this.$message.error(
+          text + '发生异常',
+          3
+        )
+      })
+    },
+    cancelHandleStatus (row) {
     }
   }
 }

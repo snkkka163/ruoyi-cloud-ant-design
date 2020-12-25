@@ -90,7 +90,6 @@
 
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <!-- <a @click="$refs.createModal.show(record)">执行一次</a> -->
               <a-popconfirm
                 ok-text="是"
                 cancel-text="否"

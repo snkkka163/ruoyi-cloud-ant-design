@@ -27,7 +27,6 @@
                   </a-col>
                   <a-col :md="8" :sm="24">
                     <a-form-item label="创建时间">
-                      <!--  @change="onChange" -->
                       <a-range-picker @change="rangePicker" />
                     </a-form-item>
                   </a-col>
@@ -68,8 +67,16 @@
             :pagination="false"
           >
             <!-- 插槽指向状态 -->
-            <span slot="status" slot-scope="text">
-              <a-badge :status="text | statusTypeFilter" :text="text | statusFilter" />
+            <span slot="status" slot-scope="text, record">
+              <a-popconfirm
+                ok-text="是"
+                cancel-text="否"
+                @confirm="confirmHandleStatus(record)"
+                @cancel="cancelHandleStatus(record)"
+              >
+                <span slot="title">确认<b>{{ record.status === '1' ? '启用' : '停用' }}</b>{{ record.roleName }}的角色吗?</span>
+                <a-switch checked-children="开" un-checked-children="关" :checked="record.status == 0" />
+              </a-popconfirm>
             </span>
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
@@ -115,18 +122,8 @@
 </template>
 
 <script>
-import { listRole, delRole } from '@/api/system/role'
+import { listRole, delRole, changeRoleStatus } from '@/api/system/role'
 import CreateForm from './modules/CreateForm'
-const statusMap = {
-  0: {
-    status: 'success',
-    text: '正常'
-  },
-  1: {
-    status: 'error',
-    text: '停用'
-  }
-}
 
 export default {
   name: 'Role',
@@ -203,15 +200,6 @@ export default {
       advanced: false,
       // 筛选日期
       dateRange: []
-    }
-  },
-  // 状态过滤
-  filters: {
-    statusFilter (type) {
-      return statusMap[type].text
-    },
-    statusTypeFilter (type) {
-      return statusMap[type].status
     }
   },
   created () {
@@ -324,6 +312,25 @@ export default {
       this.queryParams.pageSize = pageSize
       this.queryParams.pageNum = current
       this.getList()
+    },
+    /* 任务状态修改 */
+    confirmHandleStatus (row) {
+      row.status = row.status === '0' ? '1' : '0'
+      const text = row.status === '0' ? '启用' : '停用'
+      changeRoleStatus(row.roleId, row.status)
+      .then(() => {
+        this.$message.success(
+          text + '成功',
+          3
+        )
+      }).catch(function () {
+        this.$message.error(
+          text + '发生异常',
+          3
+        )
+      })
+    },
+    cancelHandleStatus (row) {
     }
   }
 }

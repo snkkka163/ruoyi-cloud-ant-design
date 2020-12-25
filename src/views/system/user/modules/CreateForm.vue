@@ -201,8 +201,6 @@ export default {
         password: [
           { required: true, message: '用户密码为必填', trigger: 'change' }
         ]
-        // pattern: new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$')
-        // ,resourceIds: [{ required: true, message: '此项为必选项', trigger: 'select' }]
       }
     }
   },
@@ -281,6 +279,7 @@ export default {
                 this.$emit('handle-success')
                 // 刷新表单
                 this.reset()
+                this.confirmLoading = false
               } else {
                 this.$message.error(response.msg)
                 this.confirmLoading = false
@@ -297,6 +296,7 @@ export default {
                 this.$emit('handle-success')
                 // 刷新表单
                 this.reset()
+                this.confirmLoading = false
               } else {
                 this.$message.error(response.msg)
                 this.confirmLoading = false

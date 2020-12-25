@@ -113,11 +113,11 @@ import { delPost, listPost } from '@/api/system/post'
 import CreateForm from './modules/CreateForm'
 const statusMap = {
   0: {
-    status: 'success',
+    status: 'processing',
     text: '正常'
   },
   1: {
-    status: 'error',
+    status: 'default',
     text: '停用'
   }
 }
