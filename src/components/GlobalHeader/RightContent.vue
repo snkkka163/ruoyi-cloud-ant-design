@@ -1,5 +1,8 @@
 <template>
   <div :class="wrpCls">
+    <!-- 全屏模式 -->
+    <a-icon v-if="monitorFullScreen === 0" type="fullscreen" @click="toggleFullScreen" />
+    <a-icon v-if="monitorFullScreen === 1" type="fullscreen-exit" @click="toggleFullScreen" />
     <avatar-dropdown :menu="showMenu" :current-user="currentUser" :class="prefixCls" />
     <select-lang :class="prefixCls" />
   </div>
@@ -36,7 +39,22 @@ export default {
   data () {
     return {
       showMenu: true,
-      currentUser: {}
+      currentUser: {},
+      monitorFullScreen: 0
+    }
+  },
+  methods: {
+    // 切换全屏图标
+    // 全屏切换
+    toggleFullScreen () {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen()
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen()
+        }
+      }
+      this.monitorFullScreen = this.monitorFullScreen === 0 ? 1 : 0
     }
   },
   computed: {

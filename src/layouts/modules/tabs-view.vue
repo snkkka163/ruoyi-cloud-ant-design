@@ -7,8 +7,8 @@
       hide-add
       type="editable-card"
       @edit="onEdit">
-      <template v-for="(pane, index) in panes" :tab="pane.title" >
-        <a-tab-pane :closable="pane.closable" :key="pane.fullPath">
+      <template v-for="(pane, index) in panes" :tab="pane.title" :closable="pane.closable">
+        <a-tab-pane :key="pane.fullPath">
           <template #tab>
             <a-dropdown :trigger="['contextmenu']">
               <div style="display: inline-block">
@@ -88,42 +88,47 @@ export default {
           this.panes.push(routerObj)
         }
         this.activeKey = fullPath
-        console.log('现在的全路由')
-        console.log(this.panes)
       },
       // 深度观察监听
       deep: true
     }
   },
   methods: {
-    callback (key) {
-      console.log(key)
+    remove (targetKey) {
+      console.log(targetKey)
+      let index = -1
+      this.panes.forEach((pane, i) => {
+        if (pane.key === targetKey) {
+          index = i
+        }
+      })
+      if (index !== -1) {
+        this.panes.splice(index, 1)
+        if (this.panes.length === 0) {
+          this.$router.push({
+            path: '/dashboard/workplace'
+          })
+        }
+        const prevItem = this.panes[index - 1]
+        if (prevItem) {
+          this.activeKey = prevItem.fullPath
+          this.$router.push({
+            path: prevItem.fullPath
+          })
+        }
+        const nextItem = this.panes[index + 1]
+        if (nextItem) {
+          this.activeKey = nextItem.fullPath
+          this.$router.push({
+            path: nextItem.fullPath
+          })
+        }
+      }
     },
     onEdit (targetKey, action) {
       this[action](targetKey)
     },
-    remove (targetKey) {
-      let activeKey = this.activeKey
-      let lastIndex
-      this.panes.forEach((pane, i) => {
-        if (pane.key === targetKey) {
-          lastIndex = i - 1
-        }
-      })
-      const panes = this.panes.filter(pane => pane.key !== targetKey)
-      if (panes.length && activeKey === targetKey) {
-        if (lastIndex >= 0) {
-          activeKey = panes[lastIndex].key
-        } else {
-          activeKey = panes[0].key
-        }
-      }
-      this.panes = panes
-      this.activeKey = activeKey
-    },
     changePage (key) {
-      console.log('切换页面')
-      console.log(key)
       this.activeKey = key
       this.$router.push({ path: key })
     },
@@ -179,20 +184,6 @@ export default {
       this.$router.push({
         path: '/dashboard/workplace'
       })
-    },
-    /*
-    * 获取某个元素下标
-    * arr: 传入的数组
-    * obj: 需要获取下标的元素
-    * */
-    getArrayIndex (arr, obj) {
-      var i = arr.length
-      while (i--) {
-        if (arr[i] === obj) {
-            return i
-        }
-      }
-      return -1
     }
   }
 }
