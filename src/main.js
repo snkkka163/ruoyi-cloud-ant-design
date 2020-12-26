@@ -8,6 +8,7 @@ import router from './router'
 import store from './store/'
 import i18n from './locales'
 import { VueAxios } from './utils/request'
+import Highlight from './utils/highlight' // from 路径是highlight.js的路径，纯属自定义
 import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig'
 import { getDicts } from '@/api/system/dict/data'
@@ -36,6 +37,8 @@ Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.handleTree = handleTree
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)
+// 代码高亮
+Vue.use(Highlight)
 // use pro-layout components
 Vue.component('pro-layout', ProLayout)
 Vue.component('page-container', PageHeaderWrapper)
