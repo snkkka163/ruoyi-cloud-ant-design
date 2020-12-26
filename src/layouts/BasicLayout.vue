@@ -29,11 +29,12 @@
     <setting-drawer :settings="settings" @change="handleSettingChange" />
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
+      <tabs-view />
+      <router-view />
     </template>
     <template v-slot:footerRender>
       <global-footer />
     </template>
-    <router-view />
   </pro-layout>
 </template>
 
@@ -48,7 +49,7 @@ import RightContent from '@/components/GlobalHeader/RightContent'
 import GlobalFooter from '@/components/GlobalFooter'
 import Ads from '@/components/Other/CarbonAds'
 import LogoSvg from '../assets/logo.svg?inline'
-
+import tabsView from './modules/tabs-view'
 export default {
   name: 'BasicLayout',
   components: {
@@ -56,7 +57,8 @@ export default {
     RightContent,
     GlobalFooter,
     LogoSvg,
-    Ads
+    Ads,
+    tabsView
   },
   data () {
     return {
