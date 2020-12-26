@@ -129,9 +129,7 @@ export default {
     },
     // 刷新页面
     reloadPage (pane) {
-      this.$router.push({
-        path: pane.fullPath
-      })
+      this.$emit('reload')
     },
     // 关闭当前
     removeTab (pane, index) {

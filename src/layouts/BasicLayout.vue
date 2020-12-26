@@ -29,8 +29,8 @@
     <setting-drawer :settings="settings" @change="handleSettingChange" />
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
-      <tabs-view />
-      <router-view />
+      <tabs-view @reload="reload" />
+      <router-view v-if="isRouterAlive" />
     </template>
     <template v-slot:footerRender>
       <global-footer />
@@ -60,8 +60,14 @@ export default {
     Ads,
     tabsView
   },
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
   data () {
     return {
+      isRouterAlive: true,
       // preview.pro.antdv.com only use.
       isProPreviewSite: process.env.VUE_APP_PREVIEW === 'true' && process.env.NODE_ENV !== 'development',
       // end
@@ -162,6 +168,13 @@ export default {
           }
           break
       }
+    },
+    reload () {
+      console.log('我被执行了')
+      this.isRouterAlive = false
+      this.$nextTick(function () {
+        this.isRouterAlive = true
+      })
     }
   }
 }
