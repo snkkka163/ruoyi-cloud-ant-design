@@ -7,8 +7,47 @@
       hide-add
       type="editable-card"
       @edit="onEdit">
-      <a-tab-pane v-for="pane in panes" :key="pane.fullPath" :tab="pane.title" :closable="pane.closable">
-      </a-tab-pane>
+      <template v-for="(pane, index) in panes" :tab="pane.title" >
+        <a-tab-pane :closable="pane.closable" :key="pane.fullPath">
+          <template #tab>
+            <a-dropdown :trigger="['contextmenu']">
+              <div style="display: inline-block">
+                {{ pane.title }}
+              </div>
+              <template v-slot:overlay>
+                <a-menu style="user-select: none">
+                  <a-menu-item @click="reloadPage(pane)" :disabled="activeKey !== pane.fullPath" key="1">
+                    <a-icon type="reload" />
+                    刷新
+                  </a-menu-item>
+                  <a-menu-item @click="removeTab(pane, index)" key="2">
+                    <a-icon type="close" />
+                    关闭
+                  </a-menu-item>
+                  <a-menu-divider/>
+                  <a-menu-item @click="closeLeft(pane, index)" key="3">
+                    <a-icon type="vertical-right" />
+                    关闭左侧
+                  </a-menu-item>
+                  <a-menu-item @click="closeRight(pane, index)" key="4">
+                    <a-icon type="vertical-left" />
+                    关闭右侧
+                  </a-menu-item>
+                  <a-menu-divider/>
+                  <a-menu-item @click="closeOther(pane, index)" key="5">
+                    <a-icon type="column-width" />
+                    关闭其他
+                  </a-menu-item>
+                  <a-menu-item @click="closeAll" key="6">
+                    <a-icon type="minus" />
+                    关闭全部
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </template>
+        </a-tab-pane>
+      </template>
     </a-tabs>
   </div>
 </template>
@@ -63,17 +102,6 @@ export default {
     onEdit (targetKey, action) {
       this[action](targetKey)
     },
-    add () {
-      const panes = this.panes
-      const activeKey = `newTab${this.newTabIndex++}`
-      panes.push({
-        title: `New Tab ${activeKey}`,
-        content: `Content of new Tab ${activeKey}`,
-        key: activeKey
-      })
-      this.panes = panes
-      this.activeKey = activeKey
-    },
     remove (targetKey) {
       let activeKey = this.activeKey
       let lastIndex
@@ -98,32 +126,76 @@ export default {
       console.log(key)
       this.activeKey = key
       this.$router.push({ path: key })
+    },
+    // 刷新页面
+    reloadPage (pane) {
+      this.$router.push({
+        path: pane.fullPath
+      })
+    },
+    // 关闭当前
+    removeTab (pane, index) {
+      // 判断如果当前是最后一个元素了,就跳转到工作台
+      this.panes.splice(index, 1)
+      if (this.panes.length === 0) {
+        this.$router.push({
+          path: '/dashboard/workplace'
+        })
+      }
+      const prevItem = this.panes[index - 1]
+      if (prevItem) {
+        this.activeKey = prevItem.fullPath
+        this.$router.push({
+          path: prevItem.fullPath
+        })
+      }
+      const nextItem = this.panes[index + 1]
+      if (nextItem) {
+        this.activeKey = nextItem.fullPath
+        this.$router.push({
+          path: nextItem.fullPath
+        })
+      }
+    },
+    // 关闭其他
+    closeOther (pane, index) {
+      const delIndex = index + 1
+      // 删除其所有右侧元素
+      this.panes.splice(delIndex, this.panes.length - delIndex)
+      // 删除其所有左侧元素
+      this.panes.splice(0, index)
+    },
+    // 关闭左侧
+    closeLeft (pane, index) {
+      this.panes.splice(0, index)
+    },
+    // 关闭右侧
+    closeRight (pane, index) {
+      const delIndex = index + 1
+      this.panes.splice(delIndex, this.panes.length - delIndex)
+    },
+    // 关闭全部
+    closeAll () {
+      // 删除数组全部元素->数组置空
+      this.panes = []
+      this.$router.push({
+        path: '/dashboard/workplace'
+      })
+    },
+    /*
+    * 获取某个元素下标
+    * arr: 传入的数组
+    * obj: 需要获取下标的元素
+    * */
+    getArrayIndex (arr, obj) {
+      var i = arr.length
+      while (i--) {
+        if (arr[i] === obj) {
+            return i
+        }
+      }
+      return -1
     }
   }
 }
 </script>
-
-// <style lang="scss" scoped>
-// .tabs-view {
-//   border-top: 1px solid #eee;
-
-//   ::v-deep(.tabs) {
-//     .ant-tabs-bar {
-//       padding: 4px 20px 0 10px;
-//       margin: 0;
-//       background-color: white;
-//       user-select: none;
-//     }
-
-//     .ant-tabs-tabpane {
-//       display: none;
-//     }
-//   }
-
-//   .tabs-view-content {
-//     padding: 20px 14px 0;
-//     height: calc(100vh - 110px);
-//     overflow: auto;
-//   }
-// }
-// </style>
