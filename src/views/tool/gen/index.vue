@@ -36,6 +36,18 @@
               </a-row>
             </a-form>
           </div>
+          <div class="table-page-operator-wrapper">
+            <a-button @click="handleGenTableBatch(selectedRows)" type="primary" ghost>生成</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-dropdown>
+              <a-menu slot="overlay">
+                <a-menu-item key="export-data" @click="$refs.importtable.show()">导入</a-menu-item>
+              </a-menu>
+              <a-button>
+                更多操作 <a-icon type="down" />
+              </a-button>
+            </a-dropdown>
+          </div>
           <!-- 表格 -->
           <a-table
             ref="table"
@@ -43,12 +55,12 @@
             :loading="tableLoading"
             :data-source="tableList"
             :row-selection="rowSelection"
-            row-key="tableName"
+            row-key="tableId"
             :pagination="false"
           >
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a>生成代码</a>
+              <a @click="handleGenTable(record)">生成代码</a>
               <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
@@ -59,13 +71,13 @@
                     <a href="javascript:;" @click="$refs.previewcode.show(record)">预览</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">编辑</a>
+                    <a href="javascript:;" @click="handleEditTable(record)">编辑</a>
                   </a-menu-item>
                   <a-menu-item>
                     <a href="javascript:;" @click="handleDelete(record)">删除</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">同步</a>
+                    <a href="javascript:;" @click="handleSynchDb(record)">同步</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>
@@ -73,6 +85,8 @@
           </a-table>
           <!-- 预览 -->
           <preview-code ref="previewcode" />
+          <!-- 导入 -->
+          <import-table ref="importtable" @handle-success="handleOk" />
         </a-card>
       </div>
     </template>
@@ -80,12 +94,15 @@
 </template>
 
 <script>
-import { delTable, listTable } from '@/api/tool/gen'
+import { delTable, listTable, synchDb } from '@/api/tool/gen'
 import PreviewCode from './modules/PreviewCode'
+import ImportTable from './modules/ImportTable'
+import { downLoadZip } from '@/utils/zipdownload'
 export default {
   name: 'Gen',
   components: {
-    PreviewCode
+    PreviewCode,
+    ImportTable
   },
   data () {
     return {
@@ -108,8 +125,8 @@ export default {
       columns: [
         {
           title: '序号',
-          dataIndex: 'indexId',
-          scopedSlots: { customRender: 'indexId' },
+          dataIndex: 'tableId',
+          scopedSlots: { customRender: 'tableId' },
           align: 'center'
         },
         {
@@ -215,6 +232,82 @@ export default {
           })
         }
       })
+    },
+    /** 批量删除按钮操作 */
+    handleDeleteBatch (ids) {
+      const tableIds = ids
+      const that = this
+      this.$confirm({
+        title: '警告',
+        content: `真的要删除 表编号为${tableIds}的数据项吗?`,
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          delTable(tableIds).then(response => {
+            if (response.code === 200) {
+              that.$message.success('删除成功!')
+              that.getList()
+            } else {
+              that.$message.error(response.msg)
+            }
+          })
+        }
+      })
+    },
+    /** 同步数据库操作 */
+    handleSynchDb (row) {
+      const tableName = row.tableName
+      const that = this
+      this.$confirm({
+        title: '警告',
+        content: `确定要强制同步表名为${tableName}的数据项吗?`,
+        okText: '同步',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk () {
+          synchDb(tableName).then(response => {
+            if (response.code === 200) {
+              that.$message.success('同步成功!')
+              that.getList()
+            } else {
+              that.$message.error(response.msg)
+            }
+          })
+        }
+      })
+    },
+    /** 修改按钮操作 */
+    handleEditTable (row) {
+      const tableId = row.tableId || this.ids[0]
+      this.$router.push({
+        path: '/gen/edit/' + tableId
+      })
+    },
+    /** 生成代码操作 */
+    handleGenTable (row) {
+      if (row) {
+        downLoadZip('/code/gen/batchGenCode?tables=' + row.tableName, 'ruoyi')
+      }
+    },
+    /** 生成代码操作 */
+    handleGenTableBatch (row) {
+      console.log('生成代码')
+      console.log(row)
+      if (row.length === 0) {
+        this.$message.error('请最少选择一张表')
+      } else {
+        const tableNames = []
+        row.forEach(element => {
+          tableNames.push(element.tableName)
+        })
+        console.log('最终得到表名')
+        console.log(tableNames)
+        downLoadZip('/code/gen/batchGenCode?tables=' + tableNames, 'ruoyi')
+      }
+    },
+    handleOk () {
+      this.getList()
     }
   }
 }

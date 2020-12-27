@@ -129,6 +129,20 @@ export const asyncRouterMap = [
         meta: { title: '字典子项' },
         hidden: true
       }]
+    },
+    {
+      path: '/gen',
+      name: 'gen',
+      redirect: '/tool/gen',
+      component: RouteView,
+      meta: { title: '代码生成', keepAlive: true, icon: 'control' },
+      children: [{
+        path: 'edit/:tableId(\\d+)',
+        name: 'GenEdit',
+        component: () => import('@/views/tool/gen/modules/GenEdit'),
+        meta: { title: '数据表编辑' },
+        hidden: true
+      }]
     }]
   }
 ]
