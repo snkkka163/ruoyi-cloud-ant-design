@@ -13,7 +13,7 @@
         <vue-cropper
           ref="cropper"
 
-          :img="'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar30'"
+          :img="'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar200'"
           :info="true"
           :autoCrop="options.autoCrop"
           :autoCropWidth="options.autoCropWidth"
@@ -25,7 +25,7 @@
       </a-col>
       <a-col :xs="24" :md="12" :style="{height: '350px'}">
         <div class="avatar-upload-preview">
-          <img :src="avatar" :style="avatar"/>
+          <img :src="options.img" :style="options.img"/>
         </div>
       </a-col>
     </a-row>
@@ -67,7 +67,7 @@ export default {
       uploading: false,
       options: {
         // img: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        img: '',
+        img: 'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar200',
         autoCrop: true,
         autoCropWidth: 200,
         autoCropHeight: 200,
@@ -116,7 +116,7 @@ export default {
     // 上传图片（点击上传按钮）
     finish (type) {
       console.log('finish')
-      const _this = this
+      // const _this = this
       const formData = new FormData()
       // 输出
       if (type === 'blob') {
@@ -124,22 +124,24 @@ export default {
           const img = window.URL.createObjectURL(data)
           this.model = true
           this.modelSrc = img
+          console.log('最终查询到的data')
+          console.log(data)
           formData.append('file', data, this.fileName)
-          this.$http.post('https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, { contentType: false, processData: false, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-            .then((response) => {
-              console.log('upload response:', response)
-              // var res = response.data
-              // if (response.status === 'done') {
-              //   _this.imgFile = ''
-              //   _this.headImg = res.realPathList[0] // 完整路径
-              //   _this.uploadImgRelaPath = res.relaPathList[0] // 非完整路径
-              //   _this.$message.success('上传成功')
-              //   this.visible = false
-              // }
-              _this.$message.success('上传成功')
-              _this.$emit('ok', response.url)
-              _this.visible = false
-            })
+          // this.$http.post('https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, { contentType: false, processData: false, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+          //   .then((response) => {
+          //     console.log('upload response:', response)
+          //     // var res = response.data
+          //     // if (response.status === 'done') {
+          //     //   _this.imgFile = ''
+          //     //   _this.headImg = res.realPathList[0] // 完整路径
+          //     //   _this.uploadImgRelaPath = res.relaPathList[0] // 非完整路径
+          //     //   _this.$message.success('上传成功')
+          //     //   this.visible = false
+          //     // }
+          //     _this.$message.success('上传成功')
+          //     _this.$emit('ok', response.url)
+          //     _this.visible = false
+          //   })
         })
       } else {
         this.$refs.cropper.getCropData((data) => {
