@@ -37,6 +37,7 @@
         </a-form-model-item>
         <a-form-model-item ref="menuIds" label="菜单权限" prop="menuIds">
           <a-tree-select
+            :showCheckedStrategy="'SHOW_ALL'"
             v-model="form.menuIds"
             style="width: 100%"
             :tree-data="menuOptions"

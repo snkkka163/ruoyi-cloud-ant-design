@@ -13,7 +13,7 @@
         <vue-cropper
           ref="cropper"
 
-          :img="avatar"
+          :img="'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar30'"
           :info="true"
           :autoCrop="options.autoCrop"
           :autoCropWidth="options.autoCropWidth"
@@ -25,7 +25,7 @@
       </a-col>
       <a-col :xs="24" :md="12" :style="{height: '350px'}">
         <div class="avatar-upload-preview">
-          <img :src="previews.url" :style="previews.img"/>
+          <img :src="avatar" :style="avatar"/>
         </div>
       </a-col>
     </a-row>

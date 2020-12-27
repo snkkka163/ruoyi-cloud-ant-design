@@ -64,7 +64,8 @@ export default {
       default: null
     },
     menus: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {
