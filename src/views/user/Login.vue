@@ -201,17 +201,13 @@ export default {
 
       validateFields(validateFieldsKey, { force: true }, (err, values) => {
         if (!err) {
-          console.log('login form', values)
           values.uuid = this.uuid
           const loginParams = { ...values }
-          console.log('最终上传的', loginParams)
           delete loginParams.username
           loginParams[!state.loginType ? 'email' : 'username'] = values.username
           // loginParams.password = md5(values.password)
           Login(loginParams)
             .then((res) => {
-              console.log('回调的res')
-              console.log(res)
               if (res.code === 200) {
                 this.loginSuccess(res)
               } else {
@@ -220,7 +216,6 @@ export default {
               }
             })
             .catch(err => {
-              console.log('登录失败!')
               this.usernamePasswordGetCodeImg()
               this.requestFailed(err)
             })
@@ -285,13 +280,10 @@ export default {
       })
     },
     loginSuccess (res) {
-      console.log('登录成功')
-      console.log(res)
       // check res.homePage define, set $router.push name res.homePage
       // Why not enter onComplete
       /*
       this.$router.push({ name: 'analysis' }, () => {
-        console.log('onComplete')
         this.$notification.success({
           message: '欢迎',
           description: `${timeFix()}，欢迎回来`

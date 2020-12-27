@@ -109,8 +109,6 @@ export default {
     },
     // 打开抽屉(由外面的组件调用)
     show (data) {
-      console.log('进入')
-      console.log(data)
       if (data) {
         this.data = data
       }

@@ -211,7 +211,6 @@ export default {
       // 层级遍历赋值给treeData
       this.treeData = res.data
       this.getTreeSelectChildren(this.treeData)
-      console.log(this.treeData)
     })
     this.getDicts('sys_normal_disable').then(response => {
       this.statusOptions = response.data
@@ -226,7 +225,6 @@ export default {
   methods: {
     getTreeSelectChildren (treeData) {
       treeData.forEach(element => {
-        console.log(element)
         element.value = element.id
         element.key = element.label
         if (element.hasOwnProperty('children') === true) {

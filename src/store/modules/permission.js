@@ -8,9 +8,6 @@ import { getRouters } from '@/api/menu'
  * @returns {boolean}
  */
 // function hasPermission (permission, route) {
-//   console.log('过滤测试')
-//   console.log(permission)
-//   console.log(route)
 //   if (route.meta && route.meta.permission) {
 //     let flag = false
 //     for (let i = 0, len = permission.length; i < len; i++) {
@@ -41,9 +38,6 @@ function hasRole(roles, route) {
 }
 
 function filterAsyncRouter (routerMap) {
-  // console.log('进入过滤器filterAsyncRouter')
-  // console.log(routerMap)
-  // console.log(roles)
   // const accessedRouters = routerMap.filter(route => {
   //   if (hasPermission(roles.permissionList, route)) {
   //     if (route.children && route.children.length) {
@@ -77,8 +71,6 @@ const permission = {
     // GenerateRoutes ({ commit }, data) {
     //   return new Promise(resolve => {
     //     const { roles } = data
-    //     console.log('过滤器第一步')
-    //     console.log(data)
     //     const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
     //     commit('SET_ROUTERS', accessedRouters)
     //     resolve()

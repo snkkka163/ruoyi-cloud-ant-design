@@ -21,7 +21,6 @@ const errorHandler = (error) => {
     // 从 localstorage 获取 token
     const token = localStorage.getItem('token')
     // const token = storage.get(ACCESS_TOKEN)
-    console.log(error.response.status)
     if (error.response.status === 403) {
       notification.error({
         message: 'Forbidden',
@@ -52,7 +51,6 @@ request.interceptors.request.use(config => {
   // 如果 token 存在
   // 让每个请求携带自定义 token 请根据实际情况自行修改
   if (token) {
-    console.log(token)
     // config.headers['Access-Token'] = token
     config.headers['Authorization'] = 'Bearer ' + token
   }

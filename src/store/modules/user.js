@@ -53,12 +53,8 @@ const user = {
     Login ({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-          console.log(response)
-          console.log(response.code)
           // 保证登录成功以后才来获取token
           if (response.code === 200) {
-            console.log('成功进入了')
             const result = response.data
             localStorage.setItem('token', result.access_token)
           }
@@ -76,7 +72,6 @@ const user = {
     GetInfo ({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(response => {
-          console.log(response)
           // const result = response.result
           const result = response
           if (result.roles && result.permissions.length > 0) {
@@ -91,15 +86,11 @@ const user = {
             }
             // commit('SET_NAME', user.nickName)
             commit('SET_NAME', { name: user.nickName, welcome: welcome() })
-            // console.log('拿到用户信息了')
-            // console.log(user)
-            // console.log('=========================')
             commit('SET_AVATAR', avatar)
             commit('SET_SEX', user.sex)
             commit('SET_EMAIL', user.email)
             commit('SET_PHONE', user.phonenumber)
             commit('SET_USER_ID', user.userId)
-            console.log('存入的url:' + avatar)
             resolve(response)
           }
           // GetInfo一旦失败就说明这个token不是过期就是丢失了,直接走catch并让调用方跳转路由
@@ -107,8 +98,6 @@ const user = {
             reject(result)
           }
         }).catch(error => {
-          console.log(error)
-          console.log('失败了')
           reject(error)
         })
       })

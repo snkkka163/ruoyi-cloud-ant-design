@@ -105,12 +105,9 @@ export default {
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log('此时的值')
-        console.log(this.form)
       } else {
         // 新增行为
         // 刷新表单,查询角色树
@@ -126,7 +123,6 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         if (valid) {

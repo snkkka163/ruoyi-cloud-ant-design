@@ -8,8 +8,6 @@ const mimeMap = {
 const baseUrl = '/api'
 export function downLoadZip (str, filename) {
   var url = baseUrl + str
-  console.log('发送的url:')
-  console.log(url)
   axios({
     method: 'get',
     url: url,
@@ -31,8 +29,6 @@ export function resolveBlob (res, mimeType) {
   var patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
   var contentDisposition = decodeURI(res.headers['content-disposition'])
   var result = patt.exec(contentDisposition)
-  console.log('结果啊啊啊')
-  console.log(result)
   var fileName = result[1]
   fileName = fileName.replace(/"/g, '')
   aLink.href = URL.createObjectURL(blob)

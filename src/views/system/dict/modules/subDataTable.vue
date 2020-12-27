@@ -172,7 +172,6 @@ export default {
       getType(dictId).then(response => {
         this.queryParams.dictType = response.data.dictType
         this.defaultDictType = response.data.dictType
-        console.log(this.defaultDictType)
         this.getList()
       })
     },

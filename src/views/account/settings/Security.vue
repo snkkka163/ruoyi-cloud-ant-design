@@ -57,7 +57,6 @@ export default {
       this.confirmLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-          console.log('values', values)
           if (values.id > 0) {
             // 修改 e.g.
             new Promise((resolve, reject) => {

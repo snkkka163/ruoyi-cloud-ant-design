@@ -104,10 +104,8 @@ export default {
       this.option.img = url
     },
     updateUser () {
-      console.log('提交数据')
       profile(this.userObj).then(res => {
         // 在此处需要重置state以保证页面数据准确性
-        console.log(res)
         store
           // 重置state
           .dispatch('GetInfo')

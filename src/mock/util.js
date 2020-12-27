@@ -35,9 +35,6 @@ export const newBuilder = (data, message, code = 0, headers = {}) => {
 }
 
 export const getQueryParameters = (options) => {
-  console.log('进入这里了')
-  console.log(options)
-  console.log(options.url)
   const url = options.url
   const search = url.split('?')[1]
   if (!search) {

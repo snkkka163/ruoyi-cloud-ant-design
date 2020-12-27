@@ -68,14 +68,10 @@ export default {
     },
     // 打开抽屉(由外面的组件调用)
     show (data) {
-      console.log('打开预览')
-      console.log(data)
       if (data) {
         const tableId = data.tableId
         previewTable(tableId).then(response => {
             this.previewData = response.data
-            console.log('拿到想要的数据了:')
-            console.log(this.previewData)
             this.isShowCodeTabs = true
         })
       }

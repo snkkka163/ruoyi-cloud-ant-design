@@ -21,7 +21,6 @@ const permission = {
       return new Promise(resolve => {
         const { token } = data
         generatorDynamicRouter(token).then(routers => {
-          console.log(routers)
           commit('SET_ROUTERS', routers)
           resolve()
         })

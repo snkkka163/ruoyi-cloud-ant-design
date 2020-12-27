@@ -109,9 +109,6 @@ export const generatorDynamicRouter = (token) => {
       rootRouter.children = childrenNav.concat(resList)
       menuNav.push(rootRouter)
       const routers = generator(menuNav)
-      // 问题还是出在 routers中的component 是报错的，所以这些路由没法跳转页面
-      // console.log('最终路由')
-      // console.log(routers)
       routers.push(notFoundRouter)
       resolve(routers)
     }).catch(err => {

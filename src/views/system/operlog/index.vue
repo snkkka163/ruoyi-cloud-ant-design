@@ -234,7 +234,6 @@ export default {
     getList () {
       this.tableLoading = true
       list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
-        console.log('请求结果')
           this.list = response.rows
           this.total = response.total
           this.tableLoading = false

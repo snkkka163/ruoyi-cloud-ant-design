@@ -25,15 +25,11 @@ router.beforeEach((to, from, next) => {
     } else {
       // check login user.roles is null
       if (store.getters.roles.length === 0) {
-        console.log('fuck u')
-        // request login userInfo
         store
           // 判断当前用户是否已拉取完user_info信息
           .dispatch('GetInfo')
           .then(res => {
-            // console.log(res)
             // 拉取user_info
-            // const roles = res.result && res.result.role
             const roles = res.roles
             // generate dynamic router
             store.dispatch('GenerateRoutes', { roles }).then(() => {
@@ -42,21 +38,17 @@ router.beforeEach((to, from, next) => {
               router.addRoutes(store.getters.addRouters)
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
-              // console.log('我tm要跳了')
               // next({ ...to, replace: true })
               if (to.path === redirect) {
-                console.log('我tm要跳了1', to, redirect)
                 // set the replace: true so the navigation will not leave a history record
                 next({ ...to, replace: true })
               } else {
-                console.log('我tm要跳了2')
                 // 跳转到目的路由
                 next({ path: redirect })
               }
             })
           })
           .catch(() => {
-            console.log('获取出错,说明token丢失或过期')
             notification.error({
               message: '错误',
               description: '请求用户信息失败，请重试'
@@ -67,7 +59,6 @@ router.beforeEach((to, from, next) => {
             })
           })
       } else {
-        console.log('lipu', to)
         next()
       }
     }
@@ -83,6 +74,5 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
-  console.log('after each')
   NProgress.done() // finish progress bar
 })

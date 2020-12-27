@@ -95,7 +95,6 @@ export default {
   },
   methods: {
     remove (targetKey) {
-      console.log(targetKey)
       let index = -1
       this.panes.forEach((pane, i) => {
         if (pane.key === targetKey) {

@@ -153,7 +153,6 @@ export default {
       this.collapsed = val
     },
     handleSettingChange ({ type, value }) {
-      console.log('type', type, value)
       type && (this.settings[type] = value)
       switch (type) {
         case 'contentWidth':
@@ -170,7 +169,6 @@ export default {
       }
     },
     reload () {
-      console.log('我被执行了')
       this.isRouterAlive = false
       this.$nextTick(function () {
         this.isRouterAlive = true

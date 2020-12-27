@@ -129,8 +129,6 @@ export default {
     getMenuTreeselect () {
       menuTreeselect().then(response => {
         this.menuOptions = response.data
-        console.log('菜单树结构:')
-        console.log(this.menuOptions)
       })
     },
     /** 查询部门树结构 */
@@ -155,12 +153,9 @@ export default {
     },
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, readOnly) {
-      console.log(data)
       if (data) {
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log('此时的值')
-        console.log(this.form)
         this.getMenuTreeselect()
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId)
         roleMenu.then(response => {
@@ -182,7 +177,6 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         if (valid) {

@@ -334,8 +334,6 @@ export default {
     getList () {
       this.tableLoading = true
       const params = Object.assign({}, this.queryParam)
-      console.log('加载数据的方法')
-      console.log(params)
       // 与分页绑定
       params.pageNum = this.current
       params.pageSize = this.pageSize
@@ -395,8 +393,6 @@ export default {
     // 发送删除行为
     handleDelete (ids, callback) {
       if (ids.length > 0) {
-        console.log('准备执行删除行为')
-        console.log(ids)
         delUser(ids).then(response => {
           if (response.code === 200) {
             this.$message.success('删除成功!')
@@ -440,7 +436,6 @@ export default {
       this.resetPasswordConfirmLoading = true
       form.validateFields((errors, values) => {
         if (!errors) {
-            console.log('values', values)
             // 新增
             new Promise((resolve, reject) => {
               setTimeout(() => {

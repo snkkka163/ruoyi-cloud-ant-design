@@ -65,7 +65,6 @@ export default {
       console.log(`selected ${value}`)
     },
     getList () {
-      console.log('开始调用')
       this.data = article({
         url: '?'
       }).result

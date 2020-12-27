@@ -135,7 +135,6 @@ export default {
         this.list = response.rows
         this.total = response.total
         this.tableLoading = false
-        console.log(response.rows)
         this.list = this.list.map((item, index) => {
             return Object.assign(item, { 'indexId': (index + 1) })
         })

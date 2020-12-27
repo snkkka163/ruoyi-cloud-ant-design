@@ -156,8 +156,6 @@ export default {
   },
   created () {
     const dictId = this.$route.params && this.$route.params.dictId
-    console.log('参考值')
-    console.log(dictId)
     this.getTypeData(dictId)
     // this.getList()
     this.getTypeList()

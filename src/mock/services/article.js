@@ -40,13 +40,10 @@ const href = 'https://ant.design'
 
 export const article = (options) => {
   const queryParameters = getQueryParameters(options)
-  console.log('走到第二步')
-  console.log('queryParameters', queryParameters)
   if (queryParameters && !queryParameters.count) {
     queryParameters.count = 5
   }
   const data = []
-  console.log('开始跑data')
   for (let i = 0; i < queryParameters.count; i++) {
     const tmpKey = i + 1
     const num = parseInt(Math.random() * (4 + 1), 10)
@@ -85,8 +82,6 @@ export const article = (options) => {
       cover: parseInt(i / 4, 10) % 2 === 0 ? covers[i % 4] : covers[3 - (i % 4)]
     })
   }
-  console.log('最后返回data的时刻')
-  console.log(newBuilder(data))
 
   return newBuilder(data)
 }

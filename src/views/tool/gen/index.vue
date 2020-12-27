@@ -292,8 +292,6 @@ export default {
     },
     /** 生成代码操作 */
     handleGenTableBatch (row) {
-      console.log('生成代码')
-      console.log(row)
       if (row.length === 0) {
         this.$message.error('请最少选择一张表')
       } else {
@@ -301,8 +299,6 @@ export default {
         row.forEach(element => {
           tableNames.push(element.tableName)
         })
-        console.log('最终得到表名')
-        console.log(tableNames)
         downLoadZip('/code/gen/batchGenCode?tables=' + tableNames, 'ruoyi')
       }
     },

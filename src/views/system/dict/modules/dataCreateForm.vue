@@ -98,15 +98,11 @@ export default {
   methods: {
     // 由于要用传进来的值做判断,将显示和隐藏放在内部做处理
     show (data, defaultDictType, readOnly) {
-      console.log('判断传递值')
-      console.log(data)
       // 由于传过来的也有可能是新增时要带的字典类型,所以这里通过code判断
       if (data.dictCode) {
         this.defaultDictType = defaultDictType
-        console.log('修改')
         // 修改行为
         this.form = Object.assign({}, data) || {}
-        console.log(this.form)
       } else {
         this.defaultDictType = defaultDictType
         // 新增行为
@@ -122,7 +118,6 @@ export default {
       this.reset()
     },
     confirm () {
-      console.log('点击确定了')
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         if (valid) {

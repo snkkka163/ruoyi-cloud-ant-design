@@ -77,7 +77,6 @@ export default {
       that.loading = true
       validateFields((err, values) => {
         if (!err) {
-          console.log('表单 values', values)
           that.timer = setTimeout(function () {
             that.loading = false
             that.$emit('nextStep')

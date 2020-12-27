@@ -227,7 +227,6 @@ export default {
   },
   created () {
     const tableId = this.$route.params && this.$route.params.tableId
-    console.log('获取上一个页面给我的tableid', tableId)
     this.tableLoading = true
     if (tableId) {
       // 获取表详细信息
@@ -272,8 +271,6 @@ export default {
         } else {
           this.msgError('表单校验未通过，请重新检查提交内容')
         }
-      console.log(basicForm)
-      console.log(genForm)
     },
     /** 关闭按钮 */
     close () {
