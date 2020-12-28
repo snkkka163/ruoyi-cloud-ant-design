@@ -23,7 +23,7 @@ import './core/lazy_use' // use lazy load components
 import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
-
+import permission from './directive/permission'
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
@@ -39,6 +39,8 @@ Vue.prototype.handleTree = handleTree
 Vue.use(VueAxios)
 // 代码高亮
 Vue.use(Highlight)
+// 权限控制
+Vue.use(permission)
 // use pro-layout components
 Vue.component('pro-layout', ProLayout)
 Vue.component('page-container', PageHeaderWrapper)

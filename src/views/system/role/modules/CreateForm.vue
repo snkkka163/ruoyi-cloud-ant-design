@@ -38,12 +38,14 @@
         <a-form-model-item ref="menuIds" label="菜单权限" prop="menuIds">
           <a-tree-select
             :showCheckedStrategy="'SHOW_ALL'"
+            :multiple="true"
             v-model="form.menuIds"
             style="width: 100%"
             :tree-data="menuOptions"
             tree-checkable
             search-placeholder="Please select"
             :replaceFields="treeReplaceFields"
+            allow-clear
           />
         </a-form-model-item>
         <a-form-model-item ref="remark" label="备注" prop="remark">
@@ -108,8 +110,6 @@ export default {
         roleSort: [
           { required: true, message: '角色顺序为必填', trigger: 'change' }
         ]
-        // pattern: new RegExp('^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\\.[a-zA-Z0-9_-]{2,3}){1,2})$')
-        // ,resourceIds: [{ required: true, message: '此项为必选项', trigger: 'select' }]
       },
       treeReplaceFields: {
         children: 'children',
@@ -179,6 +179,13 @@ export default {
     confirm () {
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
+        // 解决ant design vue选择树的弊端(半选中的节点没有被考虑进来，与若依菜单树规则不匹配)
+        this.insertTreeParentId()
+        console.log(this.menuOptions)
+        // 先给每个节点绑上父节点id
+        // 我想查询我的父亲节点的id:
+        console.log('我想查询我的父亲节点的id:', 1045)
+        console.log(this.getParentIdByMenuId(this.menuOptions, 1045))
         if (valid) {
           // 进行新增行为:
           if (this.form.roleId > 0) {
@@ -235,7 +242,61 @@ export default {
         deptCheckStrictly: true,
         remark: undefined
       }
+    },
+    insertTreeParentId () {
+      this.menuOptions = this.menuOptions.map((element) => {
+          element = Object.assign({}, element, { parentId: 0 })
+          console.log('第一代')
+          console.log(element)
+          if (element.children) {
+            element.children = this.insertTreeParentIdSub(element, element.children)
+         }
+         return element
+      })
+    },
+
+    insertTreeParentIdSub (parent, data) {
+      const parendId = parent.id
+      data = data.map((element) => {
+        element = Object.assign({}, element, { parentId: parendId })
+        if (element.children) {
+         element.children = this.insertTreeParentIdSub(element, element.children)
+        }
+        return element
+      })
+      return data
+    },
+    getParentIdByMenuId (data, menuId) {
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index]
+        console.log(element)
+        if (menuId === element.id && element.parentId !== 0) {
+          console.log('进入')
+          console.log(element)
+          console.log(element.parentId)
+          // return element.parentId
+          return element.parentId
+        }
+        if (element.children) {
+          // 找不到的宝藏子子孙孙继续找！！！
+          return this.getParentIdByMenuId(element.children, menuId)
+        }
+      }
+      // data.forEach(element => {
+      //   if (menuId === element.id && element.parentId !== 0) {
+      //     console.log('进入')
+      //     console.log(element)
+      //     console.log(element.parentId)
+      //     // return element.parentId
+      //     return element.parentId
+      //   }
+      //   if (element.children) {
+      //     // 找不到的宝藏子子孙孙继续找！！！
+      //     return this.getParentIdByMenuId(element.children, menuId)
+      //   }
+      // })
     }
+
   }
 }
 </script>
