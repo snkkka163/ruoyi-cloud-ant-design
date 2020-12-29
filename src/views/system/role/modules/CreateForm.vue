@@ -186,6 +186,7 @@ export default {
         // 我想查询我的父亲节点的id:
         console.log('我想查询我的父亲节点的id:', 1045)
         console.log(this.getParentIdByMenuId(this.menuOptions, 1045))
+        console.log('123123123123123123123123')
         if (valid) {
           // 进行新增行为:
           if (this.form.roleId > 0) {
@@ -269,17 +270,14 @@ export default {
     getParentIdByMenuId (data, menuId) {
       for (let index = 0; index < data.length; index++) {
         const element = data[index]
-        console.log(element)
         if (menuId === element.id && element.parentId !== 0) {
-          console.log('进入')
+          console.log('进入了')
           console.log(element)
-          console.log(element.parentId)
-          // return element.parentId
           return element.parentId
-        }
-        if (element.children) {
-          // 找不到的宝藏子子孙孙继续找！！！
-          return this.getParentIdByMenuId(element.children, menuId)
+        } else {
+          if (element.children) {
+            this.getParentIdByMenuId(element.children, menuId)
+          }
         }
       }
       // data.forEach(element => {
@@ -291,7 +289,6 @@ export default {
       //     return element.parentId
       //   }
       //   if (element.children) {
-      //     // 找不到的宝藏子子孙孙继续找！！！
       //     return this.getParentIdByMenuId(element.children, menuId)
       //   }
       // })
