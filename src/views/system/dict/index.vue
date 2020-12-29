@@ -49,12 +49,12 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-button @click="$refs.createModal.show()" type="primary" v-hasPermi="['system:dict:add']" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" v-hasPermi="['system:dict:remove']" :disabled="selectedRowKeys.length === 0">删除</a-button>
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item key="export-data1" @click="handleExport">导出Excel</a-menu-item>
-                <a-menu-item key="export-data2" @click="handleClearCache">清理缓存</a-menu-item>
+                <a-menu-item key="export-data1" @click="handleExport" v-hasPermi="['system:dict:export']">导出Excel</a-menu-item>
+                <a-menu-item key="export-data2" @click="handleClearCache" v-hasPermi="['system:dict:remove']">清理缓存</a-menu-item>
               </a-menu>
               <a-button>
                 更多操作 <a-icon type="down" />
@@ -73,7 +73,7 @@
           >
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a @click="$refs.createModal.show(record)">编辑</a>
+              <a @click="$refs.createModal.show(record)" v-hasPermi="['system:dict:edit']">编辑</a>
               <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
@@ -81,7 +81,7 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    <a href="javascript:;" @click="handleDelete(record)" v-hasPermi="['system:dict:remove']">删除</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>

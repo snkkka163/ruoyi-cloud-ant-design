@@ -45,7 +45,7 @@
                     <a-col :md="8" :sm="24">
                       <span class="table-page-search-submitButtons">
                         <a-button @click="search" type="primary">查询</a-button>
-                        <a-button @click="reset" style="margin-left: 8px">重置</a-button>
+                        <a-button @click="reset" v-hasPermi="['system:user:resetPwd']" style="margin-left: 8px">重置</a-button>
                         <a @click="toggleAdvanced" style="margin-left: 8px">
                           {{ advanced ? '收起' : '展开' }}
                           <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -57,13 +57,13 @@
               </div>
               <!-- 新增 -->
               <div class="table-page-operator-wrapper">
-                <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-                <a-button @click="batchDelete(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+                <a-button @click="$refs.createModal.show()" v-hasPermi="['system:user:add']" type="primary" ghost>新增</a-button>
+                <a-button @click="batchDelete(selectedRowKeys)" v-hasPermi="['system:user:remove']" :disabled="selectedRowKeys.length === 0">删除</a-button>
                 <a-dropdown>
                   <a-menu slot="overlay">
                     <a-menu-item key="export-data1" @click="importTemplate">下载Excel模板</a-menu-item>
-                    <a-menu-item key="export-data2" @click="handleExport">导出Excel</a-menu-item>
-                    <a-menu-item key="export-data3" @click="importExcelHandleOpen">导入Excel</a-menu-item>
+                    <a-menu-item key="export-data2" @click="handleExport" v-hasPermi="['system:user:export']">导出Excel</a-menu-item>
+                    <a-menu-item key="export-data3" @click="importExcelHandleOpen" v-hasPermi="['system:user:import']">导入Excel</a-menu-item>
                   </a-menu>
                   <a-button>
                     更多操作 <a-icon type="down" />
@@ -92,7 +92,7 @@
                   </a-popconfirm>
                 </span>
                 <span slot="action" slot-scope="text, record">
-                  <a @click="$refs.createModal.show(record)">编辑</a>
+                  <a @click="$refs.createModal.show(record)" v-hasPermi="['system:user:edit']">编辑</a>
                   <a-divider type="vertical" />
                   <a-dropdown>
                     <a class="ant-dropdown-link">
@@ -103,7 +103,7 @@
                         <a href="javascript:;" @click="resetPwd(record.userId)">重置密码</a>
                       </a-menu-item>
                       <a-menu-item>
-                        <a href="javascript:;" v-if="record.userId !== 1" @click="deleteRecord(record)">删除</a>
+                        <a href="javascript:;" v-if="record.userId !== 1" v-hasPermi="['system:user:remove']" @click="deleteRecord(record)">删除</a>
                       </a-menu-item>
                     </a-menu>
                   </a-dropdown>

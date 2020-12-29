@@ -40,11 +40,11 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-button @click="$refs.createModal.show()" type="primary" v-hasPermi="['system:post:add']" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0" v-hasPermi="['system:post:remove']">删除</a-button>
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+                <a-menu-item key="export-data" @click="handleExport" v-hasPermi="['system:post:export']">导出Excel</a-menu-item>
               </a-menu>
               <a-button>
                 更多操作 <a-icon type="down" />
@@ -67,7 +67,7 @@
             </span>
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a @click="$refs.createModal.show(record)">编辑</a>
+              <a @click="$refs.createModal.show(record)" v-hasPermi="['system:post:edit']">编辑</a>
               <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
@@ -75,7 +75,7 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    <a href="javascript:;" v-hasPermi="['system:post:remove']" @click="handleDelete(record)">删除</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>

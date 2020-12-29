@@ -14,7 +14,8 @@ const user = {
     info: {},
     email: '',
     phonenumber: '',
-    sex: 0
+    sex: 0,
+    permissions: []
   },
 
   mutations: {
@@ -45,6 +46,9 @@ const user = {
     },
     SET_USER_ID: (state, userId) => {
       state.userId = userId
+    },
+    SET_PERMISSION: (state, permissions) => {
+      state.permissions = permissions
     }
   },
 
@@ -91,6 +95,7 @@ const user = {
             commit('SET_EMAIL', user.email)
             commit('SET_PHONE', user.phonenumber)
             commit('SET_USER_ID', user.userId)
+            commit('SET_PERMISSION', result.permissions)
             resolve(response)
           }
           // GetInfo一旦失败就说明这个token不是过期就是丢失了,直接走catch并让调用方跳转路由

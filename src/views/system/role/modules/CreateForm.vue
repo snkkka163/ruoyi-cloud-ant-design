@@ -180,13 +180,10 @@ export default {
       this.confirmLoading = true
       this.$refs.ruleForm.validate(valid => {
         // 解决ant design vue选择树的弊端(半选中的节点没有被考虑进来，与若依菜单树规则不匹配)
+        // 给每个节点加parentId 方便后面使用
         this.insertTreeParentId()
-        console.log(this.menuOptions)
-        // 先给每个节点绑上父节点id
-        // 我想查询我的父亲节点的id:
-        console.log('我想查询我的父亲节点的id:', 1044)
-        console.log(this.getParentIdByMenuId(this.menuOptions, 1044))
-        console.log('123123123123123123123123')
+        // 判断每一项的父节点是否存在，不存在则补充
+        // this.insertParentIdToMenus()
         if (valid) {
           // 进行新增行为:
           if (this.form.roleId > 0) {
@@ -268,18 +265,6 @@ export default {
       return data
     },
     getParentIdByMenuId (data, menuId) {
-      // for (let index = 0; index < data.length; index++) {
-      //   const element = data[index]
-      //   if (menuId === element.id && element.parentId !== 0) {
-      //     console.log('进入了')
-      //     console.log(element)
-      //     return element.parentId
-      //   } else {
-      //     if (element.children) {
-      //       this.getParentIdByMenuId(element.children, menuId)
-      //     }
-      //   }
-      // }
       let result = -1
       data.forEach(element => {
         const loop = loopData => {
@@ -301,8 +286,60 @@ export default {
         loop(element)
       })
       return result
+    },
+    insertParentIdToMenus (menuId) {
+      // 判断是否都已经符合条件
+      let flag = true
+      this.form.menuIds.forEach(element => {
+        const parentId = this.getParentIdByMenuId(this.menuOptions, element)
+        const isExist = this.isExisMenusItem(parentId)
+        if (isExist === -1) {
+          flag = false
+        }
+      })
+      if (flag) {
+        return
+      }
+      if (menuId) {
+        this.form.menuIds.forEach(element => {
+          const loop = loopData => {
+            // 获取其父节点id判断是否存在 不存在补充进去
+            const parentId = this.getParentIdByMenuId(this.menuOptions, loopData)
+            const isExist = this.isExisMenusItem(parentId)
+            if (isExist === -1) {
+              this.form.menuIds.push(parentId)
+            }
+            if (parentId !== 0) {
+              // 说明还不是最终节点,继续找
+              this.insertParentIdToMenus(parentId)
+            }
+          }
+          loop(element)
+        })
+      } else {
+        const parentId = this.getParentIdByMenuId(this.menuOptions, menuId)
+        const isExist = this.isExisMenusItem(parentId)
+        if (isExist === -1) {
+          this.form.menuIds.push(parentId)
+        }
+        if (parentId !== 0) {
+          // 说明还不是最终节点,继续找
+          this.insertParentIdToMenus(parentId)
+        }
+      }
+      console.log(1)
+    },
+    isExisMenusItem (data) {
+      let flag = -1
+      for (let index = 0; index < this.form.menuIds.length; index++) {
+        const element = this.form.menuIds[index]
+        if (element === data || element === 0) {
+          flag = 1
+          return flag
+        }
+      }
+      return flag
     }
-
   }
 }
 </script>

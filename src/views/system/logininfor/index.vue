@@ -49,11 +49,11 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" v-hasPermi="['system:logininfor:remove']" :disabled="selectedRowKeys.length === 0">删除</a-button>
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
-                <a-menu-item key="clear-data" @click="handleClean">清除</a-menu-item>
+                <a-menu-item key="export-data" @click="handleExport" v-hasPermi="['system:logininfor:export']">导出Excel</a-menu-item>
+                <a-menu-item key="clear-data" @click="handleClean" v-hasPermi="['system:logininfor:remove']">清除</a-menu-item>
               </a-menu>
               <a-button>
                 更多操作 <a-icon type="down" />

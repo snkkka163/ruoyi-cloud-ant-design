@@ -51,12 +51,12 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
-            <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
+            <a-button @click="$refs.createModal.show()" v-hasPermi="['monitor:job:add']" type="primary" ghost>新增</a-button>
+            <a-button @click="handleDeleteBatch(selectedRowKeys)" v-hasPermi="['monitor:job:remove']" :disabled="selectedRowKeys.length === 0">删除</a-button>
             <a-button @click="handleJobLog">日志</a-button>
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item key="export-data" @click="handleExport">导出Excel</a-menu-item>
+                <a-menu-item key="export-data" v-hasPermi="['monitor:job:export']" @click="handleExport">导出Excel</a-menu-item>
               </a-menu>
               <a-button>
                 更多操作 <a-icon type="down" />
@@ -97,7 +97,7 @@
                 @cancel="cancelHandleRun(record)"
               >
                 <span slot="title">确认执行一次{{ record.jobName }}的任务吗?</span>
-                <a>执行一次 </a>
+                <a v-hasPermi="['monitor:job:changeStatus']">执行一次 </a>
               </a-popconfirm>
               <a-divider type="vertical" />
               <a-dropdown>
@@ -106,13 +106,13 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item>
-                    <a href="javascript:;" @click="$refs.createModal.show(record)">编辑</a>
+                    <a href="javascript:;" v-hasPermi="['monitor:job:edit']" @click="$refs.createModal.show(record)">编辑</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="$refs.detailDrawer.show(record)">详细</a>
+                    <a href="javascript:;" v-hasPermi="['monitor:job:query']" @click="$refs.detailDrawer.show(record)">详细</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    <a href="javascript:;" v-hasPermi="['monitor:job:remove']" @click="handleDelete(record)">删除</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>

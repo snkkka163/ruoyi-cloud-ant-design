@@ -37,11 +37,11 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="handleGenTableBatch(selectedRows)" type="primary" ghost>生成</a-button>
+            <a-button @click="handleGenTableBatch(selectedRows)" v-hasPermi="['tool:gen:code']" type="primary" ghost>生成</a-button>
             <a-button @click="handleDeleteBatch(selectedRowKeys)" :disabled="selectedRowKeys.length === 0">删除</a-button>
             <a-dropdown>
               <a-menu slot="overlay">
-                <a-menu-item key="export-data" @click="$refs.importtable.show()">导入</a-menu-item>
+                <a-menu-item key="export-data" v-hasPermi="['tool:gen:import']" @click="$refs.importtable.show()">导入</a-menu-item>
               </a-menu>
               <a-button>
                 更多操作 <a-icon type="down" />
@@ -60,7 +60,7 @@
           >
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a @click="handleGenTable(record)">生成代码</a>
+              <a @click="handleGenTable(record)" v-hasPermi="['tool:gen:code']">生成代码</a>
               <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
@@ -68,16 +68,16 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item>
-                    <a href="javascript:;" @click="$refs.previewcode.show(record)">预览</a>
+                    <a href="javascript:;" v-hasPermi="['tool:gen:preview']" @click="$refs.previewcode.show(record)">预览</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleEditTable(record)">编辑</a>
+                    <a href="javascript:;" v-hasPermi="['tool:gen:edit']" @click="handleEditTable(record)">编辑</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    <a href="javascript:;" v-hasPermi="['tool:gen:remove']" @click="handleDelete(record)">删除</a>
                   </a-menu-item>
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleSynchDb(record)">同步</a>
+                    <a href="javascript:;" v-hasPermi="['tool:gen:edit']" @click="handleSynchDb(record)">同步</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>

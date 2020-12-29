@@ -40,7 +40,7 @@
 
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a @click="handleForceLogout(record)">强退</a>
+              <a @click="handleForceLogout(record)" v-hasPermi="['monitor:online:forceLogout']">强退</a>
             </span>
           </a-table>
           <!-- 底部分页按钮 -->

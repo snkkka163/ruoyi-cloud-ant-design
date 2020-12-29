@@ -33,7 +33,7 @@
             </a-form>
           </div>
           <div class="table-page-operator-wrapper">
-            <a-button @click="$refs.createModal.show()" type="primary" ghost>新增</a-button>
+            <a-button @click="$refs.createModal.show()" type="primary" v-hasPermi="['system:dept:add']" ghost>新增</a-button>
           </div>
           <!-- 表格 -->
           <a-table
@@ -51,7 +51,7 @@
             </span>
             <!-- 更多选择 -->
             <span slot="action" slot-scope="text, record">
-              <a @click="$refs.createModal.show(record)">编辑</a>
+              <a @click="$refs.createModal.show(record)" v-hasPermi="['system:dept:edit']">编辑</a>
               <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
@@ -59,7 +59,7 @@
                 </a>
                 <a-menu slot="overlay">
                   <a-menu-item>
-                    <a href="javascript:;" @click="handleDelete(record)">删除</a>
+                    <a href="javascript:;" v-hasPermi="['system:dept:remove']" @click="handleDelete(record)">删除</a>
                   </a-menu-item>
                 </a-menu>
               </a-dropdown>
