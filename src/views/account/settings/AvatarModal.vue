@@ -12,14 +12,14 @@
       <a-col :xs="24" :md="12" :style="{height: '350px'}">
         <vue-cropper
           ref="cropper"
-
-          :img="'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar200'"
+          :img="options.img"
           :info="true"
           :autoCrop="options.autoCrop"
           :autoCropWidth="options.autoCropWidth"
           :autoCropHeight="options.autoCropHeight"
           :fixedBox="options.fixedBox"
           @realTime="realTime"
+          v-if="visible"
         >
         </vue-cropper>
       </a-col>
@@ -49,14 +49,16 @@
         <a-button icon="redo" @click="rotateRight"/>
       </a-col>
       <a-col :lg="{span: 2, offset: 6}" :md="2">
-        <a-button type="primary" @click="finish('blob')">保存</a-button>
+        <a-button type="primary" @click="uploadImg">保存</a-button>
       </a-col>
     </a-row>
   </a-modal>
 
 </template>
 <script>
+import store from '@/store'
 import { mapState } from 'vuex'
+import { uploadAvatar } from '@/api/system/user'
 export default {
   data () {
     return {
@@ -66,8 +68,7 @@ export default {
       fileList: [],
       uploading: false,
       options: {
-        // img: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        img: 'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png!avatar200',
+        img: store.getters.avatar,
         autoCrop: true,
         autoCropWidth: 200,
         autoCropHeight: 200,
@@ -100,52 +101,30 @@ export default {
       this.$refs.cropper.rotateRight()
     },
     beforeUpload (file) {
-      const reader = new FileReader()
-      // 把Array Buffer转化为blob 如果是base64不需要
-      // 转化为base64
-      reader.readAsDataURL(file)
-      reader.onload = () => {
-        this.options.img = reader.result
-      }
-      // 转化为blob
-      // reader.readAsArrayBuffer(file)
-
-      return false
-    },
-
-    // 上传图片（点击上传按钮）
-    finish (type) {
-      // const _this = this
-      const formData = new FormData()
-      // 输出
-      if (type === 'blob') {
-        this.$refs.cropper.getCropBlob((data) => {
-          const img = window.URL.createObjectURL(data)
-          this.model = true
-          this.modelSrc = img
-          formData.append('file', data, this.fileName)
-          // this.$http.post('https://www.mocky.io/v2/5cc8019d300000980a055e76', formData, { contentType: false, processData: false, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-          //   .then((response) => {
-          //     console.log('upload response:', response)
-          //     // var res = response.data
-          //     // if (response.status === 'done') {
-          //     //   _this.imgFile = ''
-          //     //   _this.headImg = res.realPathList[0] // 完整路径
-          //     //   _this.uploadImgRelaPath = res.relaPathList[0] // 非完整路径
-          //     //   _this.$message.success('上传成功')
-          //     //   this.visible = false
-          //     // }
-          //     _this.$message.success('上传成功')
-          //     _this.$emit('ok', response.url)
-          //     _this.visible = false
-          //   })
-        })
+      if (file.type.indexOf('image/') === -1) {
+        this.msgError('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。')
       } else {
-        this.$refs.cropper.getCropData((data) => {
-          this.model = true
-          this.modelSrc = data
-        })
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+          this.options.img = reader.result
+        }
       }
+    },
+    // 上传图片
+    uploadImg () {
+      console.log('提交图片拉')
+      this.$refs.cropper.getCropBlob(data => {
+        const formData = new FormData()
+        formData.append('avatarfile', data)
+        uploadAvatar(formData).then(response => {
+          this.open = false
+          this.options.img = response.imgUrl
+          store.commit('SET_AVATAR', this.options.img)
+          this.$message.success('修改成功!')
+          this.visible = false
+        })
+      })
     },
     okHandel () {
       const vm = this
