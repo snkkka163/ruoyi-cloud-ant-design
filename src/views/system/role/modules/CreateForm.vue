@@ -184,8 +184,8 @@ export default {
         console.log(this.menuOptions)
         // 先给每个节点绑上父节点id
         // 我想查询我的父亲节点的id:
-        console.log('我想查询我的父亲节点的id:', 1045)
-        console.log(this.getParentIdByMenuId(this.menuOptions, 1045))
+        console.log('我想查询我的父亲节点的id:', 1044)
+        console.log(this.getParentIdByMenuId(this.menuOptions, 1044))
         console.log('123123123123123123123123')
         if (valid) {
           // 进行新增行为:
@@ -268,30 +268,39 @@ export default {
       return data
     },
     getParentIdByMenuId (data, menuId) {
-      for (let index = 0; index < data.length; index++) {
-        const element = data[index]
-        if (menuId === element.id && element.parentId !== 0) {
-          console.log('进入了')
-          console.log(element)
-          return element.parentId
-        } else {
-          if (element.children) {
-            this.getParentIdByMenuId(element.children, menuId)
+      // for (let index = 0; index < data.length; index++) {
+      //   const element = data[index]
+      //   if (menuId === element.id && element.parentId !== 0) {
+      //     console.log('进入了')
+      //     console.log(element)
+      //     return element.parentId
+      //   } else {
+      //     if (element.children) {
+      //       this.getParentIdByMenuId(element.children, menuId)
+      //     }
+      //   }
+      // }
+      let result = -1
+      data.forEach(element => {
+        const loop = loopData => {
+          console.log(loopData)
+          if (menuId === loopData.id && loopData.parentId !== 0) {
+            console.log('进入')
+            console.log(loopData)
+            console.log(loopData.parentId)
+            // return element.parentId
+            result = loopData.parentId
+            return loopData.parentId
+          }
+          if (loopData.children) {
+            for (let i = 0; i < loopData.children.length; i++) {
+              loop(loopData.children[i], menuId)
+            }
           }
         }
-      }
-      // data.forEach(element => {
-      //   if (menuId === element.id && element.parentId !== 0) {
-      //     console.log('进入')
-      //     console.log(element)
-      //     console.log(element.parentId)
-      //     // return element.parentId
-      //     return element.parentId
-      //   }
-      //   if (element.children) {
-      //     return this.getParentIdByMenuId(element.children, menuId)
-      //   }
-      // })
+        loop(element)
+      })
+      return result
     }
 
   }
