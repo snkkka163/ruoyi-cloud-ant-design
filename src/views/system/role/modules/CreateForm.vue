@@ -244,8 +244,6 @@ export default {
     insertTreeParentId () {
       this.menuOptions = this.menuOptions.map((element) => {
           element = Object.assign({}, element, { parentId: 0 })
-          console.log('第一代')
-          console.log(element)
           if (element.children) {
             element.children = this.insertTreeParentIdSub(element, element.children)
          }
@@ -268,11 +266,7 @@ export default {
       let result = -1
       data.forEach(element => {
         const loop = loopData => {
-          console.log(loopData)
           if (menuId === loopData.id && loopData.parentId !== 0) {
-            console.log('进入')
-            console.log(loopData)
-            console.log(loopData.parentId)
             // return element.parentId
             result = loopData.parentId
             return loopData.parentId
@@ -327,7 +321,6 @@ export default {
           this.insertParentIdToMenus(parentId)
         }
       }
-      console.log(1)
     },
     isExisMenusItem (data) {
       let flag = -1

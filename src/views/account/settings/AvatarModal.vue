@@ -113,7 +113,6 @@ export default {
     },
     // 上传图片
     uploadImg () {
-      console.log('提交图片拉')
       this.$refs.cropper.getCropBlob(data => {
         const formData = new FormData()
         formData.append('avatarfile', data)
