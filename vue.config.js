@@ -101,17 +101,18 @@ const vueConfig = {
   },
 
   devServer: {
+    host: '0.0.0.0',
     // development server port 8000
     port: 8000,
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
         // 182.61.136.176:8080 https://yingwu.itsnkkka.cn
-        target: 'http://182.61.136.176:8080',
+        target: `http://127.0.0.1:8080`,
+        changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         },
-        changeOrigin: true,
         logLevel: 'debug'
       }
     },
