@@ -111,11 +111,11 @@ const vueConfig = {
         pathRewrite: {
           '^/api': ''
         },
-        ws: false,
         changeOrigin: true,
         logLevel: 'debug'
       }
-    }
+    },
+    disableHostCheck: true
   },
 
   // disable source map in production

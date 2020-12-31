@@ -10,7 +10,8 @@ Router.prototype.push = function push (location, onResolve, onReject) {
 }
 Vue.use(Router)
 export default new Router({
-  mode: 'history',
+  // history
+  mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap.concat(asyncRouterMap)
 })
