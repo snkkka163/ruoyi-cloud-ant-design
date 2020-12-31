@@ -38,19 +38,19 @@
               </template>
               <!-- 插入 -->
               <template slot="isInsert" slot-scope="text, record">
-                <a-checkbox :checked="(record.isInsert === '1' ? true : false)"></a-checkbox>
+                <a-checkbox v-model="record.isInsert"></a-checkbox>
               </template>
               <!-- 编辑 -->
               <template slot="isEdit" slot-scope="text, record">
-                <a-checkbox :checked="(record.isEdit === '1' ? true : false)"></a-checkbox>
+                <a-checkbox v-model="record.isEdit"></a-checkbox>
               </template>
               <!-- 列表 -->
               <template slot="isList" slot-scope="text, record">
-                <a-checkbox :checked="(record.isList === '1' ? true : false)"></a-checkbox>
+                <a-checkbox v-model="record.isList"></a-checkbox>
               </template>
               <!-- 查询 -->
               <template slot="isQuery" slot-scope="text, record">
-                <a-checkbox :checked="(record.isQuery === '1' ? true : false)"></a-checkbox>
+                <a-checkbox v-model="record.isQuery"></a-checkbox>
               </template>
               <!-- 查询方式 -->
               <template slot="queryType" slot-scope="text, record">
@@ -136,6 +136,8 @@ export default {
       info: {},
       // 表数据
       tableList: [],
+      // 转
+      newTableList: [],
       // 表头
       columns: [
         {
@@ -232,6 +234,7 @@ export default {
       // 获取表详细信息
       getGenTable(tableId).then(res => {
         this.tableList = res.data.rows
+        this.transitionCheckBoxValList()
         this.info = res.data.info
         this.tableLoading = false
       })
@@ -253,7 +256,8 @@ export default {
 
       if (basicForm && genForm) {
           const genTable = Object.assign({}, basicForm, genForm)
-          genTable.columns = basicForm.columns
+          this.transitionCheckBoxValAdd()
+          genTable.columns = this.newTableList
           genTable.params = {
             treeCode: genTable.treeCode,
             treeName: genTable.treeName,
@@ -275,6 +279,66 @@ export default {
     /** 关闭按钮 */
     close () {
       this.$router.push({ path: '/tool/gen' })
+    },
+    /**
+     * 为复选框转换(Antdv的复选框只接受true/false)
+     */
+    transitionCheckBoxValList () {
+      this.tableList.forEach(item => {
+        // 新增
+        if (item.isInsert === '1') {
+          item.isInsert = true
+        } else {
+          item.isInsert = false
+        }
+        // 修改
+        if (item.isEdit === '1') {
+          item.isEdit = true
+        } else {
+          item.isEdit = false
+        }
+        // 列表
+        if (item.isList === '1') {
+          item.isList = true
+        } else {
+          item.isList = false
+        }
+        // 查询
+        if (item.isQuery === '1') {
+          item.isQuery = true
+        } else {
+          item.isQuery = false
+        }
+      })
+    },
+    transitionCheckBoxValAdd () {
+      this.newTableList = JSON.parse(JSON.stringify(this.tableList))
+      this.newTableList.forEach(item => {
+        // 新增
+        if (item.isInsert === true) {
+          item.isInsert = '1'
+        } else {
+          item.isInsert = '0'
+        }
+        // 修改
+        if (item.isEdit === true) {
+          item.isEdit = '1'
+        } else {
+          item.isEdit = '0'
+        }
+        // 列表
+        if (item.isList === true) {
+          item.isList = '1'
+        } else {
+          item.isList = '0'
+        }
+        // 查询
+        if (item.isQuery === true) {
+          item.isQuery = '1'
+        } else {
+          item.isQuery = '0'
+        }
+      })
     }
   }
 }

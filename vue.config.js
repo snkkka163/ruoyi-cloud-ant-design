@@ -24,8 +24,8 @@ const assetsCDN = {
   externals: {
     vue: 'Vue',
     'vue-router': 'VueRouter',
-    vuex: 'Vuex'
-    // axios: 'axios'
+    vuex: 'Vuex',
+    axios: 'axios'
   },
   css: [],
   // https://unpkg.com/browse/vue@2.6.10/
@@ -86,10 +86,12 @@ const vueConfig = {
 
     // if prod is on
     // assets require on cdn
-    config.plugin('html').tap(args => {
-      args[0].cdn = assetsCDN
-      return args
-    })
+    if(isProd){
+      config.plugin('html').tap(args => {
+        args[0].cdn = assetsCDN
+        return args
+      })
+    }
 
   },
 
@@ -116,7 +118,7 @@ const vueConfig = {
     proxy: {
       '/api': {
         // 182.61.136.176:8080 https://yingwu.itsnkkka.cn
-        target: 'http://182.61.136.176:8080',
+        target: 'http://127.0.0.1:8080',
         pathRewrite: {
           '^/api': ''
         },

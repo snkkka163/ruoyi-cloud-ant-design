@@ -170,6 +170,10 @@ export const generator = (routerMap, parent) => {
     if (show === false) {
       currentRouter.hidden = true
     }
+    // 适配若依，若依为缩写路径，而antdv-pro的pro-layout要求每个路径需为全路径
+    if (!constantRouterComponents[item.component || item.key]) {
+      currentRouter.path = `${parent && parent.path || ''}/${item.path}`
+    }
     // 是否设置了隐藏子菜单
     if (hideChildren) {
       currentRouter.hideChildrenInMenu = true

@@ -1,12 +1,12 @@
 <template>
   <global-footer class="footer custom-render">
     <template v-slot:links>
-      <a href="https://www.github.com/vueComponent/pro-layout" target="_blank">Pro Layout</a>
-      <a href="https://www.github.com/vueComponent/ant-design-vue-pro" target="_blank">Github</a>
-      <a href="https://www.github.com/sendya/" target="_blank">@Sendya</a>
+      <a href="https://gitee.com/y_project/RuoYi-Cloud" target="_blank">RuoYi-Cloud</a>
+      <a href="https://www.github.com/vueComponent/ant-design-vue-pro" target="_blank">Gitee</a>
+      <a href="https://gitee.com/xuezipeng" target="_blank">@xuezipeng</a>
     </template>
     <template v-slot:copyright>
-      <a href="https://github.com/vueComponent" target="_blank">vueComponent</a>
+      <a href="http://ruoyi.vip/" target="_blank">若依管理系统</a>
     </template>
   </global-footer>
 </template>
