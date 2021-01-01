@@ -77,7 +77,6 @@ npm run lint
 ## 在线体验
 
 - admin/admin123
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
 
 演示地址：[https://rycloud.itsnkkka.cn](https://rycloud.itsnkkka.cn)
 
@@ -115,3 +114,5 @@ QQ群： [![加入QQ群](https://img.shields.io/badge/%E5%B7%B2%E6%BB%A1-4279919
 \- [RuoYi-Cloud-最新技术栈的Java后端项目](https://doc.ruoyi.vip/ruoyi-cloud/)
 
 \- [Ant Design Vue-开箱即用的高质量Vue组件](https://www.antdv.com/docs/vue/introduce-cn/)
+
+\- [Ant Design Vue Pro基于Antd Vue的前端脚手架](https://gitee.com/sendya/ant-design-pro-vue)

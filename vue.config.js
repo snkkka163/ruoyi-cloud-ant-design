@@ -112,7 +112,7 @@ const vueConfig = {
     // If you want to turn on the proxy, please remove the mockjs /src/main.jsL11
     proxy: {
       '/api': {
-        // 182.61.136.176:8080 https://yingwu.itsnkkka.cn
+        // 182.61.136.176:8080是我们的演示站，如果您要进行开发请将target改成您自己的网关地址！
         target: 'http://182.61.136.176:8080',
         pathRewrite: {
           '^/api': ''
