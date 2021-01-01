@@ -78,7 +78,7 @@ npm run lint
 
 - admin/admin123
 
-演示地址：[https://rycloud.itsnkkka.cn](https://rycloud.itsnkkka.cn)
+演示地址：[http://182.61.136.176](http://182.61.136.176/) 由于在百度智能云没有备案域名，暂时以ip访问！
 
 前端文档地址：**正在编写中！**
 
