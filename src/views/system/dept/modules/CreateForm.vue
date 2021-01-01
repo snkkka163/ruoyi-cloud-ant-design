@@ -174,6 +174,7 @@ export default {
             if (this.form.children === '') {
               this.form.children = []
             }
+            this.filterStrArrary(this.form.children)
             // 刷新表格
             updateDept(this.form).then(response => {
               if (response.code === 200) {
@@ -216,6 +217,16 @@ export default {
     // 表单重置
     reset () {
       this.form = {}
+    },
+    filterStrArrary (list) {
+      for (let index = 0; index < list.length; index++) {
+        if (list[index].children === '') {
+          list[index].children = []
+        }
+        if (list[index].children) {
+          this.filterStrArrary(list[index].children)
+        }
+      }
     }
   }
 }

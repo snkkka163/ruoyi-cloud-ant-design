@@ -225,6 +225,7 @@ export default {
             if (this.form.children === '') {
               this.form.children = []
             }
+            this.filterStrArrary(this.form.children)
             updateMenu(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('修改成功')
@@ -271,6 +272,16 @@ export default {
     // 选择图标
     selected (name) {
       this.form.icon = name
+    },
+    filterStrArrary (list) {
+      for (let index = 0; index < list.length; index++) {
+        if (list[index].children === '') {
+          list[index].children = []
+        }
+        if (list[index].children) {
+          this.filterStrArrary(list[index].children)
+        }
+      }
     }
   }
 }
