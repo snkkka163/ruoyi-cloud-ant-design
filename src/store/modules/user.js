@@ -83,8 +83,7 @@ const user = {
             const avatar = user.avatar
             if (result.roles && result.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               commit('SET_ROLES', result.roles)
-              // 权限暂时不设置
-              // commit('SET_PERMISSIONS', result.permissions)
+              commit('SET_PERMISSION', result.permissions)
             } else {
               commit('SET_ROLES', ['ROLE_DEFAULT'])
             }
@@ -95,7 +94,6 @@ const user = {
             commit('SET_EMAIL', user.email)
             commit('SET_PHONE', user.phonenumber)
             commit('SET_USER_ID', user.userId)
-            commit('SET_PERMISSION', result.permissions)
             resolve(response)
           }
           // GetInfo一旦失败就说明这个token不是过期就是丢失了,直接走catch并让调用方跳转路由
