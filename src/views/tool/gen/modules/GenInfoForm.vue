@@ -48,7 +48,54 @@
         </a-col>
         <a-col :span="24" :pull="3">
           <a-form-model-item label="生成代码方式">
-            <a-textarea placeholder="textarea with clear icon" allow-clear v-model="info.remark" />
+            <a-radio-group name="radioGroup" v-model="info.genType" :default-value="1">
+              <a-radio :value="'0'">zip压缩包</a-radio>
+              <a-radio :value="'1'">自定义路径</a-radio>
+            </a-radio-group>
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="24" :pull="3" v-if="info.genType == '1'">
+          <a-form-model-item label="生成代码方式">
+            <a-input placeholder="自定义路径" v-model="info.genPath" />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
+      <a-row v-if="info.tplCategory == 'tree'">
+        <h4 class="form-header">其他信息</h4>
+        <a-col :span="12">
+          <a-form-model-item label="树编码字段">
+            <a-select v-model="info.treeCode" placeholder="请选择">
+                <a-select-option
+                  v-for="item in info.columns"
+                  :key="item.columnName"
+                  :value="item.columnName">
+                  {{ item.columnName + '：' + item.columnComment }}
+                </a-select-option>
+              </a-select>
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-model-item label="树父编码字段">
+            <a-select v-model="info.treeParentCode" placeholder="请选择">
+                <a-select-option
+                  v-for="item in info.columns"
+                  :key="item.columnName"
+                  :value="item.columnName">
+                  {{ item.columnName + '：' + item.columnComment }}
+                </a-select-option>
+              </a-select>
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-model-item label="树名称字段">
+            <a-select v-model="info.treeName" placeholder="请选择">
+                <a-select-option
+                  v-for="item in info.columns"
+                  :key="item.columnName"
+                  :value="item.columnName">
+                  {{ item.columnName + '：' + item.columnComment }}
+                </a-select-option>
+              </a-select>
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -93,6 +140,10 @@ export default {
         value: 'menuId'
       }
     }
+  },
+  created () {
+    console.log('测试')
+    console.log(this.info)
   },
   methods: {
     // 关闭模态框

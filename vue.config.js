@@ -118,7 +118,7 @@ const vueConfig = {
     proxy: {
       '/api': {
         // 182.61.136.176:8080 https://yingwu.itsnkkka.cn
-        target: 'http://127.0.0.1:8080',
+        target: 'http://182.61.136.176:8080',
         pathRewrite: {
           '^/api': ''
         },

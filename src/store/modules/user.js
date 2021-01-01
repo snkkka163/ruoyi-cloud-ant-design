@@ -112,6 +112,7 @@ const user = {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
+          commit('SET_PERMISSION', [])
           // storage.remove(ACCESS_TOKEN)
           localStorage.removeItem('token')
           resolve()

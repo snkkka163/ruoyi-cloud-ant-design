@@ -236,6 +236,8 @@ export default {
         this.tableList = res.data.rows
         this.transitionCheckBoxValList()
         this.info = res.data.info
+        console.log('查看info')
+        console.log(this.info)
         this.tableLoading = false
       })
       /** 查询字典下拉列表 */

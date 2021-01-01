@@ -154,7 +154,7 @@ export default {
         smsSendBtn: false
       },
       // 验证码以及UUID
-      captchaImg: 'https://portrait.gitee.com/uploads/avatars/user/1732/5197209_xuezipeng_1592665659.png',
+      captchaImg: '',
       uuid: ''
     }
   },
