@@ -9,8 +9,7 @@ RuoYi-Cloud-Ant-Design是一套基于若依Cloud微服务版本为后端开发�
 - 拉取项目代码
 
 ```bash
-git clone https://github.com/vueComponent/ant-design-vue-pro.git
-cd ant-design-vue-pro
+git clone git@gitee.com:xuezipeng/ruoyi-cloud-ant-design.git
 ```
 
 - 安装依赖
