@@ -65,37 +65,37 @@
         <a-col :span="12">
           <a-form-model-item label="树编码字段">
             <a-select v-model="info.treeCode" placeholder="请选择">
-                <a-select-option
-                  v-for="item in info.columns"
-                  :key="item.columnName"
-                  :value="item.columnName">
-                  {{ item.columnName + '：' + item.columnComment }}
-                </a-select-option>
-              </a-select>
+              <a-select-option
+                v-for="item in info.columns"
+                :key="item.columnName"
+                :value="item.columnName">
+                {{ item.columnName + '：' + item.columnComment }}
+              </a-select-option>
+            </a-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="12">
           <a-form-model-item label="树父编码字段">
             <a-select v-model="info.treeParentCode" placeholder="请选择">
-                <a-select-option
-                  v-for="item in info.columns"
-                  :key="item.columnName"
-                  :value="item.columnName">
-                  {{ item.columnName + '：' + item.columnComment }}
-                </a-select-option>
-              </a-select>
+              <a-select-option
+                v-for="item in info.columns"
+                :key="item.columnName"
+                :value="item.columnName">
+                {{ item.columnName + '：' + item.columnComment }}
+              </a-select-option>
+            </a-select>
           </a-form-model-item>
         </a-col>
         <a-col :span="12">
           <a-form-model-item label="树名称字段">
             <a-select v-model="info.treeName" placeholder="请选择">
-                <a-select-option
-                  v-for="item in info.columns"
-                  :key="item.columnName"
-                  :value="item.columnName">
-                  {{ item.columnName + '：' + item.columnComment }}
-                </a-select-option>
-              </a-select>
+              <a-select-option
+                v-for="item in info.columns"
+                :key="item.columnName"
+                :value="item.columnName">
+                {{ item.columnName + '：' + item.columnComment }}
+              </a-select-option>
+            </a-select>
           </a-form-model-item>
         </a-col>
       </a-row>
