@@ -1,109 +1,118 @@
-[English](./README.md) | 简体中文
+##  RuoYi-Cloud-Ant-Design简介
 
-<h1 align="center">Ant Design Vue Pro</h1>
-<div align="center">
-An out-of-box UI solution for enterprise applications as a Vue boilerplate. based on  <a href="https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/" target="_blank">Ant Design of Vue</a>
-</div>
+RuoYi-Cloud-Ant-Design是一套基于若依Cloud微服务版本为后端开发的一套基于Ant Design Vue的前端项目
 
-<div align="center">
+#### 友情链接 [若依/RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud) (本项目采取的后端)。
 
-[![License](https://img.shields.io/npm/l/package.json.svg?style=flat)](https://github.com/vueComponent/ant-design-vue-pro/blob/master/LICENSE)
-[![Release](https://img.shields.io/github/release/vueComponent/ant-design-vue-pro.svg?style=flat)](https://github.com/vueComponent/ant-design-vue-pro/releases/latest)
-[![Travis branch](https://travis-ci.org/vueComponent/ant-design-vue-pro.svg?branch=master)](https://travis-ci.org/vueComponent/ant-design-vue-pro)
-
-</div>
-
-- 预览: https://preview.pro.antdv.com
-- 首页: https://pro.antdv.com
-- 文档: https://pro.antdv.com/docs/getting-started
-- 更新日志: https://pro.antdv.com/docs/changelog
-- 常见问题: https://pro.antdv.com/docs/faq
-
-
-Overview
-----
-
-基于 [Ant Design of Vue](https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/) 实现的 [Ant Design Pro](https://pro.ant.design/) 
-
-![dashboard](https://static-2.loacg.com/open/static/github/SP1.png)
-
-环境和依赖
-----
-
-- node
-- yarn
-- webpack
-- eslint
-- @vue/cli ~3
-- [ant-design-vue](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
-- [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
-- [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
-- [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
-
-> 请注意，我们强烈建议本项目使用 [Yarn](https://yarnpkg.com/) 包管理工具，这样可以与本项目演示站所加载完全相同的依赖版本 (yarn.lock) 。由于我们没有对依赖进行强制的版本控制，采用非 yarn 包管理进行引入时，可能由于 Pro 所依赖的库已经升级版本而引入了新版本所导致的问题。作者可能会由于时间问题无法及时排查而导致您采用本项目作为基项目而出现问题。
-
-
-
-项目下载和运行
-----
+## 启动项目
 
 - 拉取项目代码
+
 ```bash
 git clone https://github.com/vueComponent/ant-design-vue-pro.git
 cd ant-design-vue-pro
 ```
 
 - 安装依赖
+
 ```
-yarn install
+npm install
 ```
 
 - 开发模式运行
-```
-yarn run serve
-```
 
-- 编译项目
 ```
-yarn run build
+npm run serve
 ```
 
-- Lints and fixes files
+- 打包项目
+
 ```
-yarn run lint
+npm run build
 ```
 
+- eslint规范自动修复
+
+```
+npm run lint
+```
+
+## 项目结构
+
+```
+├── src/
+    ├── api(存放接口)
+    ├── assets(存放一些静态资源，图片等)
+    ├── components(存放组件,由Ant Design Vue Pro提供)
+    ├── config(项目配置文件如全局样式、路由)
+    ├── core(项目核心文件夹，用于配置一些必备的组件/图标)
+    ├── layouts(项目布局文件夹，路由以及固定的侧边栏所采用的组件都在这里哦)
+    ├── locales(国际化包)
+    ├── mock(Ant Design Vue Pro前端模拟数据，现已不用！)
+    ├── router(动态路由的实现)
+    ├── store(Vuex.Store配置)
+    ├── utils(工具包)
+    ├── views(存放页面)
+```
+
+## 内置功能（前端）
+
+1. 用户管理：用户是系统操作者，该功能主要完成系统用户配置。
+2. 部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
+3. 岗位管理：配置系统用户所属担任职务。
+4. 菜单管理：配置系统菜单，操作权限，按钮权限标识等。
+5. 角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
+6. 字典管理：对系统中经常使用的一些较为固定的数据进行维护。
+7. 参数管理：对系统动态配置常用参数。
+8. 通知公告：系统通知公告信息发布维护。
+9. 操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
+10. 登录日志：系统登录日志记录查询包含登录异常。
+11. 在线用户：当前系统中活跃用户状态监控。
+12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
+13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
+14. 系统接口：根据业务代码自动生成相关的api接口文档。
+15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
+16. 在线构建器：拖动表单元素生成相应的HTML代码。**(待开发！)**
+17. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+
+## 在线体验
+
+- admin/admin123
+- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+
+演示地址：[https://rycloud.itsnkkka.cn](https://rycloud.itsnkkka.cn)
+
+前端文档地址：**正在编写中！**
+
+后端文档地址：http://doc.ruoyi.vip
+
+## 演示图
+
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113510.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113541.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113610.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113628.png) |
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113749.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113826.png) |
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113857.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113922.png) |
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101113945.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101114121.png) |
+| ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101114237.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101114256.png) |
+| !![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101114540.png) | ![](https://snkkkait.oss-cn-beijing.aliyuncs.com/picgo/20210101114602.png) |
+| ![img](https://oscimg.oschina.net/oscnet/up-ece3fd37a3d4bb75a3926e905a3c5629055.png) | ![img](https://oscimg.oschina.net/oscnet/up-92ffb7f3835855cff100fa0f754a6be0d99.png) |
+| ![img](https://oscimg.oschina.net/oscnet/up-ff9e3066561574aca73005c5730c6a41f15.png) |                                                              |
+
+## 若依微服务Ant Design版前端交流群(仅Ant Design前端)
+
+QQ群群号:  1038609759
+
+链接: 点击链接加入群聊【若依微服务Ant Design交流群】：https://jq.qq.com/?_wv=1027&k=Cq8fZnrj
+
+## 若依微服务交流群(后端&ElementUI前端)
+
+QQ群： [![加入QQ群](https://img.shields.io/badge/%E5%B7%B2%E6%BB%A1-42799195-blue.svg)](https://jq.qq.com/?_wv=1027&k=yqInfq0S) [![加入QQ群](https://img.shields.io/badge/%E5%B7%B2%E6%BB%A1-170157040-blue.svg)](https://jq.qq.com/?_wv=1027&k=Oy1mb3p8) [![加入QQ群](https://img.shields.io/badge/130643120-blue.svg)](https://jq.qq.com/?_wv=1027&k=rvxkJtXK) 点击按钮入群。
 
 
-其他说明
-----
 
-- **关于 Issue 反馈 (重要!重要!重要!) 请在开 *Issue* 前，先阅读该内容：[Issue / PR 编写建议](https://github.com/vueComponent/ant-design-vue-pro/issues/90)** 
+##  鸣谢:
 
-- 项目使用的 [vue-cli3](https://cli.vuejs.org/guide/), 请确保你所使用的 vue-cli 是新版，并且已经学习 cli 官方文档使用教程
+\- [RuoYi-Cloud-最新技术栈的Java后端项目](https://doc.ruoyi.vip/ruoyi-cloud/)
 
-- 关闭 Eslint (不推荐) 移除 `package.json` 中 `eslintConfig` 整个节点代码, `vue.config.js` 下的 `lintOnSave` 值改为 `false`
-
-- 组件按需加载 `/src/main.js` L14 相关代码 `import './core/lazy_use'` / `import './core/use'` 
-
-- [修改 Ant Design 配色 (@kokoroli)](https://github.com/kokoroli/antd-awesome/blob/master/docs/Ant_Design_%E6%A0%B7%E5%BC%8F%E8%A6%86%E7%9B%96.md)
-
-- I18n: [多语言支持 (@musnow)](./src/locales/index.js)
-
-- 生成环境默认不加载 `mock`，更多详情请看 `src/mock/index.js`
-
-- **用于生产环境，请使用 `release` 版本代码，使用 master 代码出现的任何问题需要你自行解决**
-
-## 浏览器兼容
-
-Modern browsers and IE10.
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
-| --- | --- | --- | --- | --- |
-| IE10, Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
-
-
-## Contributors
-
-This project exists thanks to all the people who contribute. 
-<a href="https://github.com/vueComponent/ant-design-vue-pro/graphs/contributors"><img src="https://opencollective.com/ant-design-pro-vue/contributors.svg?width=890&button=false" /></a>
+\- [Ant Design Vue-开箱即用的高质量Vue组件](https://www.antdv.com/docs/vue/introduce-cn/)
