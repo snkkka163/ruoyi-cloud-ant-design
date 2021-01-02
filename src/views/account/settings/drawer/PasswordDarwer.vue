@@ -17,7 +17,7 @@
       :visible="visible"
       :confirmLoading="loading"
       @ok="() => { $emit('ok') }"
-      @cancel="() => { $emit('cancel') }"
+      @close="() => { $emit('cancel') }"
     >
       <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
         <a-form-item label="旧密码">
