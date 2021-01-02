@@ -33,7 +33,7 @@
     <setting-drawer :settings="settings" @change="handleSettingChange" />
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
-      <!-- <tabs-view @reload="reload" /> -->
+      <tabs-view @reload="reload" />
       <!-- <global-footer /> -->
     </template>
     <router-view v-if="isRouterAlive" />
