@@ -15,7 +15,11 @@
     -->
     <!-- <ads v-if="isProPreviewSite && !collapsed"/> -->
     <!-- Ads end -->
-
+    <a-layout-content :style="{ height: '100%', margin: '0 0 40px 0', paddingTop: fixedHeader ? '64px' : '0' }">
+      <!-- <multi-tab v-if="multiTab"></multi-tab>
+      <transition name="page-transition">
+      </transition> -->
+    </a-layout-content>
     <!-- 1.0.0+ 版本 pro-layout 提供 API，
           我们推荐使用这种方式进行 LOGO 和 title 自定义
     -->
@@ -29,13 +33,13 @@
     <setting-drawer :settings="settings" @change="handleSettingChange" />
     <template v-slot:rightContentRender>
       <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
-      <tabs-view @reload="reload" />
-      <router-view v-if="isRouterAlive" />
+      <!-- <tabs-view @reload="reload" /> -->
+      <!-- <global-footer /> -->
+    </template>
+    <router-view v-if="isRouterAlive" />
+    <template v-slot:footerRender>
       <global-footer />
     </template>
-    <!-- <template v-slot:footerRender>
-      <global-footer />
-    </template> -->
     <!-- <router-view v-if="isRouterAlive" /> -->
   </pro-layout>
 </template>
