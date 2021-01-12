@@ -16,7 +16,7 @@ export default {
   primaryColor: '#2F54EB', // primary color of ant design： rgb(24, 144, 255)
   navTheme: 'light', // theme for nav menu: light dark
   layout: 'sidemenu', // nav menu position: sidemenu or topmenu
-  contentWidth: 'Fixed', // layout of content: Fluid or Fixed, only works when layout is topmenu
+  contentWidth: 'Fluid', // layout of content: Fluid or Fixed, only works when layout is topmenu
   fixedHeader: false, // sticky header
   fixSiderbar: true, // sticky siderbar
   autoHideHeader: false, //  auto hide header
