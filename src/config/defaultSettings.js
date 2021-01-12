@@ -13,7 +13,7 @@
  */
 
 export default {
-primaryColor: '#2F54EB', // primary color of ant design： rgb(24, 144, 255)
+  primaryColor: '#2F54EB', // primary color of ant design： rgb(24, 144, 255)
   navTheme: 'light', // theme for nav menu: light dark
   layout: 'sidemenu', // nav menu position: sidemenu or topmenu
   contentWidth: 'Fixed', // layout of content: Fluid or Fixed, only works when layout is topmenu
@@ -22,6 +22,9 @@ primaryColor: '#2F54EB', // primary color of ant design： rgb(24, 144, 255)
   autoHideHeader: false, //  auto hide header
   colorWeak: false,
   multiTab: false,
+  menu: {
+    locale: true
+  },
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true',
   // Ant Design Pro
   title: '若依管理系统',
