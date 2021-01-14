@@ -1,16 +1,5 @@
 <template>
   <div>
-    <!-- <a-button type="primary" @click="showDrawer">
-      Open
-    </a-button> -->
-    <!-- <a-drawer
-      title="安全设置-修改密码"
-      width="520"
-      :closable="false"
-      :visible="visible"
-      @close="() => { $emit('close') }"
-      @ok="() => { $emit('ok') }"
-    > -->
     <a-drawer
       title="安全设置-修改密码"
       :width="640"

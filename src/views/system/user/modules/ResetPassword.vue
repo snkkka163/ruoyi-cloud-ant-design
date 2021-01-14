@@ -10,7 +10,7 @@
     >
       <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
         <a-form-item label="新密码">
-          <a-input v-decorator="['password', { rules: [{ required: true, message: '新密码不能为空!' }] }]" />
+          <a-input type="password" v-decorator="['password', { rules: [{ required: true, message: '新密码不能为空!' }] }]" />
         </a-form-item>
       </a-form>
       <div
