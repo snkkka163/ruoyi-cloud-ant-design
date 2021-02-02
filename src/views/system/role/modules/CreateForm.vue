@@ -36,7 +36,7 @@
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item ref="menuIds" label="菜单权限" prop="menuIds">
-          <a-tree-select
+          <!-- <a-tree-select
             :showCheckedStrategy="'SHOW_ALL'"
             :multiple="true"
             v-model="form.menuIds"
@@ -46,6 +46,17 @@
             search-placeholder="Please select"
             :replaceFields="treeReplaceFields"
             allow-clear
+          /> -->
+          <a-tree
+            v-model="menuCheckedKeys"
+            checkable
+            :checkStrictly="!form.menuCheckStrictly"
+            :expanded-keys="menuExpandedKeys"
+            :auto-expand-parent="autoExpandParent"
+            :tree-data="menuOptions"
+            @check="onCheck"
+            @expand="onExpandMenu"
+            :replaceFields="defaultProps"
           />
         </a-form-model-item>
         <a-form-model-item ref="remark" label="备注" prop="remark">
@@ -64,6 +75,10 @@ import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/d
 export default {
   data () {
     return {
+      menuExpandedKeys: [],
+      autoExpandParent: false,
+      menuCheckedKeys: [],
+      halfCheckedKeys: [],
       // 菜单列表
       menuOptions: [],
       // 部门列表
@@ -75,8 +90,6 @@ export default {
       readOnly: false,
       visible: false,
       loading: false,
-      // form: this.$form.createForm(this),
-      // value: undefined,
       labelCol: {
         xs: { span: 12 },
         sm: { span: 6 }
@@ -111,11 +124,10 @@ export default {
           { required: true, message: '角色顺序为必填', trigger: 'change' }
         ]
       },
-      treeReplaceFields: {
+      defaultProps: {
         children: 'children',
         title: 'label',
-        key: 'id',
-        value: 'id'
+        key: 'id'
       }
     }
   },
@@ -137,13 +149,6 @@ export default {
         this.deptOptions = response.data
       })
     },
-    /** 根据角色ID查询菜单树结构 */
-    getRoleMenuTreeselect (roleId) {
-      return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus
-        return response
-      })
-    },
     /** 根据角色ID查询部门树结构 */
     getRoleDeptTreeselect (roleId) {
       return roleDeptTreeselect(roleId).then(response => {
@@ -159,7 +164,11 @@ export default {
         this.getMenuTreeselect()
         const roleMenu = this.getRoleMenuTreeselect(this.form.roleId)
         roleMenu.then(response => {
-           this.form.menuIds = response.checkedKeys
+          this.menuCheckedKeys = response.checkedKeys
+          // 过滤回显时的半选中node(父)
+          if (this.form.menuCheckStrictly) {
+            this.selectNodefilter(this.menuOptions, [])
+          }
         })
       } else {
         // 新增行为
@@ -185,9 +194,10 @@ export default {
         // 判断每一项的父节点是否存在，不存在则补充
         // this.insertParentIdToMenus()
         if (valid) {
-          // 进行新增行为:
+          // 进行新增/修改行为:
           if (this.form.roleId > 0) {
-            // 刷新表格
+            // 修改
+            this.form.menuIds = this.getMenuAllCheckedKeys()
             updateRole(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('修改成功')
@@ -205,6 +215,7 @@ export default {
             })
           } else {
             // 新增
+            this.form.menuIds = this.getMenuAllCheckedKeys()
             addRole(this.form).then(response => {
               if (response.code === 200) {
                 this.$message.success('新增成功')
@@ -228,6 +239,16 @@ export default {
     },
     // 表单重置
     reset () {
+      if (this.$refs.menu !== undefined) {
+        this.menuCheckedKeys = []
+        this.halfCheckedKeys = []
+      }
+      this.menuExpand = false
+      this.menuNodeAll = false
+      this.menuExpandedKeys = []
+      this.autoExpandParent = false
+      this.menuCheckedKeys = []
+      this.halfCheckedKeys = []
       this.form = {
         roleId: undefined,
         roleName: undefined,
@@ -332,6 +353,95 @@ export default {
         }
       }
       return flag
+    },
+    onExpandMenu (expandedKeys) {
+      this.menuExpandedKeys = expandedKeys
+      this.autoExpandParent = false
+    },
+    // 所有菜单节点数据
+    getMenuAllCheckedKeys () {
+      // 全选与半选
+      return this.menuCheckedKeys.concat(this.halfCheckedKeys)
+    },
+    getAllMenuNode (nodes) {
+      if (!nodes || nodes.length === 0) {
+        return []
+      }
+      nodes.forEach(node => {
+        this.menuCheckedKeys.push(node.id)
+        return this.getAllMenuNode(node.children)
+      })
+    },
+    // 回显过滤
+    selectNodefilter (nodes, parentIds) {
+      if (!nodes || nodes.length === 0) {
+        return []
+      }
+      nodes.forEach(node => {
+        // 父子关联模式且当前元素有父级
+        const currentIndex = this.menuCheckedKeys.indexOf(node.id)
+        // 当前节点存在,且父节点不存在，则说明父节点应是半选中状态
+        if (currentIndex !== -1) {
+          parentIds.forEach(parentId => {
+            if (this.halfCheckedKeys.indexOf(parentId) === -1) {
+              this.halfCheckedKeys.push(parentId)
+            }
+          })
+          parentIds = []
+        }
+        // 防重
+        const isExist = this.halfCheckedKeys.indexOf(node.id)
+        const isExistParentIds = parentIds.indexOf(node.id)
+        if (isExist === -1 && isExistParentIds === -1 && currentIndex === -1) {
+          parentIds.push(node.id)
+        }
+        return this.selectNodefilter(node.children, parentIds)
+      })
+    },
+    handleCheckedTreeNodeAll (value) {
+      if (value.target.checked) {
+        this.getAllMenuNode(this.menuOptions)
+      } else {
+        this.menuCheckedKeys = []
+        this.halfCheckedKeys = []
+      }
+    },
+    handleCheckedTreeExpand (value) {
+      if (value.target.checked) {
+        const treeList = this.menuOptions
+        for (let i = 0; i < treeList.length; i++) {
+          this.menuExpandedKeys.push(treeList[i].id)
+        }
+      } else {
+        this.menuExpandedKeys = []
+      }
+    },
+    // 树权限（父子联动）
+    handleCheckedTreeConnect (value) {
+      this.form.menuCheckStrictly = !this.form.menuCheckStrictly
+    },
+    /** 根据角色ID查询菜单树结构 */
+    getRoleMenuTreeselect (roleId) {
+      return roleMenuTreeselect(roleId).then(response => {
+        this.menuOptions = response.menus
+        return response
+      })
+    },
+    onCheck (checkedKeys, info) {
+      if (!this.form.menuCheckStrictly) {
+        let currentCheckedKeys = []
+        if (this.menuCheckedKeys.checked) {
+          currentCheckedKeys = currentCheckedKeys.concat(this.menuCheckedKeys.checked)
+        }
+        if (this.menuCheckedKeys.halfChecked) {
+          currentCheckedKeys = currentCheckedKeys.concat(this.menuCheckedKeys.halfChecked)
+        }
+        this.menuCheckedKeys = currentCheckedKeys
+      } else {
+        // 半选节点
+        this.halfCheckedKeys = info.halfCheckedKeys
+        this.menuCheckedKeys = checkedKeys
+      }
     }
   }
 }
