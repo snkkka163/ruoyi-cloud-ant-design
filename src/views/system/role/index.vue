@@ -82,6 +82,8 @@
             <span slot="action" slot-scope="text, record">
               <a @click="$refs.createModal.show(record)" v-hasPermi="['system:role:edit']">编辑</a>
               <a-divider type="vertical" />
+              <a @click="$refs.createDataScopeForm.handleDataScope(record)" v-hasPermi="['system:role:edit']">数据权限</a>
+              <a-divider type="vertical" />
               <a-dropdown>
                 <a class="ant-dropdown-link">
                   更多 <a-icon type="down" />
@@ -115,6 +117,11 @@
             ref="createModal"
             @handle-success="handleOk"
           />
+          <!-- 分配角色数据权限对话框 -->
+          <create-data-scope-form
+            ref="createDataScopeForm"
+            @ok="handleOk"
+          />
         </a-card>
       </div>
     </template>
@@ -124,11 +131,12 @@
 <script>
 import { listRole, delRole, changeRoleStatus } from '@/api/system/role'
 import CreateForm from './modules/CreateForm'
-
+import CreateDataScopeForm from './modules/CreateDataScopeForm'
 export default {
   name: 'Role',
   components: {
-    CreateForm
+    CreateForm,
+    CreateDataScopeForm
   },
   data () {
     return {
