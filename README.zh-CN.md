@@ -2,7 +2,12 @@
 
 RuoYi-Cloud-Ant-Design是一套基于若依Cloud微服务版本为后端开发的一套基于Ant Design Vue的前端项目
 
-#### 友情链接 [若依/RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud) (本项目采取的后端)。
+#### 友情链接
+[若依/RuoYi-Cloud（SpringCloud微服务版本）](https://gitee.com/y_project/RuoYi-Cloud) (本项目采取的后端)。
+
+[若依SpringBoot版本](https://gitee.com/y_project/RuoYi-Vue) 。
+
+[若依SpringBoot版 Ant Design前端](https://gitee.com/fuzui/RuoYi-Antdv) 。
 
 ## 启动项目
 
