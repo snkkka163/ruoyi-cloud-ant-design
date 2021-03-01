@@ -32,7 +32,7 @@
 
 <script>
 import { ArticleListContent } from '@/components'
-import IconText from '@/views/list/search/components/IconText'
+import IconText from './modules/IconText'
 import { article } from '@/mock/services/article'
 export default {
   name: 'Article',
