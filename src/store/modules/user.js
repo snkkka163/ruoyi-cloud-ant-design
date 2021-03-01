@@ -108,7 +108,7 @@ const user = {
 
     // 登出
     Logout ({ commit, state }) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
@@ -116,8 +116,8 @@ const user = {
           // storage.remove(ACCESS_TOKEN)
           localStorage.removeItem('token')
           resolve()
-        }).catch(() => {
-          resolve()
+        }).catch((error) => {
+          reject(error)
         }).finally(() => {
         })
       })
