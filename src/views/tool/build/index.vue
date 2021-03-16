@@ -5,7 +5,8 @@
         <template>
           <a-result title="该功能正在开发中...">
             <template #icon>
-              <a-icon type="smile" theme="twoTone" />
+              <!-- <a-icon type="smile" theme="twoTone" /> -->
+              <img src="https://iconfont.alicdn.com/t/f0f911e4-ea72-419d-8f69-5f01ec8a21f6.png" />
             </template>
             <template #extra>
               <a-button type="primary" @click="returnIndex">
